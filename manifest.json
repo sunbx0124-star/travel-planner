@@ -1,0 +1,15 @@
+{
+  "name": "太原深度游攻略",
+  "short_name": "太原攻略",
+  "description": "太原3-4天深度游 · 互动地图 · 路线规划 · 美食住宿推荐",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#c9a96e",
+  "orientation": "any",
+  "icons": [{
+    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%231a1a2e'/><text x='96' y='110' text-anchor='middle' font-size='90' fill='%23c9a96e'>晋</text></svg>",
+    "sizes": "192x192",
+    "type": "image/svg+xml"
+  }]
+}

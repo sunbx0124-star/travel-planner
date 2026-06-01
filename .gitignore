@@ -1,0 +1,6 @@
+CLAUDE.md
+.claude/
+memory/
+node_modules/
+*.jsonl
+*.mp4
