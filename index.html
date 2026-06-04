@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>太原3-4天深度游 · 完整攻略</title>
+<title>自驾穿越 · 28城攻略 · 记账助手</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="太原攻略">
@@ -18,7 +18,7 @@ if('serviceWorker' in navigator){
 body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display:flex}
 :root{--bg:#1a1a2e;--card:#16213e;--gold:#c9a96e;--green:#4a9e6e;--orange:#e07b39;--text:#e0e0e0;--sub:#888}
 
-#sidebar{width:440px;min-width:440px;height:100vh;overflow-y:auto;background:var(--bg);color:var(--text)}
+#sidebar{width:440px;min-width:440px;height:100vh;overflow-y:auto;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
 #sidebar header{padding:18px 18px 12px;background:linear-gradient(135deg,var(--card),var(--bg));border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:5}
 #sidebar header h1{font-size:19px;color:var(--gold)}
 #sidebar header p{font-size:11px;color:var(--sub);margin-top:2px}
@@ -46,7 +46,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 .free{background:#1a3a1a;color:var(--green)}.ticket{background:#2a1f0a;color:var(--gold)}
 .route-dist{font-size:10px;color:var(--orange);margin-top:2px;font-style:italic;display:flex;align-items:flex-start;gap:4px}
 .route-text{flex:1}
-.btn-retry{flex-shrink:0;width:18px;height:18px;border-radius:50%;border:1px solid #555;background:transparent;color:#888;cursor:pointer;font-size:11px;line-height:16px;text-align:center;padding:0;transition:all .15s;margin-top:1px}
+.btn-retry{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1px solid #555;background:transparent;color:#888;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;padding:0;transition:all .15s;margin-left:2px}
 .btn-retry:hover{border-color:var(--orange);color:var(--orange);background:rgba(224,123,57,.1)}
 .btn-retry:active{transform:scale(.9)}
 .route-text{cursor:pointer;transition:color .15s}
@@ -92,14 +92,132 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 .btn-locate:hover{background:var(--gold);color:var(--bg)}
 .btn-locate.locating{border-color:var(--orange);animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(224,123,57,.4)}50%{box-shadow:0 0 0 8px rgba(224,123,57,0)}}
-.w-card{flex:0 0 80px;text-align:center;padding:4px;background:#222240;border-radius:6px;font-size:10px;color:#ccc}
+.w-card{flex:0 0 80px;text-align:center;padding:4px;background:#222240;border-radius:6px;font-size:10px;color:#ccc;border:1px solid transparent;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.w-card:active{background:#2a2a4a}
 .w-card .w-date{color:var(--gold);font-size:9px;margin-bottom:2px}
 .w-card .w-icon{font-size:20px;margin:2px 0}
 .w-card .w-temp{font-weight:bold;font-size:11px}
 .w-card .w-rain{color:#5599cc;font-size:9px}
-.w-card.today{border:1px solid var(--gold)}
+#weatherDetailRow{margin-top:6px}
+#weatherCards{-webkit-overflow-scrolling:touch}
 .monday-warn{background:#3a1515!important;border:1px solid #e05555!important;border-radius:6px;padding:8px 12px;margin:4px 12px;font-size:11px;color:#e05555;line-height:1.5}
 .btn-toggle-sidebar{display:none}
+.btn-expand-panel{display:none}
+
+/* 路线导航按钮 - 与刷新按钮同排 */
+.btn-nav{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1px solid #555;background:transparent;color:#888;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0;transition:all .15s;margin-left:2px}
+.btn-nav:hover{border-color:#4a90ff;color:#4a90ff;background:rgba(74,144,255,.1)}
+.btn-nav-spot{flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1px solid #555;background:transparent;color:#888;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;padding:0;transition:all .15s;margin-left:6px;align-self:center}
+.btn-nav-spot:hover{border-color:#4a90ff;color:#4a90ff;background:rgba(74,144,255,.1)}
+
+/* FAB */
+#fab-chat{display:flex;position:absolute;bottom:80px;right:16px;z-index:250;width:48px;height:48px;border-radius:50%;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-size:20px;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.4);transition:transform .2s,box-shadow .2s}
+#fab-chat:active{transform:scale(.92)}
+
+/* 聊天遮罩 */
+#chat-backdrop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:499}
+
+/* 聊天面板 */
+#chat-panel{position:fixed;top:0;right:0;width:380px;height:100vh;z-index:500;background:#111;color:#e0e0e0;display:flex;flex-direction:column;box-shadow:-2px 0 20px rgba(0,0,0,.5);transform:translateX(100%);transition:transform .3s ease}
+#chat-panel.open{transform:translateX(0)}
+.chat-panel-header{padding:12px 16px;background:#1a1a1a;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.chat-quick-btns{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;border-bottom:1px solid #2a2a2a;flex-shrink:0}
+.chat-quick-btns::-webkit-scrollbar{display:none}
+.chat-quick-btn{flex-shrink:0;padding:6px 12px;border-radius:16px;border:1px solid #3a3a3a;background:#1a1a1a;color:#e0e0e0;font-size:12px;cursor:pointer;white-space:nowrap;transition:all .15s}
+.chat-quick-btn:active{background:#c9a96e;color:#000;border-color:#c9a96e}
+#chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch}
+.chat-msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word;white-space:pre-wrap}
+.chat-msg.user{align-self:flex-end;background:#c9a96e;color:#000;border-bottom-right-radius:4px}
+.chat-msg.bot{align-self:flex-start;background:#222;border-bottom-left-radius:4px}
+.chat-msg.loading{background:#222;opacity:.5}
+#chat-input-area{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #2a2a2a;background:#1a1a1a;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,10px)}
+#chat-input-area input{flex:1;padding:10px 14px;border-radius:20px;border:1px solid #3a3a3a;background:#000;color:#e0e0e0;font-size:14px;outline:none;-webkit-appearance:none}
+#chat-input-area input:focus{border-color:#c9a96e}
+#chat-input-area button{width:44px;height:44px;border-radius:50%;border:none;background:#c9a96e;color:#000;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+#chat-input-area button:active{opacity:.8}
+
+/* 天气刷新 */
+.weather-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.btn-weather-refresh{width:22px;height:22px;border-radius:50%;border:1px solid #555;background:transparent;color:#aaa;cursor:pointer;font-size:11px;line-height:18px;text-align:center;padding:0;flex-shrink:0;transition:all .3s}
+
+/* 模式切换 */
+.mode-switcher{display:flex;gap:4px;background:#2a2a4a;border-radius:8px;padding:3px;margin-top:8px}
+.mode-switcher button{flex:1;padding:6px 10px;border-radius:6px;border:none;background:transparent;color:#aaa;cursor:pointer;font-size:11px;font-weight:600;transition:all .2s;white-space:nowrap}
+.mode-switcher button.active{background:var(--gold);color:var(--bg)}
+
+/* 自驾面板 */
+.road-trip{display:none;overflow-y:auto;flex:1}
+.road-trip.show{display:block}
+.road-summary{background:var(--card);border-radius:8px;padding:12px;margin:10px 12px;border-left:3px solid var(--orange)}
+.road-summary h3{font-size:13px;color:var(--gold);margin-bottom:6px}
+.road-summary .road-path{font-size:10px;color:#bbb;line-height:1.8;word-break:break-all}
+.road-summary .road-stats{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
+.road-summary .road-stat{font-size:9px;color:var(--sub);background:#1a1a35;padding:3px 8px;border-radius:10px}
+.road-summary .road-stat b{color:var(--orange)}
+
+.road-section{margin:0 12px 8px;background:var(--card);border-radius:8px;overflow:hidden}
+.road-section-title{padding:10px 12px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:#1e1e3a;user-select:none;transition:background .15s}
+.road-section-title:hover{background:#222240}
+.road-section-title .arrow{font-size:10px;color:var(--sub);transition:transform .25s;display:inline-block}
+.road-section-title.open .arrow{transform:rotate(90deg)}
+.road-section-body{display:none;padding:8px 12px 12px;font-size:11px;line-height:1.6;color:#ccc}
+.road-section-body.show{display:block}
+
+.road-segment{padding:8px 0;border-bottom:1px solid #2a2a4a}
+.road-segment:last-child{border-bottom:none}
+.road-segment .seg-header{font-size:11px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px}
+.road-segment .seg-header .stars{color:var(--gold);font-size:10px;white-space:nowrap}
+.road-segment .seg-route{font-size:10px;color:var(--sub);margin-top:2px}
+.road-segment .seg-info{font-size:10px;color:#bbb;margin-top:2px;line-height:1.5}
+.road-segment .seg-status{display:inline-block;font-size:9px;padding:1px 6px;border-radius:8px;font-weight:600;margin-left:4px}
+.seg-ok{background:#1a3a1a;color:var(--green)}
+.seg-warn{background:#3a2a15;color:var(--orange)}
+.seg-danger{background:#3a1515;color:#e05555}
+
+.road-table{width:100%;border-collapse:collapse;font-size:10px;margin:6px 0}
+.road-table td,.road-table th{padding:4px 6px;border-bottom:1px solid #2a2a4a;text-align:left;vertical-align:top}
+.road-table th{color:var(--gold);font-weight:600;white-space:nowrap}
+.road-table .hi{color:var(--green);font-weight:600}
+.road-table .lo{color:#e05555}
+
+.road-tag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:8px;margin:1px 2px;font-weight:600}
+.road-tag.green{background:#1a3a1a;color:var(--green)}
+.road-tag.gold{background:#2a1f0a;color:var(--gold)}
+.road-tag.red{background:#3a1515;color:#e05555}
+.road-tag.blue{background:#152035;color:#5599cc}
+
+/* 自驾路线交互 */
+.road-segment.clickable{cursor:pointer;transition:background .15s;border-left:3px solid transparent;padding-left:8px;border-radius:0 6px 6px 0}
+.road-segment.clickable:hover{background:#222240}
+.road-segment.active{background:#1e1e3a;border-left-color:var(--gold)}
+.road-route-detail{margin-top:6px;padding:6px 8px;background:#15152a;border-radius:4px;border-left:2px solid var(--gold);font-size:10px;max-height:150px;overflow-y:auto;line-height:1.6}
+.seg-actions{display:flex;gap:6px;margin-top:6px;align-items:center}
+.seg-actions .btn-nav{flex-shrink:0;width:28px;height:28px;border-radius:50%;border:1px solid #555;background:transparent;color:#888;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;padding:0;transition:all .15s}
+.seg-actions .btn-nav:hover{border-color:#4a90ff;color:#4a90ff;background:rgba(74,144,255,.1)}
+.seg-actions .btn-retry{flex-shrink:0;width:28px;height:28px;border-radius:50%;border:1px solid #555;background:transparent;color:#888;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;padding:0;transition:all .15s}
+.seg-actions .btn-retry:hover{border-color:var(--orange);color:var(--orange);background:rgba(224,123,57,.1)}
+.seg-actions .seg-dist-label{font-size:10px;color:var(--orange);font-weight:bold;flex:1}
+.seg-loading{color:var(--orange);font-size:10px;padding:4px 0}
+
+/* 城市标签栏 */
+.city-tabs{display:flex;gap:4px;padding:6px 12px;background:var(--card);border-bottom:1px solid #2a2a4a;overflow-x:auto;white-space:nowrap;scrollbar-width:none;-ms-overflow-style:none;position:sticky;top:70px;z-index:4}
+.city-tabs::-webkit-scrollbar{display:none}
+.city-tabs.show{display:flex}
+.city-tab{flex-shrink:0;padding:6px 12px;border-radius:16px;cursor:pointer;font-size:11px;background:#2a2a4a;color:#aaa;border:none;transition:all .2s;white-space:nowrap}
+.city-tab:hover{background:#3a3a5a;color:#ddd}
+.city-tab.active{background:var(--gold);color:var(--bg);font-weight:bold}
+.city-tab.road-tab{background:#1a3a3a;color:var(--green);border:1px solid var(--green)}
+.city-tab.road-tab:hover{background:#2a4a4a;color:#fff}
+.city-tab.road-tab.active{background:var(--green);color:#fff;font-weight:bold}
+
+/* 城市攻略面板 */
+.city-panel{display:none;overflow-y:auto;flex:1}
+.city-panel.show{display:block}
+.city-panel .city-header{padding:12px 14px;border-bottom:1px solid #2a2a4a}
+.city-panel .city-header h3{font-size:15px;color:var(--gold)}
+.city-panel .draw-route-btn{width:100%;padding:6px;border-radius:6px;border:1px solid var(--gold);background:transparent;color:var(--gold);cursor:pointer;font-size:10px;margin-top:4px;transition:all .2s}
+.city-panel .draw-route-btn:hover{background:rgba(201,169,110,.1)}
+
 /* 移动端 */
 @media(max-width:768px){
   .btn-toggle-sidebar{display:flex;position:fixed;left:50%;transform:translateX(-50%);z-index:300;padding:3px 16px;border-radius:0 0 8px 8px;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-size:11px;font-weight:bold;top:0}
@@ -107,6 +225,8 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   body{flex-direction:column;overflow:hidden}
   #sidebar{width:100%;min-width:100%;max-height:45vh;overflow-y:auto;font-size:11px}
   #sidebar.collapsed{max-height:0!important;padding:0!important}
+  #sidebar.expanded{max-height:78vh!important}
+  #sidebar.expanded~#map-container{height:22vh}
   #sidebar header{padding:10px 12px 6px;position:static}
   #sidebar header h1{font-size:16px}
   #sidebar header p{font-size:10px}
@@ -125,6 +245,33 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   .img-modal img{max-height:50vh;max-width:80vw}
   .w-card{flex:0 0 65px;font-size:9px}
   .w-card .w-icon{font-size:16px}
+  #fab-chat{bottom:65px;right:10px;width:42px;height:42px;font-size:18px}
+  #chat-panel{width:100%;height:60vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0}
+  #chat-panel.open{transform:translateY(0)}
+  #chat-backdrop{display:none}
+  #chat-backdrop.show{display:block}
+  .mode-switcher button{font-size:10px;padding:4px 6px}
+  .road-summary{padding:8px;margin:6px 8px}
+  .road-summary h3{font-size:11px}
+  .road-section{margin:0 8px 6px}
+  .road-section-title{font-size:11px;padding:8px 10px}
+  .road-section-body{font-size:10px;padding:6px 8px 10px}
+  .road-segment .seg-header{font-size:10px}
+  .road-segment .seg-route,.road-segment .seg-info{font-size:9px}
+  .road-table{font-size:9px}
+  .road-route-detail{font-size:9px;max-height:120px}
+  .seg-actions .btn-nav,.seg-actions .btn-retry{width:24px;height:24px;font-size:12px}
+  .city-tabs{padding:4px 8px;gap:3px;top:0}
+  .city-tab{padding:4px 10px;font-size:10px}
+  .city-panel .city-header h3{font-size:13px}
+  .city-panel .draw-route-btn{font-size:9px}
+  .city-panel.show{min-height:30vh;overflow-y:auto}
+  .road-trip.show{min-height:30vh}
+  .btn-expand-panel{display:none;position:sticky;bottom:0;z-index:10;width:100%;padding:8px;border:none;background:var(--gold);color:var(--bg);font-size:11px;font-weight:bold;cursor:pointer;text-align:center;border-radius:6px 6px 0 0;margin-top:8px;box-shadow:0 -2px 6px rgba(0,0,0,.3)}
+  .btn-expand-panel:active{opacity:.8}
+  #dateBar{font-size:10px!important;gap:6px!important}
+  #dateBar input{width:105px!important;font-size:9px!important}
+  #dateDays{font-size:9px!important}
 }
 </style>
 </head>
@@ -132,292 +279,194 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 
 <div id="sidebar">
 <header>
-  <h1>太原3-4天深度游</h1>
-  <p>历史人文 + 自然风光 | 每日约7h游玩时间 | 高德实测路线距离</p>
-  <div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap">
-    <label style="font-size:10px;color:var(--sub)">出发日期</label>
-    <input type="date" id="startDate" onchange="onDateChange()" style="padding:3px 6px;border-radius:4px;border:1px solid #555;background:#2a2a4a;color:var(--text);font-size:10px;width:130px">
-    <span id="mondayWarn" style="display:none;font-size:10px;color:#e05555;font-weight:bold">⚠ 行程含周一闭馆日</span>
-  </div>
+  <h1>自驾穿越 · 城市攻略</h1>
+  <p>烟台→伊犁→青甘南线 | 点击城市Tab查看攻略 | 路线规划+地图联动</p>
 </header>
 
-<!-- 天气 -->
-<div id="weatherBar" style="display:none;padding:8px 12px;background:#1a1a35;border-bottom:1px solid #2a2a4a;gap:8px;overflow-x:auto">
+<!-- 日期 & 天气 -->
+<div id="dateBar" style="padding:6px 12px;background:#1a1a35;border-bottom:1px solid #2a2a4a;font-size:11px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+  <span style="color:var(--gold);font-weight:bold" id="todayDisplay"></span>
+  <label style="color:var(--sub);font-size:10px">到达日 <input type="date" id="startDate" onchange="onDateChange()" style="padding:2px 6px;border-radius:4px;border:1px solid #555;background:#1e1e3a;color:var(--text);font-size:10px;width:120px"></label>
+  <span id="mondayWarn" style="display:none;color:#e05555;font-size:10px">&#9888; 周一闭馆</span>
+</div>
+<div style="display:flex;gap:6px;padding:4px 12px;background:#15152a;border-bottom:1px solid #2a2a4a;font-size:10px;overflow-x:auto" id="dateDays"></div>
+<div id="weatherBar" style="display:none;padding:8px 12px;background:#1a1a35;border-bottom:1px solid #2a2a4a">
+  <div class="weather-header"><span style="font-size:10px;color:var(--sub)" id="weatherCityName">天气</span><button class="btn-weather-refresh" id="btnWeatherRefresh" onclick="refreshWeather()" title="刷新">↻</button></div>
+  <div id="weatherCards" style="display:flex;gap:8px;overflow-x:auto"></div>
+  <div id="weatherDetailRow"></div>
 </div>
 
-<div class="tabs">
-  <button class="tab active" onclick="showDay('d1')">Day1 西山南</button>
-  <button class="tab" onclick="showDay('d2')">Day2 西山北</button>
-  <button class="tab" onclick="showDay('d3')">Day3 市区文博</button>
-  <button class="tab" onclick="showDay('d4')">Day4 城市地标</button>
-  <button class="tab" onclick="showDay('hotels')">酒店</button>
-  <button class="tab" onclick="showDay('all')">总览</button>
+<!-- 城市攻略标签栏 -->
+<div class="city-tabs show" id="cityTabs">
+  <button class="city-tab road-tab active" id="ctab-road" onclick="switchToRoadPlan()">路线规划</button>
+
+  <button class="city-tab" id="ctab-taiyuan" onclick="switchCity('taiyuan')">太原</button>
+  <button class="city-tab" id="ctab-xinzhou" onclick="switchCity('xinzhou')">忻州</button>
+  <button class="city-tab" id="ctab-shuozhou" onclick="switchCity('shuozhou')">朔州</button>
+  <button class="city-tab" id="ctab-datong" onclick="switchCity('datong')">大同</button>
+  <button class="city-tab" id="ctab-bayannaoer" onclick="switchCity('bayannaoer')">巴彦淖尔</button>
+  <button class="city-tab" id="ctab-yinchuan" onclick="switchCity('yinchuan')">银川</button>
+  <button class="city-tab" id="ctab-guiyang" onclick="switchCity('guiyang')">贵阳</button>
+  <button class="city-tab" id="ctab-zhongwei" onclick="switchCity('zhongwei')">中卫</button>
+  <button class="city-tab" id="ctab-wuwei" onclick="switchCity('wuwei')">武威</button>
+  <button class="city-tab" id="ctab-zhangye" onclick="switchCity('zhangye')">张掖</button>
+  <button class="city-tab" id="ctab-jiuquan" onclick="switchCity('jiuquan')">酒泉</button>
+  <button class="city-tab" id="ctab-jiayuguan" onclick="switchCity('jiayuguan')">嘉峪关</button>
+  <button class="city-tab" id="ctab-yumen" onclick="switchCity('yumen')">玉门</button>
+  <button class="city-tab" id="ctab-guazhou" onclick="switchCity('guazhou')">瓜州</button>
+  <button class="city-tab" id="ctab-hammi" onclick="switchCity('hammi')">哈密</button>
+  <button class="city-tab" id="ctab-tulufan" onclick="switchCity('tulufan')">吐鲁番</button>
+  <button class="city-tab" id="ctab-wulumuqi" onclick="switchCity('wulumuqi')">乌鲁木齐</button>
+  <button class="city-tab" id="ctab-s101" onclick="switchCity('s101')">S101</button>
+  <button class="city-tab" id="ctab-yili" onclick="switchCity('yili')">伊犁</button>
+  <button class="city-tab" id="ctab-kuerle" onclick="switchCity('kuerle')">库尔勒</button>
+  <button class="city-tab" id="ctab-ruoqiang" onclick="switchCity('ruoqiang')">若羌</button>
+  <button class="city-tab" id="ctab-mangya" onclick="switchCity('mangya')">茫崖</button>
+  <button class="city-tab" id="ctab-geermu" onclick="switchCity('geermu')">格尔木</button>
+  <button class="city-tab" id="ctab-chaka" onclick="switchCity('chaka')">茶卡</button>
+  <button class="city-tab" id="ctab-qinghaihu" onclick="switchCity('qinghaihu')">青海湖</button>
+  <button class="city-tab" id="ctab-xining" onclick="switchCity('xining')">西宁</button>
+  <button class="city-tab" id="ctab-menyuan" onclick="switchCity('menyuan')">门源</button>
+  <button class="city-tab" id="ctab-lanzhou" onclick="switchCity('lanzhou')">兰州</button>
+  <button class="city-tab" id="ctab-xian" onclick="switchCity('xian')">西安</button>
 </div>
 
-<!-- Day 1 -->
-<div id="d1" class="day-content">
-<div class="day-block">
-  <div class="day-header">Day1 西山南线 <span class="day-date" id="date-d1"></span> <span class="day-badge bg-c">历史</span><span class="day-badge bg-n">自然</span></div>
-  <div class="day-time">游玩约7.5h · 8:30-17:00（一路向西：晋祠→太山→天龙山，不回头）<span class="day-weekday" id="wd-d1"></span></div>
-
-  <div class="spot-item" onclick="selectSpot('jinci',this)" id="spot-jinci">
-    <div class="spot-num cs-h">1</div>
-    <div class="spot-body">
-      <h4>晋祠 <span class="time">8:30-12:30 (4h)</span></h4>
-      <div class="desc">千年文脉之源。三绝：宋塑侍女像、周柏3000年、难老泉17°C恒温。三宝：圣母殿宋代木构、鱼沼飞梁十字古桥、金代献殿全榫卯。南门向曦门进更近。86版西游记取景地。门口野导勿信！</div>
-      <div class="spot-meta"><span class="ticket">¥80</span><span>讲解¥80可拼团</span><span>讲解器¥30</span><span>公交308 ¥1可达</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d1-0">↓ 晋祠→太山龙泉寺 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('taishan',this)" id="spot-taishan">
-    <div class="spot-num cs-h">2</div>
-    <div class="spot-body">
-      <h4>太山龙泉寺 <span class="time">13:00-14:45 (1.75h)</span></h4>
-      <div class="desc">唐代地宫出土五重棺椁金棺+23颗佛舍利。观音堂明代悬塑79尊（太原唯一）。唐景云二年碑高6米。望都阁俯瞰太原城。登山步道平缓，距晋祠仅2km。</div>
-      <div class="spot-meta"><span class="ticket">¥50</span><span>唐碑</span><span>金棺舍利</span><span>明代悬塑</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d1-1">↓ 太山→天龙山石窟 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('tianlongshan',this)" id="spot-tianlongshan">
-    <div class="spot-num cs-h">3</div>
-    <div class="spot-body">
-      <h4>天龙山石窟 <span class="time">15:00-17:00 (2h)</span></h4>
-      <div class="desc">中国十大石窟之一。山顶进→下游览（不爬山！）。网红三层螺旋公路。公交坐车门对面拍网红桥！回归佛首闻名海内外。冬季可能闭园需提前确认。</div>
-      <div class="spot-meta"><span class="ticket">¥50（联票¥110）</span><span>公交¥4</span><span>不爬山</span></div>
-    </div>
+<!-- 自驾穿越面板 -->
+<div class="road-trip" id="roadTripPanel">
+<div class="road-summary">
+  <h3>烟台 → 伊犁 → 青甘南线 自驾穿越</h3>
+  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 巴彦淖尔 → 银川 → 中卫 → 武威 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 西安 → 烟台</div>
+  <div class="road-stats">
+    <span class="road-stat">总里程 <b>~10500km</b></span>
+    <span class="road-stat">天数 <b>35-45天</b></span>
+    <span class="road-stat">车辆 <b>Golf 7</b></span>
+    <span class="road-stat">预算 <b>2.1-3.8万</b></span>
   </div>
 </div>
-<div class="note-box"><b>西山南线节奏</b>：三个景点由东向西一字排开，全程不回头。晋祠4h深度游（三绝三宝+园林），太山1.75h（地宫舍利+悬塑，距晋祠仅2km），天龙山2h（石窟+下山，距太山约7km）。<b>注意</b>：天龙山冬季可能闭园，太山可现场购票无需预约。</div>
-<div class="note-box"><b>Day1 餐饮 · 诚实说</b>：西山属山区景区，周边餐饮以简餐面馆为主，评分普遍3.0-3.9，没有真正出色的本地餐厅。相对可选的：<b>龙源酒楼</b>（4.3分/¥68，晋祠南门1.4km）适合午饭，<b>书院咖啡</b>（4.3分/¥33，晋祠博物馆内）可歇脚。天龙山景区内<b>藤原豆腐店</b>（4.5分/¥31）可补给。对吃讲究的话建议自带干粮，晚餐回市区解决。</div>
+
+<!-- 去程路线 -->
+<div class="road-section">
+  <div class="road-section-title open" onclick="toggleRoadSection(this)">去程路线 (烟台→伊犁 · 19段) <span class="arrow">▼</span></div>
+  <div class="road-section-body show">
+	    <div class="road-segment clickable" id="road-seg-1" onclick="drawRoadSegment('seg-1')"><div class="seg-header">1. 烟台→邯郸 <span class="stars">★★</span><span class="seg-status seg-ok">全高速</span></div><div class="seg-route">G18→G20→G4 · ~650km · 7h</div><div class="seg-info">平原风景一般，直接高速。</div><div class="road-route-detail" id="detail-road-seg-1" style="display:none"></div><div class="seg-actions" id="actions-seg-1" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-2" onclick="drawRoadSegment('seg-2')"><div class="seg-header">2. 邯郸→太原 <span class="stars">★★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G309→涉县→S45天黎 · ~360km · 5h</div><div class="seg-info">太行山大峡谷风貌，邯郸→涉县段走G309。</div><div class="road-route-detail" id="detail-road-seg-2" style="display:none"></div><div class="seg-actions" id="actions-seg-2" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-3" onclick="drawRoadSegment('seg-3')"><div class="seg-header">3. 太原→忻州 <span class="stars">★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G108 · ~90km · 1.5h</div><div class="seg-info">太原北上，途经五台山路口。</div><div class="road-route-detail" id="detail-road-seg-3" style="display:none"></div><div class="seg-actions" id="actions-seg-3" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-4" onclick="drawRoadSegment('seg-4')"><div class="seg-header">4. 忻州→朔州 <span class="stars">★★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G55二广高速经雁门关/代县 · ~140km · 2h</div><div class="seg-info">途经雁门关长城、代县古城。</div><div class="road-route-detail" id="detail-road-seg-4" style="display:none"></div><div class="seg-actions" id="actions-seg-4" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-5" onclick="drawRoadSegment('seg-5')"><div class="seg-header">5. 朔州→大同 <span class="stars">★★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G55二广高速 · ~150km · 2h</div><div class="seg-info">途经应县木塔、恒山悬空寺。</div><div class="road-route-detail" id="detail-road-seg-5" style="display:none"></div><div class="seg-actions" id="actions-seg-5" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-6" onclick="drawRoadSegment('seg-6')"><div class="seg-header">6. 大同→呼和浩特 <span class="stars">★★★★★</span><span class="seg-status seg-ok">强烈推荐</span></div><div class="seg-route">长城一号旅游公路→杀虎口→G55 · ~260km · 4-5h</div><div class="seg-info">250km沿明长城蜿蜒，全程柏油！先西行至杀虎口再折北。</div><div class="road-route-detail" id="detail-road-seg-6" style="display:none"></div><div class="seg-actions" id="actions-seg-6" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-7" onclick="drawRoadSegment('seg-7')"><div class="seg-header">7. 呼和浩特→巴彦淖尔 <span class="stars">★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G6京藏高速为主 · ~430km · 4.5h</div><div class="seg-info">可穿插G110体验阴山+河套平原向日葵(7-8月)。</div><div class="road-route-detail" id="detail-road-seg-7" style="display:none"></div><div class="seg-actions" id="actions-seg-7" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-8" onclick="drawRoadSegment('seg-8')"><div class="seg-header">8. 巴彦淖尔→银川 <span class="stars">★★</span><span class="seg-status seg-ok">可通行</span></div><div class="seg-route">G6京藏高速 · ~330km · 3.5h</div><div class="seg-info">G6乌海段可能管制。临河/乌拉山服务区施工。</div><div class="road-route-detail" id="detail-road-seg-8" style="display:none"></div><div class="seg-actions" id="actions-seg-8" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-9" onclick="drawRoadSegment('seg-9')"><div class="seg-header">9. 银川→中卫 <span class="stars">★★★★★</span><span class="seg-status seg-ok">全程最佳</span></div><div class="seg-route">G307 + S218沙漠边缘路 · ~250km · 3h</div><div class="seg-info">双向四车道，路面堪比高速！贺兰山+腾格里沙漠边缘+骆驼群。串联：明长城→金沙海→66号公路→沙坡头。</div><div class="road-route-detail" id="detail-road-seg-9" style="display:none"></div><div class="seg-actions" id="actions-seg-9" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-10" onclick="drawRoadSegment('seg-10')"><div class="seg-header">10. 中卫→武威 <span class="stars">★★</span><span class="seg-status seg-danger">仅高速</span></div><div class="seg-route">G2012定武高速 · ~280km · 2.5h</div><div class="seg-info">严禁走S315腾格里穿沙公路！沙阻严重/无信号/两驱轿车会陷车。</div><div class="road-route-detail" id="detail-road-seg-10" style="display:none"></div><div class="seg-actions" id="actions-seg-10" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-11" onclick="drawRoadSegment('seg-11')"><div class="seg-header">11. 武威→张掖 <span class="stars">★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G30高速为主 · ~240km · 2.5h</div><div class="seg-info">可穿插G312体验祁连山北麓。G312临泽段6月施工半幅通行。</div><div class="road-route-detail" id="detail-road-seg-11" style="display:none"></div><div class="seg-actions" id="actions-seg-11" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-12" onclick="drawRoadSegment('seg-12')"><div class="seg-header">12. 张掖→酒泉 <span class="stars">★★★★★</span><span class="seg-status seg-ok">最美国道</span></div><div class="seg-route">S213(七彩丹霞)+S220(肃南) · ~210km · 4h</div><div class="seg-info">丹霞东门进西门出！S220紧贴祁连山北麓，雪山草原视角极好。</div><div class="road-route-detail" id="detail-road-seg-12" style="display:none"></div><div class="seg-actions" id="actions-seg-12" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-13" onclick="drawRoadSegment('seg-13')"><div class="seg-header">13. 酒泉→嘉峪关 <span class="stars">★★★</span><span class="seg-status seg-ok">短途</span></div><div class="seg-route">G30连霍高速 · ~25km · 20min</div><div class="seg-info">两市紧邻，酒泉卫星发射中心可停留游览。</div><div class="road-route-detail" id="detail-road-seg-13" style="display:none"></div><div class="seg-actions" id="actions-seg-13" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-14" onclick="drawRoadSegment('seg-14')"><div class="seg-header">14. 嘉峪关→玉门 <span class="stars">★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G312/G30 · ~130km · 1.5h</div><div class="seg-info">玉门魔山地质公园(丹霞+火山遗迹)值得绕道一看。</div><div class="road-route-detail" id="detail-road-seg-14" style="display:none"></div><div class="seg-actions" id="actions-seg-14" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-15" onclick="drawRoadSegment('seg-15')"><div class="seg-header">15. 玉门→瓜州 <span class="stars">★★★★★</span><span class="seg-status seg-ok">雕塑长廊</span></div><div class="seg-route">G312+戈壁国际雕塑长廊 · ~150km · 2h</div><div class="seg-info">大地之子(巨型婴儿)/无界(海市蜃楼)/汉武雄风 全免费！</div><div class="road-route-detail" id="detail-road-seg-15" style="display:none"></div><div class="seg-actions" id="actions-seg-15" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-16" onclick="drawRoadSegment('seg-16')"><div class="seg-header">16. 瓜州→哈密 <span class="stars">★★</span><span class="seg-status seg-warn">仅G30</span></div><div class="seg-route">G30连霍高速(唯一选项!) · ~370km · 5-6h</div><div class="seg-info">G312瓜州-星星峡全封至2027！限速80，黑山口半幅限速40。务必瓜州加满油+备水粮！星星峡前后无人区。</div><div class="road-route-detail" id="detail-road-seg-16" style="display:none"></div><div class="seg-actions" id="actions-seg-16" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-17" onclick="drawRoadSegment('seg-17')"><div class="seg-header">17. 哈密→吐鲁番 <span class="stars">★★★</span><span class="seg-status seg-warn">横风区</span></div><div class="seg-route">G30连霍 · ~400km · 4.5-5h</div><div class="seg-info">百里风区横风大，Golf 7轻需减速。库木塔格沙漠可到，魔鬼城不进深处。</div><div class="road-route-detail" id="detail-road-seg-17" style="display:none"></div><div class="seg-actions" id="actions-seg-17" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-18" onclick="drawRoadSegment('seg-18')"><div class="seg-header">18. 吐鲁番→乌鲁木齐 <span class="stars">★★★</span><span class="seg-status seg-warn">横风</span></div><div class="seg-route">G30 · ~190km · 2-3h</div><div class="seg-info">火焰山段可下G312。达坂城横风极大。夏50°C+，查散热胎压。</div><div class="road-route-detail" id="detail-road-seg-18" style="display:none"></div><div class="seg-actions" id="actions-seg-18" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-19" onclick="drawRoadSegment('seg-19')"><div class="seg-header">19. 乌鲁木齐→伊犁 <span class="stars">★★★★★</span><span class="seg-status seg-ok">S101首选</span></div><div class="seg-route">⭐S101国防公路→独山子+G30 · ~600km/10-11h | G30直达 ~680km/7-8h | 独库北段 ~860km</div><div class="seg-info">强烈推荐S101天山地理走廊！百里丹霞→肯斯瓦特水库→鹿角湾→安集海大峡谷→独山子→G30续行。全程柏油Golf7可行，比G30多3h但风景碾压。G30备用(赶路时选)。独库北段仅返程推荐。</div><div class="road-route-detail" id="detail-road-seg-19" style="display:none"></div><div class="seg-actions" id="actions-seg-19" style="display:none"></div></div>
+	    </div>
 </div>
 
-<!-- Day 2 -->
-<div id="d2" class="day-content" style="display:none">
-<div class="day-block">
-  <div class="day-header">Day2 西山北线 <span class="day-date" id="date-d2"></span> <span class="day-badge bg-n">自然</span><span class="day-badge bg-c">人文</span><span class="day-badge bg-m">综合</span></div>
-  <div class="day-time">游玩约9h · 9:00-19:00（与Day1同属西山区域，植物园星空电梯完美收尾）<span class="day-weekday" id="wd-d2"></span></div>
+<!-- 返程路线 -->
+<div class="road-section">
+  <div class="road-section-title open" onclick="toggleRoadSection(this)">返程路线 (伊犁→青甘南线→兰州) <span class="arrow">▼</span></div>
+  <div class="road-section-body show">
+    <table class="road-table">
+      <tr><th>方案</th><th>路线</th><th>距离</th><th>重复</th><th>推荐</th></tr>
+      <tr><td>A</td><td>G30回溯伊犁→乌市→敦煌→兰州</td><td>3235km</td><td class="lo">1315km</td><td>⭐⭐⭐ 稳妥</td></tr>
+      <tr><td>B</td><td>独库+冷湖+敦煌→兰州</td><td>3705km</td><td class="hi">0</td><td>⭐⭐⭐⭐ 敦煌必去</td></tr>
+      <tr><td class="lo">C</td><td>乌市转南线→兰州</td><td>3991km</td><td class="lo">689km</td><td>⭐ 不推荐</td></tr>
+      <tr><td class="hi">D★</td><td>独库南段+G315→格尔木→兰州</td><td class="hi">3105km</td><td class="hi">0</td><td class="hi">⭐⭐⭐⭐⭐ 最优!</td></tr>
+    </table>
+    <div style="margin-top:8px;padding:8px;background:#1a2a1a;border-radius:4px;font-size:10px;line-height:1.6">
+      <b style="color:var(--green)">推荐方案D</b>：伊犁→那拉提→独库南段→库车→库尔勒(G3012)→若羌(G0711乌若高速)→茫崖(G0612依若高速)→G315西台双色湖→水上雅丹→U型公路→格尔木→茶卡→青海湖→西宁→兰州。<b>与A同距但100%新风景！</b>
+    </div>
+    <div style="margin-top:8px;font-size:10px;color:var(--gold);font-weight:600">点击下方路段查看路线详情：</div>
 
-  <div class="spot-item" onclick="selectSpot('mengshan',this)" id="spot-mengshan">
-    <div class="spot-num cs-h">1</div>
-    <div class="spot-body">
-      <h4>蒙山大佛 <span class="time">9:00-11:00 (2h)</span></h4>
-      <div class="desc">世界最早有确切纪年的巨型摩崖石刻佛像（北齐）。东门进（非西门！），山林溪泉环绕。小交通¥6/趟可省，步行约20分钟到大佛。指示牌不完善，勤问路。</div>
-      <div class="spot-meta"><span class="ticket">¥35</span><span>东门进</span><span>步行20min</span></div>
+	    <!-- 高反提醒 -->
+	    <div style="margin:10px 0;padding:12px 14px;background:rgba(224,123,57,0.12);border:1px solid var(--orange);border-radius:8px;font-size:11px;line-height:1.7">
+	      <b style="color:var(--orange);font-size:13px">🏔️ 高原反应提醒</b><br>
+	      <b>从若羌→茫崖开始正式进入高原！</b>茫崖3000m → 格尔木2800m → 茶卡3100m → 青海湖3200m，连续3-4天在3000m左右过夜。<br>
+	      <b style="color:var(--gold)">到达茫崖前</b>：保证睡眠，别感冒，不饮酒。<br>
+	      <b style="color:var(--gold)">高原期间</b>：动作慢半拍（下车别猛跑、蹲起慢一点）| 每天多喝1L水 | 前两天不洗澡（热水澡血管扩张加重高反）| 不喝酒<br>
+	      <b style="color:var(--gold)">监测</b>：用 Apple Watch 测血氧，>90% 正常，85-90% 注意休息，<85% 吸氧+下撤<br>
+	      <b style="color:var(--gold)">头痛</b>：布洛芬 · <b style="color:var(--gold)">乏力</b>：葡萄糖口服液 · <b style="color:var(--gold)">吸氧</b>：格尔木/西宁药店买氧气瓶<br>
+	      <span style="color:var(--sub)">独库南段铁力买提达坂3700m只是开车经过不停留，不用担心。</span>
+	    </div>
+    <div class="road-segment clickable" id="road-ret-1" onclick="drawRoadSegment('ret-1')"><div class="seg-header">伊犁→那拉提 <span class="stars">★★★★</span><span class="seg-status seg-ok">G218</span></div><div class="seg-route">G218/S12 · ~250km · 3.5h</div><div class="seg-info">伊犁河谷东行，路况良好。</div><div class="road-route-detail" id="detail-road-ret-1" style="display:none"></div><div class="seg-actions" id="actions-ret-1" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-2" onclick="drawRoadSegment('ret-2')"><div class="seg-header">那拉提→库车 (独库南段) <span class="stars">★★★★★</span><span class="seg-status seg-warn">山路</span></div><div class="seg-route">独库公路南段 · ~345km · 6.5h</div><div class="seg-info">铁力买提达坂3700m（开车经过不停留，不担心高反）。碎石路段40km/h慢行。连续30km下坡挂S挡！建议装金属护板。</div><div class="road-route-detail" id="detail-road-ret-2" style="display:none"></div><div class="seg-actions" id="actions-ret-2" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-3" onclick="drawRoadSegment('ret-3')"><div class="seg-header">库车→库尔勒 <span class="stars">★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G3012吐和高速 · ~300km · 3.5h</div><div class="seg-info">全程高速，轻松驾驶。</div><div class="road-route-detail" id="detail-road-ret-3" style="display:none"></div><div class="seg-actions" id="actions-ret-3" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-4" onclick="drawRoadSegment('ret-4')"><div class="seg-header">库尔勒→若羌 <span class="stars">★★★</span><span class="seg-status seg-warn">沙漠高速</span></div><div class="seg-route">G0711乌若高速 · ~450km · 4.5h</div><div class="seg-info">库尔勒出发前务必加满！中间仅营盘和台特玛湖服务区(间距~200km)。</div><div class="road-route-detail" id="detail-road-ret-4" style="display:none"></div><div class="seg-actions" id="actions-ret-4" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-5" onclick="drawRoadSegment('ret-5')"><div class="seg-header">若羌→茫崖 (入青海) <span class="stars">★★★★</span><span class="seg-status seg-warn">高原</span></div><div class="seg-route">G0612依若高速 · ~316km · 3.5h</div><div class="seg-info"><b style="color:var(--orange)">&#x1F3D4; 海拔至3000m！高原起点。</b> 2025年全面贯通。穿越阿尔金山，若羌加满，米兰服务区最后补给。茫崖过夜注意：慢走多喝水不洗澡。</div><div class="road-route-detail" id="detail-road-ret-5" style="display:none"></div><div class="seg-actions" id="actions-ret-5" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-6" onclick="drawRoadSegment('ret-6')"><div class="seg-header">茫崖→格尔木 (G315精华) <span class="stars">★★★★★</span><span class="seg-status seg-warn">景观大道</span></div><div class="seg-route">G315国道 · ~450km · 5-6h</div><div class="seg-info"><b style="color:var(--orange)">&#x1F3D4; 全程3000m左右。</b> 柴达木最精华走廊！翡翠湖→西台双色湖→水上雅丹→东台→U型公路→察尔汗盐湖。部分路段无信号+施工限速，下车拍照动作放缓。</div><div class="road-route-detail" id="detail-road-ret-6" style="display:none"></div><div class="seg-actions" id="actions-ret-6" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-7" onclick="drawRoadSegment('ret-7')"><div class="seg-header">格尔木→茶卡 <span class="stars">★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G6京藏高速 · ~470km · 5h</div><div class="seg-info"><b style="color:var(--orange)">&#x1F3D4; 格尔木2800m&#x2192;茶卡3100m。</b> 格尔木加满油！沿途服务区多未启用，仅都兰可靠。持续高原驾驶，注意补水防疲劳。</div><div class="road-route-detail" id="detail-road-ret-7" style="display:none"></div><div class="seg-actions" id="actions-ret-7" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-8" onclick="drawRoadSegment('ret-8')"><div class="seg-header">茶卡→西宁 (经青海湖) <span class="stars">★★★★★</span><span class="seg-status seg-ok">经典</span></div><div class="seg-route">G109+高速 · ~270km · 4-5h</div><div class="seg-info">橡皮山垭口3817m！茶卡盐湖一早或傍晚去。环湖东路铺装良好。</div><div class="road-route-detail" id="detail-road-ret-8" style="display:none"></div><div class="seg-actions" id="actions-ret-8" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-9" onclick="drawRoadSegment('ret-9')"><div class="seg-header">西宁→兰州 <span class="stars">★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G6京藏高速 · ~220km · 3h</div><div class="seg-info">全程高速，轻松到达。</div><div class="road-route-detail" id="detail-road-ret-9" style="display:none"></div><div class="seg-actions" id="actions-ret-9" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-10" onclick="drawRoadSegment('ret-10')"><div class="seg-header">兰州→西安 <span class="stars">★★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G30+G22 · ~650km · 7h</div><div class="seg-info">途经天水麦积山石窟，值得停留半天。</div><div class="road-route-detail" id="detail-road-ret-10" style="display:none"></div><div class="seg-actions" id="actions-ret-10" style="display:none"></div></div>
+    <div style="margin-top:6px;font-size:10px;color:var(--sub);line-height:1.6">
+      <b>G315精华</b>：茫崖翡翠湖(免费)→西台双色湖(公路穿湖)→水上雅丹(全球唯一)→东台(蒂芙尼蓝)→U型公路→察尔汗盐湖<br>
+      <b style="color:var(--orange)">⚠</b> 小柴旦湖→老茫崖施工(限速20km/h)，青海12328确认路况<br>
+      <b>敦煌备选</b>：方案B茫崖后改S316→冷湖→G215当金山→敦煌(+600km)。当金山47km长下坡！
     </div>
   </div>
-  <div class="route-dist" id="route-d2-0">↓ 蒙山大佛→龙山石窟 · 计算中...</div>
 
-  <div class="spot-item" onclick="selectSpot('longshan',this)" id="spot-longshan">
-    <div class="spot-num cs-n">2</div>
-    <div class="spot-body">
-      <h4>龙山石窟 <span class="time">11:20-13:20 (2h)</span></h4>
-      <div class="desc">中国现存规模最大的道教石窟（元代），全国唯一。登山约40分钟。秋季红叶+石窟同框拍照绝佳。与天龙山佛教石窟互补。自带干粮做午餐。</div>
-      <div class="spot-meta"><span class="ticket">¥20</span><span>登山40min</span><span>红叶季佳</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d2-1">↓ 龙山石窟→晋阳湖 · 计算中...</div>
 
-  <div class="spot-item" onclick="selectSpot('jinyanghu',this)" id="spot-jinyanghu">
-    <div class="spot-num cs-n">3</div>
-    <div class="spot-body">
-      <h4>晋阳湖 <span class="time">13:50-15:30 (1.5h)</span></h4>
-      <div class="desc">华北最大人工湖，太原的海。有沙滩区、游船、环湖步道。下午光线好适合拍照。短暂休整后前往植物园。</div>
-      <div class="spot-meta"><span class="free">免费</span><span>环湖步道</span><span>游船</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d2-2">↓ 晋阳湖→植物园 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('zhiwuyuan',this)" id="spot-zhiwuyuan">
-    <div class="spot-num cs-m">4</div>
-    <div class="spot-body">
-      <h4>太原植物园 <span class="time">16:00-19:00 (3h)</span></h4>
-      <div class="desc">太原必去榜第二。三大温室展厅，建筑获国际设计奖。18:30星空电梯亮灯（人山人海）。返程难打车，建议向北步行一段出园再叫车。拍完星空顶即可返程。</div>
-      <div class="spot-meta"><span class="ticket">¥50</span><span>星空顶18:30</span><span>返程难打车</span></div>
-    </div>
-  </div>
-</div>
-<div class="note-box"><b>西山两日游</b>：Day1（晋祠→太山→天龙山）和Day2（蒙山大佛→龙山石窟→晋阳湖→植物园）共7个景点，集中在太原西南方向约15km半径内。植物园放到Day2末尾反而更好——星空电梯本就是傍晚项目，晋阳湖休整后正好衔接。<b>替代方案</b>：若秋季（10月），用<b>崛围山</b>（免费，红叶之王，3-5h）替代Day2全部景点。</div>
-<div class="note-box"><b>Day2 餐饮</b>：蒙山景区附近<b>蒙羊营地</b>（4.5分/¥120，开化村，烧烤+营地）、<b>拾光里·山野柴火饭</b>（4.2分，开化村）。龙山石窟无餐饮，务必自带干粮做午餐。植物园内<b>滨水餐厅</b>（4.1分/¥77）可吃晚饭，但建议看完星空电梯后回市区用餐，选择多得多。晋源区<b>砂锅罐罐宴</b>（4.1分/¥67）是附近较正式的晋源家宴。</div>
-</div>
-
-<!-- Day 3 -->
-<div id="d3" class="day-content" style="display:none">
-<div class="day-block">
-  <div class="day-header">Day3 市区文博线+美食 <span class="day-date" id="date-d3"></span> <span class="day-badge bg-c">历史人文</span><span class="day-badge" style="background:#5588cc">美食</span></div>
-  <div class="day-time">游玩约8h+美食 · 9:00-20:00（市区密集，步行+短途车程）<span class="day-weekday" id="wd-d3"></span></div>
-
-  <div class="spot-item" onclick="selectSpot('bowuguan',this)" id="spot-bowuguan">
-    <div class="spot-num cs-h">1</div>
-    <div class="spot-body">
-      <h4>山西博物院 <span class="time">9:00-12:00 (3h)</span></h4>
-      <div class="desc">三晋文明精华。镇馆之宝：晋侯鸟尊、侯马盟书、北齐壁画。从4层往下逛（土木华章→民族熔炉→晋国霸业）。免费需预约，周一闭馆。讲解器¥20。</div>
-      <div class="spot-meta"><span class="free">免费</span><span>周一闭馆</span><span>需预约</span><span>公益讲解14:00</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d3-0">↓ 博物院→晋商博物院 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('jinshang',this)" id="spot-jinshang">
-    <div class="spot-num cs-h">2</div>
-    <div class="spot-body">
-      <h4>晋商博物院 <span class="time">12:10-13:40 (1.5h)</span></h4>
-      <div class="desc">前身为明清督军府，中西合璧建筑群。人少安静，园林精致。免费需预约。了解晋商票号历史。午饭可在附近解决。</div>
-      <div class="spot-meta"><span class="free">免费</span><span>需预约</span><span>人少安静</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d3-1">↓ 晋商博物院→纯阳宫 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('chunyang',this)" id="spot-chunyang">
-    <div class="spot-num cs-h">3</div>
-    <div class="spot-body">
-      <h4>纯阳宫 <span class="time">13:50-14:50 (1h)</span></h4>
-      <div class="desc">全国唯一九宫八卦院道观。三绝：八卦院建筑+涅槃变相碑（武周国宝）+常阳天尊像（唐代）。红墙古柏，人少清净。</div>
-      <div class="spot-meta"><span class="ticket">¥30</span><span>国保单位</span><span>九宫八卦院</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d3-2">↓ 纯阳宫→崇善寺 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('chongshan',this)" id="spot-chongshan">
-    <div class="spot-num cs-h">4</div>
-    <div class="spot-body">
-      <h4>崇善寺 <span class="time">15:00-15:40 (40min)</span></h4>
-      <div class="desc">明代皇家寺院，隋炀帝行宫旧址。大悲殿三大士像（千手观音、文殊、普贤）为明代泥塑精品。免费。距纯阳宫步行可达。</div>
-      <div class="spot-meta"><span class="free">免费</span><span>明洪武年建</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d3-3">↓ 崇善寺→柳巷 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('zhonglou',this)" id="spot-zhonglou">
-    <div class="spot-num cs-m">5</div>
-    <div class="spot-body">
-      <h4>柳巷+钟楼街 <span class="time">15:50-18:30 (2.5h)</span></h4>
-      <div class="desc">柳巷是太原老商圈，本地人逛街首选，更有生活气息。钟楼街（紧挨柳巷）为民国风改造步行街，适合拍照。老字号：清和元头脑（早6-9限量）、六味斋酱肉、雪山冷饮厅醋冰淇淋、杨记灌肠。观汾小酒馆汾酒味冰淇淋！</div>
-      <div class="spot-meta"><span class="free">免费</span><span>傍晚最佳</span><span>柳巷更接地气</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d3-4">↓ 柳巷→老军营 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('food2',this)" id="spot-food2">
-    <div class="spot-num cs-food">6</div>
-    <div class="spot-body">
-      <h4>老军营小吃街 <span class="time">18:30-20:00 (1.5h)</span></h4>
-      <div class="desc">太原最接地气的小吃街，本地人&gt;游客。沾串串¥1/3串、打卤面、麻辣拌（酸甜微辣）、上帝炸鸡。¥30吃到撑。晚餐时段最佳，地道太原味。</div>
-      <div class="spot-meta"><span class="free">人均¥30</span><span>晚餐最佳</span></div>
+<!-- Golf 7 注意事项 -->
+<div class="road-section">
+  <div class="road-section-title" onclick="toggleRoadSection(this)">Golf 7 关键风险 & 检查清单 <span class="arrow">▶</span></div>
+  <div class="road-section-body">
+    <table class="road-table">
+      <tr><th>路段</th><th>风险</th><th>应对</th></tr>
+      <tr><td>瓜州→哈密</td><td>无人区·服务区少</td><td>加满油·备水和食物</td></tr>
+      <tr><td>吐鲁番段</td><td>夏季50°C+高温</td><td>查散热·胎压·避户外</td></tr>
+      <tr><td>达坂城风区</td><td>横风</td><td>减速握稳方向盘</td></tr>
+      <tr><td>独库南段</td><td>山路急弯·3700m·碎石</td><td>S挡制动·建议装金属护板</td></tr>
+      <tr><td>库尔勒→若羌</td><td>沙漠高速·油站稀疏</td><td>库尔勒加满·营盘/台特玛湖补油</td></tr>
+      <tr><td>若羌→茫崖</td><td>阿尔金山穿越</td><td>若羌加满·米兰服务区最后补给</td></tr>
+      <tr><td>G315茫崖→格尔木</td><td>无信号·施工限速</td><td>离线地图·青海12328确认</td></tr>
+    </table>
+    <div style="margin-top:8px;font-size:10px;color:var(--sub);line-height:1.8">
+      <b style="color:var(--gold)">出发前检查</b>：刹车片≥3mm | 轮胎花纹≥3mm | 备胎完好 | 防冻液 | 胎压2.3-2.5bar<br>
+      <b style="color:var(--gold)">独库+G315建议加装</b>：金属发动机护板(替原厂塑料) | 防滑链(6月达坂仍可能飘雪) | 全尺寸备胎
     </div>
   </div>
 </div>
-<div class="note-box"><b>Day3 餐饮 · 太原最好吃的一天</b><br>
-<b>博物院附近午餐</b>（理工大周边，人均¥14-60）：<b>老妈妈打卤面</b>（4.4分/¥20）、<b>迎西小馆</b>（4.4分/¥59）、<b>老菜馆·烤鱼</b>（4.4分/¥47）、<b>娜子麻辣烫</b>（4.5分/¥18）。<br>
-<b>柳巷食品街+钟楼街</b>（4.0-4.6分密集）：<b>安壮壮自助烤肉</b>（4.6分/¥69）、<b>尹三顺自助烤肉</b>（4.6分/¥96）、<b>弘祥蜂蜜大麻花</b>（4.6分/¥12）、<b>老城厚金丝牛肉饼</b>（4.5分/¥10）、<b>好好吃锅魁坊</b>（4.4分/¥16）、<b>贛饭先生江西小炒</b>（4.5分/¥43）。老字号：清和元头脑（早6-9限量）、六味斋酱肉、雪山冷饮厅醋冰淇淋。<br>
-<b>老军营晚餐</b>（本地人食堂）：沾串串¥1/3串、打卤面、麻辣拌（酸甜微辣）、上帝炸鸡。¥30吃到撑。<br>
-买醋认准宁化府/东湖品牌，景区路边多为勾兑。<b>注意</b>：博物院周一闭馆，若遇周一需调整。</div>
-</div>
 
-<!-- Day 4 -->
-<div id="d4" class="day-content" style="display:none">
-<div class="day-block">
-  <div class="day-header">Day4 城市地标+博物馆 <span class="day-date" id="date-d4"></span> <span class="day-badge bg-c">人文</span><span class="day-badge bg-n">自然</span></div>
-  <div class="day-time">游玩约8h · 9:00-18:30<span class="day-weekday" id="wd-d4"></span></div>
-
-  <div class="spot-item" onclick="selectSpot('shuangta',this)" id="spot-shuangta">
-    <div class="spot-num cs-h">1</div>
-    <div class="spot-body">
-      <h4>双塔寺（永祚寺）<span class="time">9:00-10:30 (1.5h)</span></h4>
-      <div class="desc">凌霄双塔400年太原天际线。全国唯一砖仿木无梁建筑寺院。可登塔俯瞰太原全景。明代牡丹"紫霞仙"4-5月绽放。</div>
-      <div class="spot-meta"><span class="ticket">¥30</span><span>可登塔</span><span>明代牡丹</span></div>
+<!-- 闭馆 & 费用 -->
+<div class="road-section">
+  <div class="road-section-title" onclick="toggleRoadSection(this)">博物馆周一闭馆 & 费用估算 <span class="arrow">▶</span></div>
+  <div class="road-section-body">
+    <div style="font-size:10px;color:var(--sub);margin-bottom:8px;line-height:1.8">
+      <b style="color:#e05555">周一闭馆汇总</b>：邯郸市博 | 山西博物院 | 晋商博物院 | 北齐壁画博 | 大同博 | 内蒙古博 | 宁夏博 | 武威市博 | 新疆博 | 甘肃省博 | 陕历博<br>
+      <b>出行前务必核对当日是周几！</b>
+    </div>
+    <table class="road-table">
+      <tr><th>项目</th><th>费用(两人)</th></tr>
+      <tr><td>总里程</td><td>~10000-11000km</td></tr>
+      <tr><td>油费</td><td>~4500-5500元 (Golf 7 油耗6L/100km)</td></tr>
+      <tr><td>过路费</td><td>~3500-4000元</td></tr>
+      <tr><td>住宿</td><td>5250-13500元 (35-45天)</td></tr>
+      <tr><td>门票</td><td>两人合计 ~4000-6000元</td></tr>
+      <tr><td>餐饮</td><td>~3500-9000元</td></tr>
+      <tr><td class="hi"><b>总计</b></td><td class="hi"><b>约 2.1万-3.8万元</b></td></tr>
+    </table>
+    <div style="font-size:10px;color:var(--sub);margin-top:4px">
+      <b>省钱技巧</b>：Golf加92号·露营(唐布拉/恰西/托乎拉苏)·博物馆免费·学生/老年证门票折扣
     </div>
   </div>
-  <div class="route-dist" id="route-d4-0">↓ 双塔→东湖醋园 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('donghu',this)" id="spot-donghu">
-    <div class="spot-num cs-m">2</div>
-    <div class="spot-body">
-      <h4>东湖醋园 <span class="time">10:50-11:50 (1h)</span></h4>
-      <div class="desc">非遗老陈醋文化。免费参观+品醋。看传统工艺：蒸→酵→熏→淋→陈。闻蒸房酸爽提神。醋冰淇淋¥15必试！</div>
-      <div class="spot-meta"><span class="free">免费</span><span>醋冰淇淋¥15</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d4-1">↓ 东湖醋园→北齐壁画 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('beiqibihua',this)" id="spot-beiqibihua">
-    <div class="spot-num cs-h">3</div>
-    <div class="spot-body">
-      <h4>北齐壁画博物馆 <span class="time">13:30-15:00 (1.5h)</span></h4>
-      <div class="desc">2023年新馆，徐显秀墓原址保护。北齐壁画规模宏大、色彩艳丽。¥35需提前1-15天预约，不售当日票。上午逛完双塔+醋园，吃完午饭再进馆。</div>
-      <div class="spot-meta"><span class="ticket">¥35</span><span>需预约</span><span>不售当日票</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d4-2">↓ 北齐壁画→太原博物馆 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('taiyuanbowuguan',this)" id="spot-taiyuanbowuguan">
-    <div class="spot-num cs-h">4</div>
-    <div class="spot-body">
-      <h4>太原博物馆+山西青铜博物馆 <span class="time">15:15-16:45 (1.5h)</span></h4>
-      <div class="desc">同址双馆一次逛！镇馆之宝：赵卿墓车马坑（春秋真车马殉葬）。青铜馆"吉光华"获全国陈列精品奖。免费，16:00停止入馆。紧邻汾河公园。</div>
-      <div class="spot-meta"><span class="free">免费</span><span>16:00停入</span><span>赵卿墓车马坑</span><span>同址青铜馆</span></div>
-    </div>
-  </div>
-  <div class="route-dist" id="route-d4-3">↓ 太原博物馆→汾河公园 · 计算中...</div>
-
-  <div class="spot-item" onclick="selectSpot('fenhe',this)" id="spot-fenhe">
-    <div class="spot-num cs-n">5</div>
-    <div class="spot-body">
-      <h4>汾河公园 <span class="time">17:00-18:30 (1.5h)</span></h4>
-      <div class="desc">太原母亲河，骑行+游船+日落。山西大剧院倒影很出片。太原博物馆出来步行5分钟即到。适合放松收官。</div>
-      <div class="spot-meta"><span class="free">免费</span><span>骑行</span><span>游船</span><span>日落</span></div>
-    </div>
   </div>
 </div>
-<div class="note-box"><b>Day4 餐饮</b>：<b>午饭</b>在醋园→壁画馆之间，东中环/南内环一带路边面馆人均¥15-25即可解决，不必专程找店。<b>晚饭/下午茶</b>在长风商务区（太原博物馆/汾河公园旁）选择丰富：万象城<b>吕氏疙瘩汤</b>（4.6分/¥61）、<b>1950西餐厅</b>（4.5分/¥99）、<b>夜巡炉边故事</b>（4.5分/¥42烧烤）。预算充足可试<b>梵</b>（4.6分/¥422）或<b>悦容</b>（4.6分/¥138）。山西大剧院<b>观众餐厅</b>（4.1分/¥31）最实惠。</div>
+
 </div>
 
-<!-- Hotels -->
-<div id="hotels" class="day-content" style="display:none">
-<div class="day-block">
-  <div class="day-header">住宿推荐 · 按区域就近 <span style="font-size:10px;color:var(--sub);font-weight:normal">| 高德真实评分 优先性价比</span></div>
-
-  <div class="section-title">Day 1-2 · 西山晋祠民宿</div>
-  <div class="spot-item" onclick="selectSpot('hotel_liuxiang',this)" id="spot-hotel_liuxiang">
-    <div class="spot-num cs-hotel">H1</div>
-    <div class="spot-body">
-      <h4>晋祠周边民宿 ★高性价比</h4>
-      <div class="desc">晋祠1-2km半径内民宿林立，评分极高：<b>晋心悦居民宿</b>（5.0分）、<b>楚楚民宿</b>（5.0分）、<b>赤桥古村壹号院</b>（5.0分/晋祠博物馆店）、<b>晋逸轩民宿</b>（4.8分）、<b>晋美民宿</b>（4.7分）、<b>聚贤雅居民宿</b>（4.7分）。价格多在¥100-150/晚，比市区便宜一半。住西山脚下，Day1晋祠步行可达，Day2蒙山打车¥15即到。</div>
-    </div>
-  </div>
-
-  <div class="section-title">Day 3 · 柳巷/食品街经济型</div>
-  <div class="spot-item" onclick="selectSpot('hotel_nanhuan',this)" id="spot-hotel_nanhuan">
-    <div class="spot-num cs-hotel">H2</div>
-    <div class="spot-body">
-      <h4>柳巷青旅+经济酒店</h4>
-      <div class="desc">市区核心地段，预算选择多：<b>酷居青旅</b>（4.8分/钟楼街旁135m，床位约¥50-70）、<b>考拉太空舱青旅</b>（4.2分/柳巷215m，¥40-60）、<b>友家青年旅社</b>（4.5分/柳巷225m）。经济型：<b>七天酒店</b>（4.7分/鼓楼街230m，约¥120-160）、<b>佳鑫宾馆</b>（4.6分/鼓楼街182m，约¥100-140）。出门即食品街+地铁。</div>
-    </div>
-  </div>
-
-  <div class="section-title">Day 4 · 双塔寺/火车站快捷</div>
-  <div class="spot-item" onclick="selectSpot('hotel_changfeng',this)" id="spot-hotel_changfeng">
-    <div class="spot-num cs-hotel">H3</div>
-    <div class="spot-body">
-      <h4>双塔寺周边快捷+民宿</h4>
-      <div class="desc">Day4从双塔寺出发最方便：<b>如家neo</b>（4.6分/火车站448m，约¥120-160）、<b>都市驿家壹号民宿</b>（4.8分/柳巷店319m）、<b>馨家公寓</b>（4.7分/中正悦湾453m）、<b>悦湾快捷酒店</b>（4.1分/407m）、<b>锦源快捷酒店</b>（4.0分/397m）。火车站周边快捷酒店密集，¥100-150区间选择多。离双塔寺步行10分钟。</div>
-    </div>
-  </div>
-</div>
-<div class="note-box hotel"><b>住宿策略</b>：<b>方案A（省钱+就近）</b>——Day1-2住晋祠民宿（¥100-150/晚），Day3住柳巷青旅（¥50-70/床位），Day4住火车站快捷（¥120-150）。三处合计约¥370-520/4晚。<b>方案B（全程不搬家）</b>——4晚全住柳巷经济型酒店（¥120-160/晚），去西山Day1-2打车约30-40分钟¥30-50。性价比推荐方案A，省心推荐方案B。</div>
+<!-- 城市攻略面板 -->
+<div class="city-panel" id="cityPanel"></div>
+  <button class="btn-expand-panel" id="btnExpandPanel" onclick="toggleExpandPanel()">▼ 展开攻略</button>
 </div>
 
-<div class="tips" style="padding:12px 14px">
-  <b>实用贴士</b>
-  <ul style="font-size:11px">
-    <li>最佳季节：4-5月牡丹、9-10月红叶。早晚温差大需带外套</li>
-    <li><b>预约必读</b>：山西博物院（提前3天/早7点放票）、晋商博物院（提前1周）、北齐壁画馆（提前1-15天/不售当日票/¥35）— 均需微信公众号预约，<b>周一闭馆</b></li>
-    <li>太山龙泉寺、晋祠、天龙山、蒙山大佛、双塔寺等无需预约，现场购票</li>
-    <li>太原公交¥1，西山景点间打车¥15-40。物价感人面食¥12-20</li>
-    <li>西山Day1+Day2景点集中在15km半径内，全程不换酒店</li>
-  </ul>
-</div>
-</div>
 
 <!-- 图片预览弹窗 -->
 <div class="img-modal" id="imgModal" onclick="closeModal(event)">
@@ -434,6 +483,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     <input type="text" id="mapSearchInput" placeholder="搜索地点..." autocomplete="off">
     <button class="btn-locate" id="btnLocate" title="定位当前位置" onclick="locateMe()">⌖</button>
   </div>
+  <button id="fab-chat" onclick="toggleChat()" title="记账 & 助手">💬</button>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#c9a96e"></div>历史</div>
     <div class="legend-item"><div class="legend-dot" style="background:#4a9e6e"></div>自然</div>
@@ -574,36 +624,58 @@ let map,markers={},routeLines={},routeStore={};
 
 function initMap(){
   map=new AMap.Map('map',{center:[112.49,37.80],zoom:11,resizeEnable:true});
-
-  Object.entries(spots).forEach(([id,s])=>{
-    const c=catColors[s.cat];
-    const icon=s.cat==='hotel'?'🏨':s.cat==='food'?'🍜':'';
-    const m=new AMap.Marker({
-      position:[s.lng,s.lat],
-      content:`<div style="width:26px;height:26px;border-radius:50%;background:${c};border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:13px">${icon}</div>`,
-      offset:new AMap.Pixel(-13,-13),zIndex:100
-    });
-    const lab=new AMap.Marker({
-      position:[s.lng,s.lat],
-      content:`<div style="font-size:10px;color:#fff;text-shadow:0 1px 3px #000;white-space:nowrap;font-weight:bold;transform:translate(-50%,-30px)">${s.name}</div>`,
-      offset:new AMap.Pixel(0,0),zIndex:99
-    });
-    m.on('click',()=>{openInfo(id);flyTo(id)});
-    lab.on('click',()=>{openInfo(id);flyTo(id)});
-    map.add([m,lab]);markers[id]=m;
-  });
-  setTimeout(()=>drawRoute('d1'), 300);
   initSearch();
-  setDefaultDate();
-  fetchWeather();
+  // Don't auto-place markers or fetch weather; starts with road plan view
 }
 
 function toggleSidebar(){
+  if(chatOpen&&window.innerWidth<=768)closeChat();
   const sb=document.getElementById('sidebar');
   const btn=document.getElementById('btnToggleSidebar');
-  const isCollapsed=sb.classList.toggle('collapsed');
-  btn.textContent=isCollapsed?'▼ 展开攻略':'▲ 隐藏攻略';
+
+  if(activeCity&&window.innerWidth<=768){
+    // 城市攻略模式：三态循环 正常→展开→折叠→正常
+    if(sb.classList.contains('collapsed')){
+      sb.classList.remove('collapsed','expanded');
+      btn.textContent='▼ 展开攻略';
+    }else if(sb.classList.contains('expanded')){
+      sb.classList.remove('expanded');
+      sb.classList.add('collapsed');
+      btn.textContent='▼ 展开攻略';
+    }else{
+      sb.classList.add('expanded');
+      btn.textContent='▲ 收缩攻略';
+    }
+    updateExpandBtn();
+  }else{
+    // 路线规划模式：两态 toggle
+    const isCollapsed=sb.classList.toggle('collapsed');
+    btn.textContent=isCollapsed?'▼ 展开攻略':'▲ 隐藏攻略';
+  }
   setTimeout(()=>{if(map)map.setFitView(null,false,[50,50,50,50]);},350);
+}
+
+function toggleExpandPanel(){
+  const sb=document.getElementById('sidebar');
+  if(sb.classList.contains('collapsed'))return;
+  const isExpanded=sb.classList.toggle('expanded');
+  updateExpandBtn();
+  document.getElementById('btnToggleSidebar').textContent=isExpanded?'▲ 收缩攻略':'▼ 展开攻略';
+  setTimeout(()=>{if(map)map.setFitView(null,false,[50,50,50,50]);},350);
+}
+
+function updateExpandBtn(){
+  const btn=document.getElementById('btnExpandPanel');
+  const sb=document.getElementById('sidebar');
+  if(!btn||!sb)return;
+  const isExpanded=sb.classList.contains('expanded');
+  btn.textContent=isExpanded?'▲ 收缩攻略':'▼ 展开攻略';
+}
+
+function showExpandBtn(show){
+  const btn=document.getElementById('btnExpandPanel');
+  if(!btn)return;
+  btn.style.display=show?'block':'none';
 }
 
 // ---- 出发日期 & 周一检测 ----
@@ -612,8 +684,17 @@ function setDefaultDate(){
   const yyyy=today.getFullYear();
   const mm=String(today.getMonth()+1).padStart(2,'0');
   const dd=String(today.getDate()).padStart(2,'0');
-  document.getElementById('startDate').value=yyyy+'-'+mm+'-'+dd;
+  const val=yyyy+'-'+mm+'-'+dd;
+  document.getElementById('startDate').value=val;
+  updateTodayDisplay(today);
   onDateChange();
+}
+
+function updateTodayDisplay(d){
+  const weekdays=['周日','周一','周二','周三','周四','周五','周六'];
+  const mm=String(d.getMonth()+1).padStart(2,'0');
+  const dd=String(d.getDate()).padStart(2,'0');
+  document.getElementById('todayDisplay').textContent='今天 '+mm+'/'+dd+' '+weekdays[d.getDay()];
 }
 
 function onDateChange(){
@@ -622,67 +703,186 @@ function onDateChange(){
   const start=new Date(val);
   const weekdays=['周日','周一','周二','周三','周四','周五','周六'];
   let hasMonday=false;
+
+  // 更新日期天数条
+  let daysHtml='';
   for(let i=0;i<4;i++){
     const d=new Date(start);d.setDate(d.getDate()+i);
     const mm=String(d.getMonth()+1).padStart(2,'0');
     const dd=String(d.getDate()).padStart(2,'0');
     const wd=weekdays[d.getDay()];
-    const dateEl=document.getElementById('date-d'+(i+1));
-    const wdEl=document.getElementById('wd-d'+(i+1));
-    if(dateEl)dateEl.textContent=mm+'/'+dd;
-    if(wdEl){
-      wdEl.textContent=' '+wd;
-      wdEl.style.color=wd==='周一'?'#e05555':'var(--sub)';
-      wdEl.style.fontWeight=wd==='周一'?'bold':'normal';
-    }
-    if(wd==='周一'&&(i===2||i===3))hasMonday=true;
+    const isMon=wd==='周一';
+    daysHtml+='<span style="flex-shrink:0;padding:2px 8px;border-radius:10px;'+(isMon?'background:#3a1515;color:#e05555;font-weight:bold':'background:#1e1e3a;color:#aaa')+'">Day'+(i+1)+' '+mm+'/'+dd+' '+wd+'</span>';
+    if(isMon&&(i===2||i===3))hasMonday=true;
   }
+  document.getElementById('dateDays').innerHTML=daysHtml;
   document.getElementById('mondayWarn').style.display=hasMonday?'inline':'none';
-  // 高亮Day3/Day4的周一警告
-  ['d3','d4'].forEach(id=>{
-    const blk=document.getElementById(id);
-    if(!blk)return;
-    const existing=blk.querySelector('.monday-warn');
-    if(existing)existing.remove();
-    const dayIdx=id==='d3'?2:3;
-    const d=new Date(start);d.setDate(d.getDate()+dayIdx);
-    if(weekdays[d.getDay()]==='周一'){
-      const warn=document.createElement('div');
-      warn.className='monday-warn';
-      warn.innerHTML='<b>⚠ 周一闭馆提醒</b>：'+(id==='d3'?'山西博物院、晋商博物院周一闭馆，请调整出发日期或调换Day3到其他日！':'北齐壁画博物馆周一闭馆，请调整出发日期！');
-      blk.querySelector('.day-block').appendChild(warn);
-    }
-  });
+
+  // 太原周一闭馆提醒
+  if(activeCity==='taiyuan'){
+    ['d3','d4'].forEach(id=>{
+      const blk=document.getElementById(id);
+      if(!blk)return;
+      const existing=blk.querySelector('.monday-warn');
+      if(existing)existing.remove();
+      const dayIdx=id==='d3'?2:3;
+      const d=new Date(start);d.setDate(d.getDate()+dayIdx);
+      if(weekdays[d.getDay()]==='周一'){
+        const warn=document.createElement('div');
+        warn.className='monday-warn';
+        warn.innerHTML='<b>&#9888; 周一闭馆提醒</b>：'+(id==='d3'?'山西博物院、晋商博物院周一闭馆，请调整出发日期或调换Day3到其他日！':'北齐壁画博物馆周一闭馆，请调整出发日期！');
+        blk.querySelector('.day-block').appendChild(warn);
+      }
+    });
+  }
 }
 
-// ---- 天气 ----
+// ---- 天气 (高德API + 和风天气兜底) ----
 const QWEATHER_KEY='da0dddf65eba43efbc37841a9a807879';
+const AMAP_WEB_KEY='cf5447edb69e314bf64209dd2294b84a';
+let weatherCasts=null, weatherCity='', selectedWeatherIdx=-1;
 
-async function fetchWeather(){
+// Event delegation: click on weather cards — more reliable than inline onclick on mobile
+document.addEventListener('DOMContentLoaded',function(){
+  const wb=document.getElementById('weatherBar');
+  if(wb){
+    wb.addEventListener('click',function(e){
+      const card=e.target.closest('.w-card');
+      if(!card)return;
+      const idx=[...card.parentNode.children].filter(c=>c.classList.contains('w-card')).indexOf(card);
+      if(idx>=0)toggleWeatherDetail(idx);
+    });
+  }
+});
+
+async function fetchWeather(locId){
+  const loc=locId||'101100101';
+  const bar=document.getElementById('weatherBar');
+  const cards=document.getElementById('weatherCards');
+  bar.style.display='block';
+  cards.innerHTML='<span style="font-size:10px;color:var(--sub)">天气加载中...</span>';
+  selectedWeatherIdx=-1;
+
+  let success=false;
+  // Step 1: Gaode weather
   try{
-    const url=`https://devapi.qweather.com/v7/weather/3d?location=101100101&key=${QWEATHER_KEY}`;
-    const resp=await fetch(url);
-    const data=await resp.json();
-    if(data.code==='200'&&data.daily){
-      renderWeather(data.daily);
+    const [lng,lat]=(loc.includes(',')?loc:'112.55,37.87').split(',');
+    const regeoUrl=`https://restapi.amap.com/v3/geocode/regeo?key=${AMAP_WEB_KEY}&location=${lng},${lat}`;
+    const regeoResp=await fetch(regeoUrl);
+    const regeoData=await regeoResp.json();
+    if(regeoData.status==='1'&&regeoData.regeocode){
+      const adcode=regeoData.regeocode.addressComponent.adcode;
+      const wxUrl=`https://restapi.amap.com/v3/weather/weatherInfo?key=${AMAP_WEB_KEY}&city=${adcode}&extensions=all`;
+      const wxResp=await fetch(wxUrl);
+      const wxData=await wxResp.json();
+      if(wxData.status==='1'&&wxData.forecasts&&wxData.forecasts.length>0){
+        const f=wxData.forecasts[0];
+        weatherCasts=f.casts;weatherCity=f.city;
+        renderAMapWeather();success=true;
+      }
     }
   }catch(e){}
+
+  // Step 2: fallback QWeather
+  if(!success){
+    try{
+      const url=`https://devapi.qweather.com/v7/weather/3d?location=${loc}&key=${QWEATHER_KEY}`;
+      const resp=await fetch(url);
+      const data=await resp.json();
+      if(data.code==='200'&&data.daily){
+        weatherCasts=data.daily;weatherCity='';renderQWeather();success=true;
+      }
+    }catch(e){}
+  }
+
+  if(!success){
+    cards.innerHTML='<span style="font-size:10px;color:#e05555">天气获取失败，请点↻重试</span>';
+  }
 }
 
-function renderWeather(daily){
+function renderAMapWeather(){
   const bar=document.getElementById('weatherBar');
-  bar.style.display='flex';
+  bar.style.display='block';
+  document.getElementById('weatherCityName').textContent=(weatherCity||'')+'·4日天气';
+  const iconMap={晴:'☀️',少云:'🌤',晴间多云:'🌤',多云:'⛅',阴:'☁️',小雨:'🌧',中雨:'🌧',大雨:'🌧⛈',暴雨:'🌧⛈',阵雨:'🌦',雷阵雨:'⛈',小雪:'❄️',中雪:'❄️',大雪:'❄️',雨夹雪:'🌧❄️',雾:'🌫',霾:'🌫',风:'💨'};
+  document.getElementById('weatherCards').innerHTML=weatherCasts.slice(0,4).map((d,i)=>{
+    const dayIcon=iconMap[d.dayweather]||'🌤';
+    const selClass=i===selectedWeatherIdx?' style="border:2px solid var(--gold);background:#2a2a4a"':'';
+    return `<div class="w-card" onclick="toggleWeatherDetail(${i})"${selClass}>
+      <div class="w-date">${d.date.substring(5)} · ${['','Mon','Tue','Wed','Thu','Fri','Sat','Sun'][+d.week]||d.week}</div>
+      <div class="w-icon">${dayIcon}</div>
+      <div class="w-temp">${d.nighttemp}°~${d.daytemp}°</div>
+      <div class="w-rain">☀${d.dayweather} 🌙${d.nightweather}</div>
+      <div style="font-size:8px;color:#888">${d.daywind}风${d.daypower}级</div>
+    </div>`;
+  }).join('');
+  // Render detail if selected, otherwise clear
+  if(selectedWeatherIdx>=0&&selectedWeatherIdx<weatherCasts.length){
+    renderWeatherDetail(selectedWeatherIdx);
+  }else{
+    const dr=document.getElementById('weatherDetailRow');
+    if(dr)dr.innerHTML='';
+  }
+}
+
+function renderQWeather(){
+  const bar=document.getElementById('weatherBar');
+  bar.style.display='block';
   const icons={晴:'☀️',少云:'🌤',多云:'⛅',阴:'☁️',小雨:'🌧',中雨:'🌧',大雨:'🌧⛈',雪:'❄️',阵雨:'🌦',雷阵雨:'⛈'};
-  bar.innerHTML=daily.map((d,i)=>{
+  document.getElementById('weatherCards').innerHTML=weatherCasts.map((d,i)=>{
     const icon=icons[d.textDay]||'🌤';
     const rain=d.precip==='0'?'':d.precip+'mm';
-    return `<div class="w-card${i===0?' today':''}">
+    const selClass=i===selectedWeatherIdx?' style="border:2px solid var(--gold);background:#2a2a4a"':'';
+    return `<div class="w-card" onclick="toggleWeatherDetail(${i})"${selClass}>
       <div class="w-date">${d.fxDate.substring(5)}</div>
       <div class="w-icon">${icon}</div>
       <div class="w-temp">${d.tempMin}°~${d.tempMax}°</div>
       <div class="w-rain">${rain||d.textDay}</div>
     </div>`;
   }).join('');
+  if(selectedWeatherIdx>=0&&selectedWeatherIdx<weatherCasts.length){
+    renderWeatherDetail(selectedWeatherIdx);
+  }
+}
+
+function toggleWeatherDetail(idx){
+  if(selectedWeatherIdx===idx){selectedWeatherIdx=-1;}else{selectedWeatherIdx=idx;}
+  // Re-render to update highlight
+  if(weatherCasts&&weatherCasts.length>0){
+    if(weatherCasts[0].dayweather!==undefined)renderAMapWeather();
+    else renderQWeather();
+  }
+  // Also update detail row directly for immediate feedback
+  if(selectedWeatherIdx>=0){
+    renderWeatherDetail(selectedWeatherIdx);
+  }else{
+    const dr=document.getElementById('weatherDetailRow');
+    if(dr)dr.innerHTML='';
+  }
+}
+
+function renderWeatherDetail(idx){
+  const d=weatherCasts[idx];
+  if(!d)return;
+  let html='';
+  if(d.dayweather!==undefined){
+    // AMap data
+    html=`<div style="margin-top:6px;padding:8px 10px;background:#1e1e3a;border-radius:6px;border-left:3px solid var(--gold);font-size:11px;line-height:1.8">
+      <b style="color:var(--gold)">${d.date} ${d.week} 详情</b><br>
+      ☀ 白天：${d.dayweather} ${d.daytemp}° · ${d.daywind}风${d.daypower}级<br>
+      🌙 夜间：${d.nightweather} ${d.nighttemp}° · ${d.nightwind}风${d.nightpower}级
+    </div>`;
+  }else{
+    // QWeather data
+    html=`<div style="margin-top:6px;padding:8px 10px;background:#1e1e3a;border-radius:6px;border-left:3px solid var(--gold);font-size:11px;line-height:1.8">
+      <b style="color:var(--gold)">${d.fxDate} 详情</b><br>
+      ☀ 白天：${d.textDay} ${d.tempMax}° · ${d.windDirDay||''} ${d.windScaleDay||''}级<br>
+      🌙 夜间：${d.textNight} ${d.tempMin}° · ${d.windDirNight||''} ${d.windScaleNight||''}级<br>
+      降水量：${d.precip||'0'}mm · 湿度：${d.humidity||'--'}%
+    </div>`;
+  }
+  const detailEl=document.getElementById('weatherDetailRow');
+  if(detailEl)detailEl.innerHTML=html;
 }
 
 function openInfo(id){
@@ -719,8 +919,8 @@ function showImages(id){
     return;
   }
   nameEl.textContent=spots[id].name;
-  container.innerHTML=imgs.map((img,i)=>`<img src="${img}" alt="${spots[id].name} 图${i+1}" onerror="this.style.display='none'" onload="this.style.display='block'">`).join('');
-  countEl.textContent=`共 ${imgs.length} 张图片`;
+  container.innerHTML=imgs.map((img,i)=>`<img src="${img}?imageMogr2/thumbnail/600x/format/webp" onclick="window.open('${img}','_blank')" title="点击查看原图" alt="${spots[id].name} 图${i+1}" onerror="this.style.display='none'" onload="this.style.display='block'">`).join('');
+  countEl.textContent=`共 ${imgs.length} 张图片（点击查看原图）`;
   modal.classList.add('show');
 }
 
@@ -759,6 +959,9 @@ function parsePolyline(polylineStr){
     return [lng,lat];
   });
 }
+
+// SVG 图标
+const ICON_NAV='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8,7 17,7 17,16"/></svg>';
 
 async function drawRoute(day){
   // 清除旧路线
@@ -821,7 +1024,7 @@ async function drawRoute(day){
 
       // 更新侧边栏
       if(el){
-        el.innerHTML=`<span class="route-text" onclick="toggleRouteDetail('${routeId}')" title="点击查看详细路线"><b>${origin.name} → ${dest.name}</b>：${dist}km · 约${timeStr}${roads?'<br><small>经：'+roads+'</small>':''}</span><button class="btn-retry" onclick="event.stopPropagation();retryRoute('${day}',${i})" title="重新规划此段路线">↻</button><div class="route-detail" id="detail-${routeId}" style="display:none">${stepsHtml}</div>`;
+        el.innerHTML=`<span class="route-text" onclick="toggleRouteDetail('${routeId}')" title="点击查看详细路线"><b>${origin.name} → ${dest.name}</b>：${dist}km · 约${timeStr}${roads?'<br><small>经：'+roads+'</small>':''}</span><button class="btn-retry" onclick="event.stopPropagation();retryRoute('${day}',${i})" title="重新规划此段路线">↻</button><button class="btn-nav" onclick="event.stopPropagation();openNavi('${ids[i+1]}')" title="导航到${dest.name}">${ICON_NAV}</button><div class="route-detail" id="detail-${routeId}" style="display:none">${stepsHtml}</div>`;
         el.style.color='#aaa';
       }
     }else{
@@ -849,18 +1052,26 @@ async function retryRoute(day,idx){
 
 function toggleRouteDetail(routeId){
   const detail=document.getElementById('detail-'+routeId);
-  if(!detail)return;
-  const isOpen=detail.style.display!=='none';
   // 关闭所有其他详情
   document.querySelectorAll('.route-detail').forEach(d=>d.style.display='none');
   // 取消所有高亮
-  Object.values(routeLines).forEach(p=>{try{p.setOptions({strokeOpacity:0.7,strokeWeight:5,zIndex:50})}catch(e){}});
-  if(!isOpen){
-    detail.style.display='block';
-    // 高亮对应路线 + 自动缩放
+  Object.entries(routeStore).forEach(([id,data])=>{try{if(data.poly)data.poly.setOptions({strokeOpacity:0.7,strokeWeight:5,strokeColor:data.color,zIndex:50});}catch(e){}});
+
+  if(detail){
+    const isOpen=detail.style.display!=='none';
+    if(!isOpen){
+      detail.style.display='block';
+      const data=routeStore[routeId];
+      if(data&&data.poly){
+        data.poly.setOptions({strokeOpacity:1,strokeWeight:8,strokeColor:'#4a90ff',zIndex:80});
+        map.setFitView(data.poly,false,[200,80,200,80]);
+      }
+    }
+  }else{
+    // 非驾车模式：直接高亮路线
     const data=routeStore[routeId];
     if(data&&data.poly){
-      data.poly.setOptions({strokeOpacity:1,strokeWeight:8,zIndex:80});
+      data.poly.setOptions({strokeOpacity:1,strokeWeight:8,strokeColor:'#4a90ff',zIndex:80});
       map.setFitView(data.poly,false,[200,80,200,80]);
     }
   }
@@ -907,24 +1118,19 @@ function initSearch(){
 
 // 定位当前位置
 let locateMarker=null;
+
 function locateMe(){
   const btn=document.getElementById('btnLocate');
   btn.classList.add('locating');
   AMap.plugin('AMap.Geolocation',function(){
-    const geo=new AMap.Geolocation({enableHighAccuracy:true,timeout:10000});
+    const geo=new AMap.Geolocation({enableHighAccuracy:true,timeout:10000,showHeading:true});
     geo.getCurrentPosition(function(status,result){
       btn.classList.remove('locating');
       if(status==='complete'){
         if(locateMarker){map.remove(locateMarker);}
         const heading=result.heading||0;
         const hasHeading=result.heading!==null&&result.heading!==undefined;
-        const html=hasHeading
-          ? `<svg width="44" height="44" style="filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))">
-              <circle cx="22" cy="22" r="9" fill="#4a90ff" stroke="#fff" stroke-width="2.5"/>
-              <polygon points="22,5 17,20 27,20" fill="#4a90ff" transform="rotate(${heading} 22 22)"/>
-              <circle cx="22" cy="22" r="4.5" fill="#fff" opacity="0.6"/>
-            </svg>`
-          : `<div style="width:20px;height:20px;border-radius:50%;background:#4a90ff;border:3px solid #fff;box-shadow:0 0 12px rgba(74,144,255,.8)"></div>`;
+        const html=buildLocateMarkerHtml(heading,hasHeading);
         map.setZoomAndCenter(15,[result.position.lng,result.position.lat]);
         locateMarker=new AMap.Marker({
           position:[result.position.lng,result.position.lat],
@@ -933,6 +1139,8 @@ function locateMe(){
           offset:hasHeading?new AMap.Pixel(-22,-22):new AMap.Pixel(-10,-10),
           zIndex:200
         });
+        locateMarkRef=locateMarker;
+        if(hasHeading||window.DeviceOrientationEvent)startHeadingWatch();
       }else{
         alert('定位失败，请检查浏览器位置权限。');
       }
@@ -940,8 +1148,984 @@ function locateMe(){
   });
 }
 
+// ---- 导航 & 分享 ----
+
+// ---- 导航 & 分享 ----
+function generateNaviUri(lng,lat,name){
+  return `https://uri.amap.com/navigation?to=${lng},${lat},${encodeURIComponent(name||'目的地')}&mode=car&callnative=1`;
+}
+
+function openNavi(spotId){const s=spots[spotId];window.open(generateNaviUri(s.lng,s.lat,s.name),'_blank');}
+
+// ---- 聊天面板 ----
+const CHAT_API='https://travel-d6gc9rtii6d0f6a87-1439099044.ap-shanghai.app.tcloudbase.com/wechat';
+let chatOpen=false;
+let chatUserId=localStorage.getItem('chat_userId')||(()=>{const id='web_'+Date.now()+'_'+Math.random().toString(36).substr(2,6);localStorage.setItem('chat_userId',id);return id;})();
+const chatCatColors={餐饮:'#E74C3C',交通:'#3498DB',日用品:'#2ECC71',服饰:'#8E44AD',数码:'#3498DB',家居:'#F39C12',个护:'#E91E63',住房:'#F39C12',娱乐:'#9B59B6',医疗:'#E67E22',车载装备:'#1ABC9C',户外用品:'#27AE60',途中补给:'#F1C40F',其他:'#95A5A6'};
+
+function addChatMessage(text,type){
+  const el=document.createElement('div');
+  el.className=`chat-msg ${type}`;
+  if(type==='bot'){
+    text=text.replace(/^([^\s|]+)(\s*\|)/gm,(m,cat)=>{const color=chatCatColors[cat]||'#95A5A6';return `<span class="cat-tag" style="background:${color};display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;margin-right:4px;font-weight:600">${cat}</span> |`});
+    text=text.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener" style="color:#3498DB;word-break:break-all">$1</a>');
+  }
+  el.innerHTML=text;
+  document.getElementById('chat-messages').appendChild(el);
+  document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+  return el;
+}
+
+function addChatLoading(){
+  const el=document.createElement('div');el.className='chat-msg bot loading';el.textContent='···';
+  document.getElementById('chat-messages').appendChild(el);
+  document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+  return el;
+}
+
+async function sendChatMessage(message){
+  const text=message||document.getElementById('chat-input').value.trim();
+  if(!text)return;
+  if(!message)document.getElementById('chat-input').value='';
+  addChatMessage(text,'user');
+  if(text==='天气'){await queryWeatherForChat();return;}
+  const loadingEl=addChatLoading();
+  try{
+    const resp=await fetch(CHAT_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,userId:chatUserId})});
+    const data=await resp.json();
+    loadingEl.remove();
+    addChatMessage(data.reply||'无回复','bot');
+  }catch(e){loadingEl.remove();addChatMessage('网络错误，请重试','bot');}
+}
+
+async function queryWeatherForChat(){
+  const loadingEl=addChatLoading();
+  try{
+    const url=`https://devapi.qweather.com/v7/weather/3d?location=101100101&key=${QWEATHER_KEY}`;
+    const resp=await fetch(url);const data=await resp.json();
+    loadingEl.remove();
+    if(data.code==='200'&&data.daily){
+      const icons={晴:'☀️',少云:'🌤',多云:'⛅',阴:'☁️',小雨:'🌧',中雨:'🌧',大雨:'🌧⛈',雪:'❄️',阵雨:'🌦',雷阵雨:'⛈'};
+      const lines=['太原天气预报',''];
+      data.daily.forEach(d=>{const icon=icons[d.textDay]||'🌤';lines.push(`${d.fxDate.substring(5)} ${icon} ${d.tempMin}°~${d.tempMax}° ${d.textDay}${d.precip!=='0'?' 💧'+d.precip+'mm':''}`)});
+      addChatMessage(lines.join('\n'),'bot');
+    }else{addChatMessage('天气查询失败，请稍后重试','bot');}
+  }catch(e){loadingEl.remove();addChatMessage('天气查询失败，请稍后重试','bot');}
+}
+
+function toggleChat(){if(chatOpen)closeChat();else openChat();}
+function openChat(){
+  chatOpen=true;
+  document.getElementById('chat-panel').classList.add('open');
+  if(window.innerWidth<=768)document.getElementById('chat-backdrop').classList.add('show');
+  document.getElementById('chat-backdrop').style.display='block';
+  document.getElementById('chat-input').focus();
+  if(!localStorage.getItem('chat_panel_visited')){localStorage.setItem('chat_panel_visited','1');setTimeout(()=>{addChatMessage('发送以下内容给我：\n\n记账 羊肉面：18元，打车：25元\n查攻略 太原\n查账单 汇总 / 本月\n天气\n系统 帮助','bot');},300);}
+}
+function closeChat(){
+  chatOpen=false;
+  document.getElementById('chat-panel').classList.remove('open');
+  document.getElementById('chat-backdrop').style.display='none';
+  document.getElementById('chat-backdrop').classList.remove('show');
+}
+
+// 聊天快捷按钮事件（委托在document上，因为chat面板在script后面加载）
+document.addEventListener('click',e=>{
+  if(!chatOpen)return;
+  const btn=e.target.closest('.chat-quick-btn');
+  if(btn)sendChatMessage(btn.dataset.text);
+  if(e.target.closest('#chat-send-btn'))sendChatMessage();
+});
+document.addEventListener('keydown',e=>{
+  if(chatOpen&&e.key==='Enter'&&document.activeElement===document.getElementById('chat-input'))sendChatMessage();
+});
+
+// ---- 天气刷新 ----
+async function refreshWeather(){
+  const btn=document.getElementById('btnWeatherRefresh');
+  btn.style.transform='rotate(360deg)';btn.style.transition='transform .6s';
+  setTimeout(()=>{btn.style.transform='';btn.style.transition=''},600);
+  await fetchWeather();
+}
+
+// ---- 定位方向 ----
+let locateMarkRef=null;
+let currentHeading=0;
+
+function buildLocateMarkerHtml(heading,hasHeading){
+  if(hasHeading){
+    return `<svg width="44" height="44" style="filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))">
+      <circle cx="22" cy="22" r="9" fill="#4a90ff" stroke="#fff" stroke-width="2.5"/>
+      <polygon points="22,5 17,20 27,20" fill="#4a90ff" transform="rotate(${heading} 22 22)"/>
+      <circle cx="22" cy="22" r="4.5" fill="#fff" opacity="0.6"/>
+    </svg>`;
+  }
+  return `<div style="width:20px;height:20px;border-radius:50%;background:#4a90ff;border:3px solid #fff;box-shadow:0 0 12px rgba(74,144,255,.8)"></div>`;
+}
+
+function updateLocateMarkerRotation(){
+  if(locateMarkRef&&currentHeading!==null){
+    locateMarkRef.setContent(buildLocateMarkerHtml(currentHeading,true));
+  }
+}
+
+function startHeadingWatch(){
+  if(window.DeviceOrientationEvent){
+    if(typeof DeviceOrientationEvent.requestPermission==='function'){
+      DeviceOrientationEvent.requestPermission().then(state=>{if(state==='granted')addOrientationListener();}).catch(()=>{});
+    }else{addOrientationListener();}
+  }
+}
+
+function addOrientationListener(){
+  window.addEventListener('deviceorientation',e=>{
+    if(e.webkitCompassHeading!==undefined)currentHeading=e.webkitCompassHeading;
+    else if(e.alpha!==null)currentHeading=360-e.alpha;
+    updateLocateMarkerRotation();
+  });
+}
+
+// ---- 自驾路线交互 ----
+const cityCoords={
+  '烟台':{lng:121.45,lat:37.46},'邯郸':{lng:114.54,lat:36.61},
+  '太原':{lng:112.55,lat:37.87},'忻州':{lng:112.73,lat:38.42},
+  '朔州':{lng:112.43,lat:39.33},'大同':{lng:113.30,lat:40.08},
+  '呼和浩特':{lng:111.75,lat:40.84},'巴彦淖尔':{lng:107.39,lat:40.74},
+  '银川':{lng:106.23,lat:38.47},'中卫':{lng:105.20,lat:37.51},
+  '武威':{lng:102.64,lat:37.93},'张掖':{lng:100.46,lat:38.93},
+  '酒泉':{lng:98.52,lat:39.74},'嘉峪关':{lng:98.29,lat:39.77},
+  '玉门':{lng:97.05,lat:39.83},'瓜州':{lng:95.78,lat:40.52},
+  '哈密':{lng:93.51,lat:42.83},'吐鲁番':{lng:89.19,lat:42.95},
+  '乌鲁木齐':{lng:87.62,lat:43.82},'S101':{lng:85.80,lat:44.02},'伊犁':{lng:81.32,lat:43.92},
+  '那拉提':{lng:84.20,lat:43.39},'库车':{lng:82.96,lat:41.72},
+  '库尔勒':{lng:86.15,lat:41.73},'若羌':{lng:88.17,lat:39.02},
+  '茫崖':{lng:90.85,lat:38.25},'格尔木':{lng:94.90,lat:36.41},
+  '茶卡':{lng:99.08,lat:36.79},'青海湖':{lng:100.40,lat:36.85},
+  '西宁':{lng:101.78,lat:36.62},'门源':{lng:101.62,lat:37.38},'兰州':{lng:103.83,lat:36.06},
+  '西安':{lng:108.94,lat:34.26}
+};
+
+const roadSegments={
+  'seg-1':{from:'烟台',to:'邯郸'},
+  'seg-2':{from:'邯郸',to:'太原'},
+  'seg-3':{from:'太原',to:'忻州'},
+  'seg-4':{from:'忻州',to:'朔州'},
+  'seg-5':{from:'朔州',to:'大同'},
+  'seg-6':{from:'大同',to:'呼和浩特'},
+  'seg-7':{from:'呼和浩特',to:'巴彦淖尔'},
+  'seg-8':{from:'巴彦淖尔',to:'银川'},
+  'seg-9':{from:'银川',to:'中卫'},
+  'seg-10':{from:'中卫',to:'武威'},
+  'seg-11':{from:'武威',to:'张掖'},
+  'seg-12':{from:'张掖',to:'酒泉'},
+  'seg-13':{from:'酒泉',to:'嘉峪关'},
+  'seg-14':{from:'嘉峪关',to:'玉门'},
+  'seg-15':{from:'玉门',to:'瓜州'},
+  'seg-16':{from:'瓜州',to:'哈密'},
+  'seg-17':{from:'哈密',to:'吐鲁番'},
+  'seg-18':{from:'吐鲁番',to:'乌鲁木齐'},
+  'seg-19':{from:'乌鲁木齐',to:'伊犁'},
+  'ret-1':{from:'伊犁',to:'那拉提'},
+  'ret-2':{from:'那拉提',to:'库车'},
+  'ret-3':{from:'库车',to:'库尔勒'},
+  'ret-4':{from:'库尔勒',to:'若羌'},
+  'ret-5':{from:'若羌',to:'茫崖'},
+  'ret-6':{from:'茫崖',to:'格尔木'},
+  'ret-7':{from:'格尔木',to:'茶卡'},
+  'ret-8':{from:'茶卡',to:'西宁'},
+  'ret-9':{from:'西宁',to:'兰州'},
+  'ret-10':{from:'兰州',to:'西安'}
+};
+
+let roadRoutePoly=null,activeRoadSeg=null;
+
+function clearRoadRoute(){
+  if(roadRoutePoly){try{map.remove(roadRoutePoly)}catch(e){};roadRoutePoly=null;}
+  activeRoadSeg=null;
+  document.querySelectorAll('.road-segment.active').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.road-route-detail').forEach(d=>{d.style.display='none';d.innerHTML='';});
+  document.querySelectorAll('.seg-actions').forEach(a=>{a.style.display='none';a.innerHTML='';});
+}
+
+async function drawRoadSegment(segId){
+  if(activeRoadSeg===segId){clearRoadRoute();return;}
+  clearRoadRoute();
+  const seg=roadSegments[segId];
+  if(!seg)return;
+  const origin=cityCoords[seg.from],dest=cityCoords[seg.to];
+  if(!origin||!dest)return;
+
+  const segEl=document.getElementById('road-'+segId);
+  const detailEl=document.getElementById('detail-road-'+segId);
+  const actionsEl=document.getElementById('actions-'+segId);
+
+  if(detailEl){detailEl.style.display='block';detailEl.innerHTML='<span class="seg-loading">路线计算中...</span>';}
+  if(segEl)segEl.classList.add('active');
+  activeRoadSeg=segId;
+
+  const pathData=await fetchDrivingRoute(origin,dest);
+  if(!pathData){
+    if(detailEl)detailEl.innerHTML='<span style="color:#e05555">路线规划失败</span>';
+    if(actionsEl){actionsEl.style.display='flex';actionsEl.innerHTML=`<button class="btn-retry" onclick="event.stopPropagation();retryRoadSegment('${segId}')" title="重试">↻</button>`;}
+    return;
+  }
+
+  let allPath=[];
+  pathData.steps.forEach(step=>{
+    if(step.polyline)allPath=allPath.concat(parsePolyline(step.polyline));
+  });
+
+  if(allPath.length>0){
+    const poly=new AMap.Polyline({
+      path:allPath,strokeColor:'#4a90ff',strokeOpacity:0.8,
+      strokeWeight:6,showDir:true,dirColor:'#fff',zIndex:60
+    });
+    map.add(poly);roadRoutePoly=poly;
+    map.setFitView(poly,false,[200,80,200,80]);
+  }
+
+  const dist=(pathData.distance/1000).toFixed(0);
+  const sec=parseInt(pathData.duration);
+  const h=Math.floor(sec/3600),m=Math.round(sec%3600/60);
+  const timeStr=h>0?`${h}h${m}min`:`${m}min`;
+
+  const mergedSteps=[];
+  pathData.steps.forEach(s=>{
+    const roadName=(!s.road||s.road==='undefined')?'无名路':s.road;
+    const stepDist=parseInt(s.distance,10)||0;
+    const last=mergedSteps[mergedSteps.length-1];
+    if(last&&last.road===roadName){last.distance+=stepDist;}
+    else{mergedSteps.push({road:roadName,distance:stepDist});}
+  });
+  const stepsHtml=mergedSteps.map((s,i)=>{
+    const sd=s.distance?((s.distance/1000).toFixed(1)+'km'):'';
+    return `<div class="step-item"><span class="step-idx">${i+1}</span><span class="step-road">${s.road}</span><span class="step-dist">${sd}</span></div>`;
+  }).join('');
+
+  if(detailEl)detailEl.innerHTML=stepsHtml;
+  if(actionsEl){
+    actionsEl.style.display='flex';
+    actionsEl.innerHTML=`
+      <span class="seg-dist-label">${dist}km · ${timeStr}</span>
+      <button class="btn-retry" onclick="event.stopPropagation();retryRoadSegment('${segId}')" title="重新规划">↻</button>
+      <button class="btn-nav" onclick="event.stopPropagation();openRoadNavi('${segId}')" title="导航到${dest}">${ICON_NAV}</button>
+    `;
+  }
+}
+
+async function retryRoadSegment(segId){
+  activeRoadSeg=null;
+  const detailEl=document.getElementById('detail-road-'+segId);
+  const actionsEl=document.getElementById('actions-'+segId);
+  if(detailEl)detailEl.innerHTML='';
+  if(actionsEl){actionsEl.style.display='none';actionsEl.innerHTML='';}
+  await drawRoadSegment(segId);
+}
+
+function openRoadNavi(segId){
+  const seg=roadSegments[segId];
+  if(!seg)return;
+  const dest=cityCoords[seg.to];
+  if(!dest)return;
+  window.open(generateNaviUri(dest.lng,dest.lat,seg.to),'_blank');
+}
+
+
+// ---- 城市攻略数据 ----
+const cityGuides={
+  'taiyuan':{
+    name:'太原',days:4,center:{lng:112.49,lat:37.80},
+    spots:{
+      'jinci':{name:'晋祠',lng:112.4263,lat:37.7078,cat:'hist',desc:'千年文脉之源。三绝：宋塑侍女像、周柏3000年、难老泉17°C恒温。三宝：圣母殿宋代木构、鱼沼飞梁十字古桥、金代献殿全榫卯。南门向曦门进更近。86版西游记取景地。¥80，4h，讲解¥80可拼团。门口野导勿信！'},
+      'taishan':{name:'太山龙泉寺',lng:112.4250,lat:37.7100,cat:'hist',desc:'唐代地宫出土五重棺椁金棺+23颗佛舍利。观音堂明代悬塑79尊（太原唯一）。唐景云二年碑高6米。望都阁俯瞰太原城。登山步道平缓，距晋祠仅2km。¥50，1.75h。'},
+      'tianlongshan':{name:'天龙山石窟',lng:112.3800,lat:37.7110,cat:'hist',desc:'中国十大石窟之一。山顶进→下游览（不爬山！）。网红三层螺旋公路。回归佛首闻名海内外。¥50联票¥110，2h。公交坐车门对面拍网红桥！冬季可能闭园。'},
+      'mengshan':{name:'蒙山大佛',lng:112.4430,lat:37.7580,cat:'hist',desc:'世界最早有确切纪年的巨型摩崖石刻佛像（北齐）。东门进（非西门！），山林溪泉环绕。小交通¥6/趟可省，步行约20分钟到大佛。¥35，2h。指示牌不完善，勤问路。'},
+      'longshan':{name:'龙山石窟',lng:112.4100,lat:37.7400,cat:'nature',desc:'中国现存规模最大的道教石窟（元代），全国唯一。登山约40分钟。秋季红叶+石窟同框拍照绝佳。与天龙山佛教石窟互补。¥20，2h。自带干粮做午餐。'},
+      'jinyanghu':{name:'晋阳湖',lng:112.5100,lat:37.7700,cat:'nature',desc:'华北最大人工湖，太原的海。有沙滩区、游船、环湖步道。下午光线好适合拍照。免费，1.5h。短暂休整后前往植物园。'},
+      'zhiwuyuan':{name:'太原植物园',lng:112.4750,lat:37.7350,cat:'mixed',desc:'太原必去榜第二。三大温室展厅，建筑获国际设计奖。18:30星空电梯亮灯（人山人海）。返程难打车，建议向北步行一段出园再叫车。¥50，3h。'},
+      'bowuguan':{name:'山西博物院',lng:112.5280,lat:37.8630,cat:'hist',desc:'三晋文明精华。镇馆之宝：晋侯鸟尊、侯马盟书、北齐壁画。从4层往下逛（土木华章→民族熔炉→晋国霸业）。免费需预约，周一闭馆。讲解器¥20。公益讲解14:00。3h。'},
+      'jinshang':{name:'晋商博物院',lng:112.5620,lat:37.8740,cat:'hist',desc:'前身为明清督军府，中西合璧建筑群。人少安静，园林精致。免费需预约，周一闭馆。了解晋商票号历史。1.5h。'},
+      'chunyang':{name:'纯阳宫',lng:112.5600,lat:37.8675,cat:'hist',desc:'全国唯一九宫八卦院道观。三绝：八卦院建筑+涅槃变相碑（武周国宝）+常阳天尊像（唐代）。红墙古柏，人少清净。¥30，1h。'},
+      'chongshan':{name:'崇善寺',lng:112.5650,lat:37.8630,cat:'hist',desc:'明代皇家寺院，隋炀帝行宫旧址。大悲殿三大士像（千手观音、文殊、普贤）为明代泥塑精品。免费。距纯阳宫步行可达。40min。'},
+      'zhonglou':{name:'柳巷+钟楼街',lng:112.5650,lat:37.8700,cat:'mixed',desc:'柳巷是太原老商圈，本地人逛街首选。钟楼街为民国风改造步行街。老字号：清和元头脑（早6-9限量）、六味斋酱肉、雪山冷饮厅醋冰淇淋、杨记灌肠。观汾小酒馆汾酒味冰淇淋！免费，2.5h。'},
+      'food2':{name:'老军营小吃街',lng:112.5550,lat:37.8400,cat:'food',desc:'太原最接地气的小吃街，本地人>游客。沾串串¥1/3串、打卤面、麻辣拌（酸甜微辣）、上帝炸鸡。¥30吃到撑。晚餐时段最佳，地道太原味。1.5h。'},
+      'shuangta':{name:'双塔寺（永祚寺）',lng:112.5900,lat:37.8460,cat:'hist',desc:'凌霄双塔400年太原天际线。全国唯一砖仿木无梁建筑寺院。可登塔俯瞰太原全景。明代牡丹"紫霞仙"4-5月绽放。¥30，1.5h。'},
+      'donghu':{name:'东湖醋园',lng:112.5780,lat:37.8790,cat:'mixed',desc:'非遗老陈醋文化。免费参观+品醋。看传统工艺：蒸→酵→熏→淋→陈。闻蒸房酸爽提神。醋冰淇淋¥15必试！免费，1h。'},
+      'beiqibihua':{name:'北齐壁画博物馆',lng:112.5800,lat:37.8100,cat:'hist',desc:'2023年新馆，徐显秀墓原址保护。北齐壁画规模宏大、色彩艳丽。¥35需提前1-15天预约，不售当日票。1.5h。'},
+      'taiyuanbowuguan':{name:'太原博物馆+青铜博物馆',lng:112.5350,lat:37.8050,cat:'hist',desc:'同址双馆一次逛！镇馆之宝：赵卿墓车马坑（春秋真车马殉葬）。青铜馆"吉光华"获全国陈列精品奖。免费，16:00停止入馆。紧邻汾河公园。2h。'},
+      'fenhe':{name:'汾河公园',lng:112.5400,lat:37.8550,cat:'nature',desc:'太原母亲河，骑行+游船+日落。山西大剧院倒影很出片。太原博物馆出来步行5分钟即到。免费，1.5h。适合放松收官。'},
+      'juewei':{name:'崛围山',lng:112.4800,lat:37.9200,cat:'nature',desc:'太原红叶之王（10月）。免费，3-5h。登山难度大，可替代Day2全部景点。秋季首选。'},
+      'yiyuan':{name:'怡园酒庄',lng:112.5500,lat:37.8100,cat:'mixed',desc:'黄土高原微醺体验。¥80/人，半天。品酒+葡萄园。太原周边小众之选。'},
+      'hotel_liuxiang':{name:'晋祠民宿区',lng:112.4263,lat:37.7078,cat:'hotel',desc:'晋心悦居5.0|楚楚5.0|赤桥古村5.0|晋逸轩4.8|¥100-150/晚。住西山脚下，Day1晋祠步行可达。'},
+      'hotel_nanhuan':{name:'柳巷青旅+经济酒店',lng:112.5650,lat:37.8700,cat:'hotel',desc:'酷居青旅4.8(¥50-70)|七天4.7(¥120-160)|佳鑫4.6(¥100-140)。出门即食品街+地铁。'},
+      'hotel_changfeng':{name:'双塔寺/火车站快捷',lng:112.5900,lat:37.8460,cat:'hotel',desc:'如家neo4.6(¥120-160)|都市驿家4.8|馨家公寓4.7|¥100-150。离双塔寺步行10分钟。'}
+    },
+    dayRoutes:{d1:['jinci','taishan','tianlongshan'],d2:['mengshan','longshan','jinyanghu','zhiwuyuan'],d3:['bowuguan','jinshang','chunyang','chongshan','zhonglou','food2'],d4:['shuangta','donghu','beiqibihua','taiyuanbowuguan','fenhe'],hotels:['hotel_liuxiang','hotel_nanhuan','hotel_changfeng']},
+    food:'<b>本地人推荐</b>：海旺黄酱面(¥15·30年老店)·倪厨家菜坊(¥60/人·地道太原味)·义井小吃街(沾串串¥1/3串·麻辣拌·上帝炸鸡)·钱记钟表维修(老式糕点¥12·秘巷隐藏)·认一力饺子(¥28·百年老号)·清和元头脑(早6-9限量)·雪山冷饮厅醋冰淇淋·观汾小酒馆汾酒冰淇淋·宁化府/东湖醋(伴手礼) <b>避雷</b>：柳巷主街大店铺多为游客店，老军营>义井>食品街',
+    dayFood:{d1:'晋祠→太山→天龙山：海旺黄酱面¥15(晋祠附近30年老店)·认一力饺子¥28·老妈妈打卤面¥20',d2:'蒙山→龙山→晋阳湖：倪厨家菜坊¥60/人(地道太原菜)·弘祥蜂蜜大麻花¥12',d3:'博物院→钟楼街→柳巷：杨记灌肠·雪山冷饮厅醋冰淇淋·观汾小酒馆·清和元头脑(次日早)',d4:'双塔寺→东湖醋园→汾河：义井小吃街沾串串¥1/3串·上帝炸鸡·麻辣拌·钱记钟表维修老式糕点¥12·宁化府醋(伴手礼)'},
+    tips:'最佳4-5月牡丹/9-10月红叶·山西博物院提前3天早7点预约·晋商博物院提前1周约·北齐壁画提前1-15天约不售当日票·周一闭馆：山西博物院/晋商博物院/北齐壁画博物馆·西山Day1-2景点集中在15km半径内·太原公交¥1面食¥12-20'
+  },
+  'datong':{
+    name:'大同',days:3,center:{lng:113.30,lat:40.08},
+    spots:{
+      'yungang':{name:'云冈石窟',lng:113.13,lat:40.11,cat:'hist',desc:'世界文化遗产·北魏皇家石窟。第20窟露天大佛(13.7m)为标志。旺季¥120,提前1-7天"云冈研究院"小程序预约。4h,上午9点前光线最佳。每月首个周三半价！'},
+      'huayan':{name:'华严寺',lng:113.29,lat:40.09,cat:'hist',desc:'辽代皇家寺庙·"东方维纳斯"合掌露齿菩萨。大雄宝殿琉璃鸱吻4.5m全国最大。¥50,登华严宝塔78级台阶。'},
+      'shanhua':{name:'善化寺',lng:113.30,lat:40.08,cat:'hist',desc:'唐代遗珠·免费开放。金代斗拱惊艳,人少清幽。黑神话悟空取景地。'},
+      'xuankong':{name:'悬空寺',lng:113.71,lat:39.66,cat:'hist',desc:'世界十大危险建筑·27根木柱悬于90°崖壁。登临¥100,提前3天0点"恒山景区"公众号抢票！6:30前抵达避排队。恐高者对面霞客亭拍全景。'},
+      'yingxian':{name:'应县木塔',lng:113.19,lat:39.56,cat:'hist',desc:'世界最高木塔(1056年)·全木榫卯千年斜而不倒。¥50,仅开一楼。绕塔找24种斗拱。旁边净土寺金代藻井。'},
+      'jiulongbi':{name:'九龙壁',lng:113.30,lat:40.09,cat:'hist',desc:'全国最大琉璃九龙壁·明代遗存。免费,15min。'},
+      'datongbo':{name:'大同博物馆',lng:113.37,lat:40.10,cat:'hist',desc:'免费·周一闭馆。14:30免费讲解。北魏文物精华。'},
+      'gucheng':{name:'大同古城墙',lng:113.30,lat:40.09,cat:'mixed',desc:'周长7.24km·骑行¥30/h。周五/六免费光影秀。永泰门→武定门看护城河倒映。'}
+    },
+    dayRoutes:{d1:['yungang','huayan','shanhua'],d2:['xuankong','yingxian'],d3:['jiulongbi','datongbo','gucheng']},
+    food:'<b>本地人推荐</b>：桃源饭店(¥60/人·大同人私藏老店)·福来小院(¥55/人·家常山西菜)·任记七中刀削面(¥12·30年面馆)·红宝石糕馆(¥18/斤·老式糕点排队王)·贺老人羊杂(¥15·浑源最地道)·老柴削面(¥12)·凯鸽酒楼风沙鸡(¥50/半份可点半份)·紫泥369黄米凉糕·浑源小媳妇凉粉(¥8) <b>避雷</b>：凤临阁环境好但性价比低游客>本地人，鼓楼刀削面景区价翻倍',
+    dayFood:{d1:'古城周边：任记七中刀削面¥12·桃源饭店¥60/人(大同人私藏)·凯鸽酒楼风沙鸡¥50/半份',d2:'浑源县：贺老人羊杂¥15·小媳妇凉粉¥8·应县滴溜',d3:'古城内：福来小院¥55/人·紫泥369黄米凉糕·红宝石糕馆¥18/斤(伴手礼)'},
+    tips:'云冈提前1-7天约·悬空寺登临提前3天0点抢·古城内步行骑行最佳·7-8月雨季悬空寺可能关闭'
+  },
+  'yinchuan':{
+    name:'银川',days:3,center:{lng:106.23,lat:38.47},
+    spots:{
+      'xixiawangling':{name:'西夏王陵',lng:106.00,lat:38.44,cat:'hist',desc:'东方金字塔·2025新晋世界遗产。¥68(周一/三免首道门票)。先博物馆再3号陵(李元昊墓)。贺兰山为背景极壮丽。'},
+      'helanshan':{name:'贺兰山岩画',lng:105.99,lat:38.72,cat:'mixed',desc:'6000年前太阳神岩画(重环双眼+放射线)。¥65-70。岩画遗址区可偶遇岩羊。韩美林艺术馆免费。'},
+      'zhenbeibu':{name:'镇北堡西部影城',lng:106.06,lat:38.62,cat:'mixed',desc:'《大话西游》取景地·¥80。租戏服¥50/套。明城+清城+老银川一条街。'},
+      'ningxiabo':{name:'宁夏博物馆',lng:106.23,lat:38.49,cat:'hist',desc:'免费·周一闭馆。鎏金铜牛等国宝。西夏文物专题。'},
+      'huairenyeshi':{name:'怀远夜市',lng:106.14,lat:38.50,cat:'food',desc:'银川最大夜市·17:00-凌晨2:00。牛肉饼¥4.5(排队王)·辣糊糊·牛奶鸡蛋醪糟¥10·烤面筋。'},
+      'lanshanpark':{name:'览山公园',lng:106.25,lat:38.50,cat:'mixed',desc:'仿罗马斗兽场·日落绝美机位！免费。贺兰山+城市全景。'},
+      'shahu':{name:'沙湖',lng:106.37,lat:38.82,cat:'nature',desc:'半湖半沙·¥120(含船)。芦苇荡+沙漠+观鸟。距市区42km。'}
+    },
+    dayRoutes:{d1:['ningxiabo','xixiawangling','huairenyeshi'],d2:['helanshan','zhenbeibu','lanshanpark'],d3:['shahu']},
+    food:'<b>本地人推荐</b>：小叶手抓(¥78/斤·本地人首选)·马伟手抓(¥80/斤·滩羊肉嫩不膻)·马胖子羊杂碎(¥18·大清早排队)·孟记小吃(¥10-20·三十年老店)·红柳枝滩羊烧烤·上一冰煮羊·怀远夜市牛肉饼¥4.5(排队王)·辣糊糊·吴忠早茶八宝茶 <b>避雷</b>：国强手抓游客店性价比低·老毛手抓品控下滑',
+    dayFood:{d1:'西夏王陵回程：怀远夜市牛肉饼¥4.5·辣糊糊·小叶手抓¥78/斤(或马伟手抓)',d2:'贺兰山方向：马胖子羊杂碎¥18(午餐排队)·红柳枝滩羊烧烤·孟记小吃¥10-20',d3:'沙湖返程：上一冰煮羊·吴忠早茶八宝茶'},
+    tips:'防晒SPF50+·西夏王陵距市区35km·贺兰山一线景点集中城西·航空旅游护照免部分门票·清真餐厅勿带非清真食品'
+  },
+  'guiyang':{
+    name:'贵阳',days:3,center:{lng:106.71,lat:26.58},
+    spots:{
+      'jiaxilou':{name:'甲秀楼',lng:106.719721,lat:26.571358,cat:'hist',desc:'贵阳地标·始建于明万历二十六年(1598年)。三层三檐四角攒尖顶,朱梁碧瓦,南明河倒影。夜景灯光绝美,河畔免费开放。免费,1h。'},
+      'wenchangge':{name:'文昌阁',lng:106.719288,lat:26.578690,cat:'hist',desc:'全国唯一九角三层宝塔形古楼,结构奇特(81根梁54根柱全榫卯无钉)。始建于明万历,免费,周一闭馆。距甲秀楼步行10分钟。40min。'},
+      'dongshansi':{name:'东山寺·东山山体公园',lng:106.7230,lat:26.5790,cat:'mixed',desc:'贵阳老城制高点·360°俯瞰全城日落绝美。山体公园步道15分钟登顶。免费,建议15:00-17:00前往。1h。'},
+      'qianlingshan':{name:'黔灵山公园',lng:106.692230,lat:26.598319,cat:'nature',desc:'贵阳名片·¥5中国最良心5A景区。野生猕猴成群(勿手提食品袋！)·弘福寺(¥2)·动物园(大熊猫)·黔灵湖划船。缆车单程¥20。3-4h,上午去猴子最活跃。'},
+      'guizhoubo':{name:'贵州省博物馆',lng:106.642467,lat:26.647605,cat:'hist',desc:'贵州民族文化+古生物化石精华。镇馆之宝:东汉铜车马、苗族银饰、海百合化石。免费,周一闭馆,16:00停止入馆。2-3h,地铁1号线直达。'},
+      'huaxipark':{name:'花溪公园',lng:106.672210,lat:26.433012,cat:'nature',desc:'贵阳后花园·溪水穿园而过,百步桥+放鸽桥+荷花池。巴金曾在此结婚度蜜月。¥6,1.5h。门口花溪牛肉粉必吃！地铁3号线直达。'},
+      'qingyan':{name:'青岩古镇',lng:106.688164,lat:26.332463,cat:'hist',desc:'贵州四大古镇之一·600年明清军事重镇。背街石板路(出片圣地)+定广门城楼+文昌阁。¥10门票/¥80套票(含小景点)。必吃:青岩猪蹄(状元蹄)+糕粑稀饭+玫瑰冰粉。距市区30km,3-4h。'},
+      'tianhetan':{name:'天河潭',lng:106.580558,lat:26.440169,cat:'mixed',desc:'喀斯特地貌浓缩版·溶洞+瀑布+水洞乘船。¥50(含船票),3-4h。距市区24km,S1线地铁直达。与青岩古镇二选一可做替代。'},
+      'huaguoyuan':{name:'花果园湿地公园·白宫',lng:106.696480,lat:26.569023,cat:'mixed',desc:'贵阳网红地标·白宫(花果园艺术中心)夜景璀璨倒映湖面。免费,晚上8点亮灯后最佳。湿地公园+万人广场舞奇观。1h。'},
+      'minshenglu':{name:'民生路好吃街',lng:106.716503,lat:26.579380,cat:'food',desc:'贵阳本地人最爱美食街·蒋家肠旺面¥15、但家香酥鸭¥30、熊二娘豆米火锅¥40。蔡家街+民生路+省府路三街连逛。¥50吃到撑,1.5h。'},
+      'qingyunji':{name:'青云市集',lng:106.715094,lat:26.564177,cat:'food',desc:'贵阳最火夜市·24小时营业。周记留一手烤鱼¥68、水果豆花¥12、洋芋粑¥8、丝娃娃¥25。比二七路更有氛围,拍照出片。1.5h。'},
+      'erqilu':{name:'二七路小吃街',lng:106.707533,lat:26.557647,cat:'food',desc:'火车站附近老牌小吃街·100+摊位。烤脑花¥15、烤米皮¥10、豆腐圆子¥8、恋爱豆腐果¥6。贵阳站地铁B口步行5分钟。¥40吃饱,1h。'},
+      'hotel_penchich':{name:'喷水池·小十字住宿区',lng:106.715,lat:26.582,cat:'hotel',desc:'老城中心,出门即民生路/蔡家街美食,步行到甲秀楼15分钟。全季¥200-300/贵山苑青旅¥60-100/温德姆¥400-600。'},
+      'hotel_huaguoyuan':{name:'花果园住宿区',lng:106.696,lat:26.569,cat:'hotel',desc:'贵阳最大社区,距花溪方向便利。白宫/湿地公园步行可达,停车方便。汉庭¥150-220/全季¥200-280/民宿¥100-180。'}
+    },
+    dayRoutes:{d1:['jiaxilou','wenchangge','minshenglu','dongshansi','qingyunji'],d2:['qianlingshan','guizhoubo','huaguoyuan'],d3:['huaxipark','qingyan']},
+    food:'老凯俚酸汤鱼(省府路¥80/人)·金牌罗记肠旺面(蔡家街¥15)·贵厨酸汤牛肉(小十字¥60/人)·花溪飞碗牛肉粉(¥15)·但家香酥鸭(¥30)·丝娃娃(¥25)·豆腐圆子(¥8)·洋芋粑(¥8)·烙锅(¥40/人)·青岩猪蹄(¥30/斤)·糕粑稀饭(¥12)·玫瑰冰粉(¥8)',
+    tips:'贵阳夏季22-28°C避暑胜地·黔灵山猴子多勿手提食品袋·贵州省博物馆周一闭馆·花溪-青岩同天走都在南部·天河潭与青岩可二选一·地铁1/2/3号线覆盖主要景点·老城区停车困难建议步行+地铁·酸汤/辣子鸡可真空打包带走'
+  },
+  'zhongwei':{
+    name:'中卫',days:2,center:{lng:105.20,lat:37.51},
+    spots:{
+      'shapotou':{name:'沙坡头',lng:105.00,lat:37.47,cat:'mixed',desc:'黄河+沙漠+绿洲三位一体。~¥80,羊皮筏子¥120。滑沙+飞索+骑骆驼。4-6h。'},
+      'road66':{name:'66号公路',lng:105.08,lat:37.39,cat:'mixed',desc:'荒漠公路大片·免费。下午3点后光线最佳。通往北长滩古村。'},
+      'tenggeli':{name:'腾格里沙漠',lng:104.85,lat:37.60,cat:'nature',desc:'星空露营·旺季提前1月订。骑骆驼¥80/人·冲沙车¥150/人。'}
+    },
+    dayRoutes:{d1:['shapotou'],d2:['road66','tenggeli']},
+    food:'蒿子面·硒砂瓜(夏天)·烤羊排·黄河大鲤鱼',
+    dayFood:{d1:'沙坡头方向：黄河大鲤鱼·蒿子面',d2:'66号公路沿线：烤羊排·硒砂瓜(夏天街边买)'},
+    tips:'沙漠早晚温差大·带防风面罩·星空营地提前预订·S315穿沙公路严禁驶入'
+  },
+  'wuwei':{
+    name:'武威',days:2,center:{lng:102.64,lat:37.93},
+    spots:{
+      'leitai':{name:'雷台汉墓',lng:102.63,lat:37.93,cat:'hist',desc:'马踏飞燕出土地。博物馆免费,汉墓¥30。中国旅游标志"铜奔马"原件在甘肃省博。'},
+      'wenmiao':{name:'武威文庙',lng:102.63,lat:37.92,cat:'hist',desc:'陇右学宫之冠·¥30。明清建筑群,文昌宫桂籍殿。'},
+      'tiantishan':{name:'天梯山石窟',lng:102.44,lat:37.78,cat:'hist',desc:'中国石窟艺术摇篮·¥30。28m大佛。距市区50km,半天。'}
+    },
+    dayRoutes:{d1:['leitai','wenmiao'],d2:['tiantishan']},
+    food:'<b>三套车</b>：蔡记行面(最正宗·行面+卤肉+茯茶¥30)·邱家面皮(¥8·武威最好吃)·米汤油馓子(¥6·早摊限定)·武威酿皮',
+    dayFood:{d1:'雷台/文庙周边：蔡记行面三套车¥30·邱家面皮¥8',d2:'天梯山方向：米汤油馓子¥6(早餐)·武威酿皮'},
+    tips:'武威市博物馆周一闭馆·天梯山路况一般Golf 7需谨慎'
+  },
+  'zhangye':{
+    name:'张掖',days:3,center:{lng:100.46,lat:38.93},
+    spots:{
+      'danxia':{name:'七彩丹霞',lng:100.11,lat:38.96,cat:'nature',desc:'世界地质公园·¥75+¥20观光车。4号虹霞台日落最佳！16:00后入园。支持次日二次入园。热气球¥200-298。严禁踩踏山体！'},
+      'binggou':{name:'冰沟丹霞',lng:100.15,lat:38.93,cat:'nature',desc:'宫殿式丹霞·不同风格。¥60。比七彩丹霞人少,上午光线好。'},
+      'dafosi':{name:'大佛寺',lng:100.46,lat:38.93,cat:'hist',desc:'亚洲最大室内卧佛34.5m·西夏皇家寺院。¥40。市区步行可达。'},
+      'matisi':{name:'马蹄寺',lng:100.28,lat:38.53,cat:'mixed',desc:'悬崖石窟群·¥65-74。三十三天石窟7层212级台阶(70°陡!)登顶见祁连雪山。裕固族帐篷体验。距市区65km。'},
+      'pingshanhu':{name:'平山湖大峡谷',lng:100.78,lat:39.01,cat:'nature',desc:'中国版科罗拉多·¥100+¥30观光车。徒步3-4h,一线天+情侣峰。距市区56km。'}
+    },
+    dayRoutes:{d1:['dafosi','danxia'],d2:['matisi','binggou'],d3:['pingshanhu']},
+    food:'<b>早餐</b>：和顺源臊面(¥12·本地人最爱)·牛肉小饭(¥8-20) <b>正餐</b>：老周炒拨拉(¥40·张掖最正宗的炒拨拉)·苗氏卷子鸡(¥68)·搓鱼子(¥25) <b>饮品/夜市</b>：晓英杏皮茶(¥8·张掖最好喝)·甘州夜市 <b>避雷</b>：丹霞景区门口餐饮贵且难吃，建议返城吃',
+    dayFood:{d1:'大佛寺周边：和顺源臊面¥12(早餐)·牛肉小饭¥8-20·甘州夜市：老周炒拨拉¥40·晓英杏皮茶¥8',d2:'马蹄寺方向：搓鱼子¥25·苗氏卷子鸡¥68(返城吃)',d3:'平山湖：自备干粮或返城甘州夜市·晓英杏皮茶¥8'},
+    tips:'昼夜温差超15°C带外套·丹霞4号观景台日落最佳·马蹄寺台阶极陡穿运动裤·60岁以上免丹霞门票·紫外线极强'
+  },
+  'jiuquan':{
+    name:'酒泉',days:2,center:{lng:98.52,lat:39.74},
+    spots:{
+      'weixing':{name:'卫星发射中心',lng:100.28,lat:40.96,cat:'mixed',desc:'中国航天摇篮·¥150-198。提前1-5天"游航天"小程序预约+身份证。发射塔+历史博物馆+问天阁。距市区200km。'},
+      'jintahuyang':{name:'金塔胡杨林',lng:98.92,lat:39.98,cat:'nature',desc:'沙漠胡杨·¥65。9/25-10/15最佳！金波湖倒影绝美。距市区50km。'}
+    },
+    dayRoutes:{d1:['jintahuyang'],d2:['weixing']},
+    food:'糊锅(早餐·¥10)·羊肉合汁·炕锅羊排',
+    dayFood:{d1:'金塔胡杨林方向：糊锅¥10(早餐)·羊肉合汁',d2:'卫星发射中心：炕锅羊排·自备干粮(中心餐饮少)'},
+    tips:'卫星中心需身份证·胡杨林10月最佳·市区到卫星中心单程2.5h'
+  },
+  'jiayuguan':{
+    name:'嘉峪关',days:1,center:{lng:98.29,lat:39.77},
+    spots:{
+      'guancheng':{name:'嘉峪关关城',lng:98.22,lat:39.80,cat:'hist',desc:'天下第一雄关·联票¥108(含悬壁长城+第一墩)。明代长城西端起点。2-2.5h。'},
+      'xuanbi':{name:'悬壁长城',lng:98.18,lat:39.85,cat:'hist',desc:'70°陡坡·1.5km。黑山腰蜿蜒如龙。联票已含。'},
+      'diyidun':{name:'长城第一墩',lng:98.30,lat:39.73,cat:'hist',desc:'明长城最西端·玻璃观景台。赖河峡谷悬崖。联票已含。'}
+    },
+    dayRoutes:{d1:['guancheng','xuanbi','diyidun']},
+    food:'沙葱牛肉饼(¥10)·眼镜烤肉·杏皮茶·抿节面',
+    dayFood:{d1:'关城周边：沙葱牛肉饼¥10·眼镜烤肉·杏皮茶·抿节面'},
+    tips:'三景点分散需自驾·关城夕阳最佳·联票2日有效'
+  },
+  'hammi':{
+    name:'哈密',days:2,center:{lng:93.51,lat:42.83},
+    spots:{
+      'huiwangling':{name:'哈密回王陵',lng:93.50,lat:42.82,cat:'hist',desc:'伊斯兰+中式砖雕融合·~¥30。历代回王及王妃墓葬。1h。'},
+      'mogui':{name:'哈密魔鬼城',lng:93.00,lat:42.50,cat:'nature',desc:'雅丹地貌·¥45-50。需自驾进入,日落+星空绝佳。距市区90km。Golf 7不进深处！'},
+      'balikun':{name:'巴里坤草原',lng:93.02,lat:43.60,cat:'nature',desc:'天山北麓草原·免费。7月那达慕大会。巴里坤湖+清代粮仓。距市区140km。'}
+    },
+    dayRoutes:{d1:['huiwangling','mogui'],d2:['balikun']},
+    food:'哈密瓜(7-8月)·羊肉焖饼·大盘鸡·抓饭',
+    dayFood:{d1:'回王陵/魔鬼城方向：羊肉焖饼·大盘鸡·哈密瓜(7-8月街边到处是)',d2:'巴里坤草原：抓饭·哈萨克奶茶·烤全羊'},
+    tips:'魔鬼城碎石路Golf 7谨慎·哈密瓜7月最甜·巴里坤海拔1600m气温低'
+  },
+  'tulufan':{
+    name:'吐鲁番',days:2,center:{lng:89.19,lat:42.95},
+    spots:{
+      'jiaohe':{name:'交河故城',lng:89.07,lat:42.98,cat:'hist',desc:'世界遗产·2300年生土城市。~¥70。傍晚夕阳下金色废墟最壮观。2-3h。'},
+      'huoyanshan':{name:'火焰山',lng:89.56,lat:42.87,cat:'nature',desc:'《西游记》取景地·~¥40。金箍棒温度计(夏季80°C+)。早8-11点去！10:00-16:00避免户外。'},
+      'putaogou':{name:'葡萄沟',lng:89.23,lat:42.93,cat:'mixed',desc:'维吾尔葡萄庄园·¥60。8-9月最佳(无核白甜度22%)。民俗家访+歌舞+干果品尝。3-4h。'},
+      'kanerjing':{name:'坎儿井',lng:89.20,lat:42.95,cat:'hist',desc:'中国古代三大工程之一·~¥40。地下暗渠16°C恒温,冰镇西瓜体验。晾房了解古人智慧。'}
+    },
+    dayRoutes:{d1:['huoyanshan','putaogou'],d2:['kanerjing','jiaohe']},
+    food:'<b>吐鲁番必吃</b>：阔希玛克拉尔烤包子(¥3/个·吐鲁番No.1排队王)·葡萄馕(¥5·葡萄干+馕)·苏莱曼拌面王(¥25)·大院原味架子肉(¥80/份) <b>水果</b>：无核白葡萄(8-9月甜度22%)·哈密瓜·西瓜',
+    dayFood:{d1:'火焰山/葡萄沟方向：阔希玛克拉尔烤包子¥3/个!·葡萄馕¥5·苏莱曼拌面王¥25',d2:'交河故城/坎儿井方向：大院原味架子肉¥80/份·手抓羊肉·哈密瓜'},
+    tips:'夏季50°C+每小时1L水·避开10-16点户外活动·SPF50防晒·宽帽墨镜必备·清真餐厅注意礼仪'
+  },
+  'wulumuqi':{
+    name:'乌鲁木齐',days:3,center:{lng:87.62,lat:43.82},
+    spots:{
+      'xinjiangbo':{name:'新疆博物馆',lng:87.58,lat:43.82,cat:'hist',desc:'免费·周一闭馆。楼兰美女干尸+汉代织锦。2-3h。'},
+      'dabazha':{name:'国际大巴扎',lng:87.62,lat:43.78,cat:'mixed',desc:'全球最大巴扎·免费。二道桥+民族手工艺品+干果。1-2h。小心扒手。'},
+      'tianchi':{name:'天山天池',lng:88.13,lat:43.89,cat:'nature',desc:'世界自然遗产·¥155(含区间车)。马牙山索道¥120观博格达峰。距市区110km,1天。'},
+      'lingguanxiang':{name:'领馆巷美食街',lng:87.61,lat:43.79,cat:'food',desc:'本地人美食街·烤包子¥5·手抓饭¥25-40·烤全羊·酸奶粽子。'}
+    },
+    dayRoutes:{d1:['xinjiangbo','dabazha'],d2:['tianchi'],d3:['lingguanxiang']},
+    food:'<b>领馆巷+和田二街(本地人食堂)</b>：和阗玫瑰抓饭(¥35·乌市抓饭天花板14:00前卖完)·白尔开特肉馕(¥12·排队王)·喀什一把抓烤包子(¥3/个)·艾力江和田馕坑肉(¥60/人)·血站大盘鸡(¥68/中份·老字号)·魏家羊羔肉(¥80/斤) <b>避雷</b>：大巴扎内餐饮贵且一般只逛不买·二道桥大巴扎美食街=游客价',
+    dayFood:{d1:'博物馆/大巴扎：和阗玫瑰抓饭¥35(14:00前!)·白尔开特肉馕¥12·喀什一把抓烤包子¥3',d2:'天山天池：景区内贵建议自带干粮·返城吃血站大盘鸡¥68/中份',d3:'领馆巷+和田二街：艾力江馕坑肉¥60/人·魏家羊羔肉¥80/斤·酸奶粽子·卡瓦斯'},
+    tips:'新疆博周一闭馆·天池海拔1900m带外套·大巴扎小心扒手·昼夜温差大'
+  },
+  's101':{
+    name:'S101·天山地理风光走廊',days:1,center:{lng:85.80,lat:44.02},
+    spots:{
+      'danxia':{name:'百里丹霞',lng:86.95,lat:43.96,cat:'nature',desc:'免费·天山北麓最壮观的丹霞地貌群！红/黄/白/绿四色岩层，如油画般展开。精华段在雀儿沟-石门子。Golf7可行，全程柏油。🚻沿途停车区旱厕为主，建议乌鲁木齐出发前解决。'},
+      'kensiwate':{name:'肯斯瓦特水库',lng:86.08,lat:44.05,cat:'nature',desc:'免费·天山融雪汇成的高峡平湖，碧蓝色湖水被赤红峡谷环抱。无人机出片圣地。有停车场。🚻景区停车场有移动厕所。'},
+      'lujiaowan':{name:'鹿角湾',lng:85.38,lat:44.02,cat:'nature',desc:'免费·高山草原+雪峰同框！夏季野花遍地，可远眺天山雪峰。停车场可看雪山，景区内营地¥100/帐篷。Golf7全程铺装直达。🚻鹿角湾景区入口有冲水厕所。'},
+      'anjihai':{name:'安集海大峡谷',lng:84.95,lat:44.13,cat:'nature',desc:'免费·中国版科罗拉多大峡谷！红色崖壁+辫状水系，落差300m。距独山子60km，S101终点前最后一站。无人机航拍绝佳。注意崖边无护栏，勿太靠近。🚻观景台有移动厕所。'},
+      'dushanzi':{name:'独山子(终点)',lng:84.88,lat:44.33,cat:'mixed',desc:'S101终点·独库公路北段起点。可接G30高速续行伊犁，或接独库公路。加油/补给/餐饮齐全。🚻独山子市区公厕充足，出发前在此休整补给。'}
+    },
+    dayRoutes:{d1:['danxia','kensiwate','lujiaowan','anjihai','dushanzi']},
+    dayDesc:{d1:'乌鲁木齐→亚洲大陆中心→硫磺沟进入S101→百里丹霞→肯斯瓦特水库→鹿角湾→安集海大峡谷→独山子。约300km，边走边拍需6-8h。独山子接G30或独库公路。'},
+    food:'独山子大盘鸡·拌面¥20-30·独库公路起点美食街·沿途无餐馆需自备干粮和水',
+    dayFood:{d1:'S101沿途无餐馆！全程自备干粮+水。终点独山子：大盘鸡·拌面¥20-30·独库公路起点美食街'},
+    tips:'S101全程柏油2024年已铺装完毕·Golf7完全可行·沿途信号不稳提前下载离线地图·建议早7点出发光线最佳·带足水和食物(中间无餐馆)·百里丹霞上午顺光·安集海下午光线好·鹿角湾可露营¥100/帐篷',
+    camping:{d1:'独山子市区酒店¥150-200·鹿角湾景区营地¥100/帐篷·独库大本营(独山子)免费停车场+公厕'}
+  },
+  'yili':{
+    name:'伊犁·7日顺时针环线',days:7,center:{lng:82.5,lat:43.5},
+    spots:{
+      'yining':{name:'伊宁市区(起终点)',lng:81.32,lat:43.92,cat:'mixed',desc:'伊犁州府·喀赞其蓝色老街(免费)·六星街·汉人街夜市。住宿推荐伊犁河路/开发区。全程起点。🚻市区公厕充足，家乡好超市采购物资。'},
+      'sailimu':{name:'赛里木湖',lng:81.15,lat:44.60,cat:'nature',desc:'大西洋最后一滴眼泪·¥145。逆时针环湖92km·天鹅乐水·点将台·松树头·S弯。已禁露营。东门禁无人机。4-6h。🚻东门游客中心冲水厕所最干净；点将台可冲水但旺季人多，环湖前先解决。'},
+      'guozigou':{name:'果子沟大桥',lng:81.10,lat:44.48,cat:'mixed',desc:'免费·S形巨龙横卧山谷。第3观景停车场(云龙溪酒店旁)木栈道上去最佳机位。傍晚夕阳拍！出赛湖南门右转国道,勿上高速。🚻观景台移动厕所，排队较长卫生一般。'},
+      'yizhao':{name:'伊昭公路',lng:81.15,lat:43.25,cat:'nature',desc:'小独库·仅6-9月通车·免费。白石峰海拔3475m·安格列特达坂·昭苏油菜花海(7月)。全天开窗即景。2-3h穿越。🚻沿途停车区以旱厕为主，出发前在伊宁解决。'},
+      'xiata':{name:'夏塔古道',lng:80.73,lat:42.63,cat:'nature',desc:'雪山冰川徒步·¥40+区间车。直面天山雪峰·旱獭成群。早去天气稳·下午易变天。需全天。距昭苏70km。🚻🔴大门游客中心有冲水厕所，徒步线仅有旱厕(有味缺水)！进景区前务必排空。'},
+      'tekesi':{name:'特克斯八卦城',lng:81.84,lat:43.22,cat:'mixed',desc:'世界最大八卦城·无红绿灯。迎宾公园免费露营(充电桩+公厕+天幕)。八卦公园免费热水淋浴。夜景航拍震撼。🚻🟢迎宾公园公厕干净·八卦公园有热水淋浴·全城对自驾游客最友好。'},
+      'kalajun':{name:'喀拉峻草原',lng:81.67,lat:43.05,cat:'nature',desc:'人体草原曲线+阔克苏大峡谷·¥275全域。距特克斯仅30km。鲜花台+猎鹰台+鳄鱼湾。航拍绝佳。4-6h。🚻设施较新，猎鹰台无异味；阔克苏峡谷码头厕所视野好。'},
+      'qiaxi':{name:'恰西草原',lng:82.35,lat:43.25,cat:'nature',desc:'¥30·性价比之王！雪山+草原+云杉同框。燕子桥附近免费露营(平台+热水)。2026环线可能未全通,出发前确认。铺装路Golf7无问题。3-4h。🚻燕子桥有公厕+热水，露营平台设施齐全。'},
+      'kuerdening':{name:'库尔德宁',lng:82.68,lat:43.18,cat:'nature',desc:'¥60·雪岭云杉原始森林(新疆最密)。比恰西安静、云杉更壮观。蝴蝶湖公园24h公厕+免费淋浴。可露营。3-4h。🚻🟢蝴蝶湖公园24h公厕+免费淋浴+供电，房车营地级设施。'},
+      'nalati':{name:'那拉提草原',lng:84.20,lat:43.39,cat:'nature',desc:'空中草原天花板·¥95+区间¥40。网红桥(游牧人家站)·河谷草原。自驾提前30天公众号抢！索道¥68/¥130。全天。🚻🟢游客中心冲水厕所(有热水)；游牧人家旺季排队极长建议错峰。'},
+      'tangbula':{name:'唐布拉百里画廊',lng:83.97,lat:43.82,cat:'nature',desc:'免费·S315省道50km画廊(伊犁最夯免费景区)。仙女湖骑马/徒步2-3h。蜜蜂小镇黑蜂蜜。牧民区露营¥50-100。🚻牧民区旱厕为主，蜜蜂小镇有公厕。新源县G218沿线24座旅游驿站厕所干净。'},
+      'mengkte':{name:'孟克特古道',lng:84.35,lat:43.82,cat:'nature',desc:'集齐伊犁精华·自驾¥200/车(限4人)。前6km柏油+后15km砂石路。早去人少！过观景台全无信号带现金。Golf7慢行可走。4-5h。🚻🔴景区仅旱厕！过了观景平台全无信号，带现金零钱(旱厕收费1-2元)。'},
+      'qiongkushitai':{name:'琼库什台(备选)',lng:81.84,lat:42.92,cat:'nature',desc:'原始哈萨克村落·免费·乌孙古道起点。山路弯多2-3h进。牧民家帐篷¥50/4人。河边水厕。时间紧可跳过,喀拉峻替代。🚻🔴村口有冲水厕所，后山旱厕条件极差，进村前必须解决！'}
+    },
+    dayRoutes:{
+      d1:['yining','sailimu','guozigou','yining'],
+      d2:['yining','yizhao','xiata'],
+      d3:['xiata','tekesi','kalajun'],
+      d4:['tekesi','qiaxi','kuerdening'],
+      d5:['kuerdening','nalati'],
+      d6:['nalati'],
+      d7:['nalati','tangbula','mengkte']
+    },
+    dayDesc:{
+      d1:'伊宁出发→赛里木湖(环湖4-6h)→果子沟夕阳→返伊宁。北上环线,全程高速+国道。',
+      d2:'伊宁→伊昭公路(小独库·2-3h穿越)→昭苏→夏塔。白石峰+油菜花海。住夏塔/昭苏。',
+      d3:'夏塔→特克斯八卦城(1.5h)→喀拉峻草原(30min)。下午喀拉峻光线最佳。住特克斯。',
+      d4:'特克斯→恰西(1.5h·¥30)→库尔德宁(40min·¥60)。一天两草原,性价比拉满。住巩留/库尔德宁。',
+      d5:'库尔德宁→那拉提(2h)。下午游览那拉提河谷草原。住那拉提镇。',
+      d6:'那拉提全天！空中草原+网红桥+游牧人家。早晚光线最佳,中午休息。住那拉提。',
+      d7:'那拉提→独库中段→唐布拉百里画廊→孟克特古道→乔尔玛。接独库南段继续返程！'
+    },
+    food:'烤包子¥5·手抓饭¥25-40·大盘鸡·拌面¥25·马肠子·手工酸奶·卡瓦斯·蜜蜂小镇黑蜂蜜·唐布拉牧民鲜奶·特克斯羊肉串',
+    dayFood:{d1:'伊宁夜市：烤包子¥5·手抓饭¥25-40·卡瓦斯·手工冰淇淋',d2:'昭苏县城：拌面¥25·大盘鸡·抓饭',d3:'特克斯夜市：羊肉串·手工酸奶·椒麻鸡',d4:'巩留县城：拌面·烤羊排·锡伯大饼',d5:'那拉提镇：大盘鸡·烤包子·马肠子',d6:'那拉提镇：手抓饭·纳仁(哈萨克马肉面)·烤全羊',d7:'蜜蜂小镇：黑蜂蜜·牧民鲜奶·拌面¥25(孟克特美食广场右手角新疆小店)'},
+    tips:'独库/伊昭仅6-9月通车·那拉提自驾提前30天抢·赛里木湖禁露营·孟克特公众号"域途河山"预约·恰西环线出发前确认路况·6月中旬-8月最佳窗口·Golf7全程可行(孟克特后15km砂石路慢行)',
+    camping:{
+      d1:'伊宁市区住宿(酒店¥150-250)·赛湖服务区外围可搭帐篷(已禁景区内露营)·果子沟欣驿自驾营地停车免费',
+      d2:'夏塔景区停车场免费(次日一早进园)·昭苏天马文化园晚9点后免费入园(篝火+汽车电影)·昭苏博物馆停车场安静免费',
+      d3:'特克斯迎宾公园免费(充电桩+公厕+天幕)⭐首选·八卦公园免费(热水淋浴)·太极眼摩天轮停车场免费可过夜',
+      d4:'恰西燕子桥免费露营平台(热水+餐饮)⭐·巩留蝴蝶湖公园24h公厕+免费淋浴+供电(房车营地级)·库尔德宁景区停车场免费',
+      d5:'那拉提景区停车场(需报备)·那拉提镇民宿¥100-300·不可随意露营需官方星空营地或景区外民宿',
+      d6:'同D5·那拉提镇住宿¥100-300·旺季提前3-5天订',
+      d7:'唐布拉牧民帐篷¥50-100(仙女湖旁)·孟克特景区外停车场免费(24h洗手间+充电桩¥2/度)·孟克特景区内木栈道可过夜(靠近水边)'
+    },
+    foodStrategy:'<b style="color:#e07b39">无需炊具方案</b>：沿途每日均经过城镇——伊宁/昭苏/特克斯/巩留/那拉提/蜜蜂小镇，拌面¥15-25·抓饭¥25-40·烤包子¥5，两人一顿¥40-80吃饱。自热火锅/米饭<b>备6-8盒应急用</b>(孟克特深处无餐馆+赛湖环湖+独库堵车)，不用带28盒占后备箱。建议带<b>12V车载电热水杯(¥50-80)</b>泡茶冲咖啡，搭配移动电源+折叠电水壶露营时烧水。伊宁出发前家乡好超市采购齐全，后续县城只能补基础物资。',
+    toiletTips:'各景点厕所情况已标注在景点描述末尾(🚻)。<b>随身必带</b>：湿厕纸+免洗洗手液+口罩(滴风油精防臭)+密封袋(装废纸)+现金零钱(部分旱厕收费1-2元)。独库公路沿途优先选服务区冲水厕所，避免停车区旱厕。'
+  },
+  'xining':{
+    name:'西宁',days:2,center:{lng:101.78,lat:36.62},
+    altitude:'2260m',altitudeTips:'海拔已降低，一般无高反。但如果从青海湖方向过来仍有不适，休息半天即可缓解。西宁之后全程低海拔，高原行程到此结束。',
+    spots:{
+      'taersi':{name:'塔尔寺',lng:101.65,lat:36.48,cat:'hist',desc:'藏传佛教圣地·¥70。酥油花+壁画+堆绣三绝。距市区25km。顺时针绕行,殿内禁拍照。'},
+      'dongguan':{name:'东关清真大寺',lng:101.80,lat:36.62,cat:'hist',desc:'西北最大清真寺·免费。伊斯兰建筑。周五主麻日人多。'},
+      'mojiajie':{name:'莫家街',lng:101.78,lat:36.62,cat:'food',desc:'西宁美食街·酸奶·酿皮·手抓·甜醅。马忠食府。'}
+    },
+    dayRoutes:{d1:['taersi'],d2:['dongguan','mojiajie']},
+    food:'<b>本地人推荐</b>：马尔沙牛杂(¥20·早7点排队·西宁早餐之王)·益鑫手抓(¥78/斤·老字号)·拜家酸奶(¥8·纯牦牛酸奶)·德禄酸奶(¥10)·青海土火锅(¥68/锅) <b>下南关街>莫家街</b>：甜醅¥8·尕面片¥15·羊肠面¥12·酿皮¥10 <b>避雷</b>：莫家街商业化过度游客价高，下南关街才是本地人市场',
+    dayFood:{d1:'塔尔寺方向：马尔沙牛杂¥20(早餐·早7点排队)·益鑫手抓¥78/斤·德禄酸奶¥10',d2:'东关→下南关街：甜醅¥8·尕面片¥15·羊肠面¥12·酿皮¥10·拜家酸奶¥8'},
+    tips:'海拔2260m注意高原反应·塔尔寺禁短裙短裤·殿内禁拍照·清真餐厅注意礼仪'
+  },
+  'menyuan':{
+    name:'门源',days:2,center:{lng:101.62,lat:37.38},
+    altitude:'2800-3940m',altitudeTips:'达坂山观景台3940m为全线最高停车点（仅拍照10分钟不需担心）。圆山观花台2800m，花海漫步动作放缓。当日下山不住高原。',
+    spots:{
+      'dabanshan':{name:'达坂山观景台',lng:101.41,lat:37.38,cat:'nature',desc:'免费制高点(海拔3940m)·俯瞰百里花海全景+岗什卡雪峰同框。G227国道旁,门源第一站必停！停车¥10。清晨云雾最美。'},
+      'yuanshan':{name:'圆山观花台',lng:101.42,lat:37.46,cat:'nature',desc:'核心观景点(青石嘴镇)·360°俯瞰几何色块花海。¥30-60。早6:30上山人少光线好。花海+雪峰经典同框机位。'},
+      'zhaobishan':{name:'照壁山景区',lng:101.65,lat:37.35,cat:'nature',desc:'俯瞰门源县城全景+远眺祁连雪山·¥20-30。8:30-19:00。日落绝佳位置,距县城7km。'},
+      'gangshika':{name:'岗什卡雪峰',lng:101.45,lat:37.68,cat:'nature',desc:'祁连山东段最高峰(5254.5m)·免费。电影《攀登者》取景地。七彩冰瀑。普通游客远观即可,登山需专业装备。'},
+      'xianmi':{name:'仙米国家森林公园',lng:101.96,lat:37.29,cat:'nature',desc:'高原绿宝石·14.8万公顷原始森林。免费(聚阳沟¥20)。古木参天溪水潺潺,花海暴晒后的降温洗肺选择。岩羊出没！'},
+      'fenfangyu':{name:'花海芬芳浴',lng:101.54,lat:37.49,cat:'mixed',desc:'花田中小木屋+秋千·¥20。人像摄影好去处。7/9-8/31开放(8:00-20:00)。欧式风情花田小径。'}
+    },
+    dayRoutes:{d1:['dabanshan','yuanshan','zhaobishan'],d2:['fenfangyu','xianmi','gangshika']},
+    food:'炕锅羊排·手抓羊肉(¥80/斤)·门源奶皮(¥15/碗)·牦牛酸奶(¥5-8)·青稞饼(¥10)·尕面片·甜醅·狗浇尿油饼(¥8)',
+    dayFood:{d1:'达坂山/圆山/照壁山：青石嘴镇炕锅羊排·手抓羊肉¥80/斤·牦牛酸奶¥5-8',d2:'仙米/岗什卡方向：门源奶皮¥15/碗·青稞饼¥10·尕面片·甜醅·狗浇尿油饼¥8'},
+    tips:'最佳花期7.10-7.25(仅约20天!)·海拔2800-3900m注意高反·洋葱式穿搭早晚冷白天热·SPF50+墨镜必备·达坂山旺季早7点前出发避堵·花田严禁踩踏罚款500元/亩'
+  },
+  'lanzhou':{
+    name:'兰州',days:2,center:{lng:103.83,lat:36.06},
+    spots:{
+      'gansubo':{name:'甘肃省博物馆',lng:103.77,lat:36.07,cat:'hist',desc:'免费·周一闭馆·提前3天公众号预约。马踏飞燕真品+玻璃莲花盏。2-3h。二楼网红绿马玩偶¥39。'},
+      'zhongshan':{name:'中山桥',lng:103.82,lat:36.06,cat:'mixed',desc:'黄河第一桥·免费。19:00亮灯夜景绝美。过桥白塔山登顶俯瞰兰州全景。'},
+      'baitashan':{name:'白塔山公园',lng:103.82,lat:36.07,cat:'mixed',desc:'免费·登顶俯瞰黄河+兰州全景。缆车¥45往返。山顶牡丹亭拍中山桥最佳机位。'},
+      'zhenning':{name:'正宁路夜市',lng:103.82,lat:36.05,cat:'food',desc:'最火爆夜市·马爷牛奶鸡蛋醪糟(认准白胡子大爷)·烤羊肉串¥3/串。'}
+    },
+    dayRoutes:{d1:['gansubo','zhongshan','baitashan'],d2:['zhenning']},
+    food:'<b>牛肉面</b>：磨沟沿(汤清肉香¥12·本地人首选)·吾穆勒(蓬灰面筋道¥15·肉比面好)·白建强(辣子香¥12)·陈记清汤牛肉面(24h) <b>避雷</b>：马子禄=游客专供、安泊尔性价比低 <b>手抓</b>：阿西娅¥68/人·春台手抓 <b>夜市/小吃</b>：正宁路老马爷醪糟(找68号白胡子大爷·其他为山寨)·再回首小吃(酿皮¥10·灰豆子¥8)·放哈甜醅子奶茶¥15',
+    dayFood:{d1:'省博→中山桥→白塔山：磨沟沿牛肉面¥12(省博旁)·阿西娅手抓¥68/人·放哈甜醅子奶茶¥15',d2:'正宁路夜市：老马爷醪糟(只认68号白胡子大爷)·再回首酿皮¥10·灰豆子¥8·烤羊肉串¥3/串'},
+    tips:'甘肃省博提前3天约·牛肉面7:00-9:00头汤最鲜·叫"牛肉面"不叫"拉面"·机场城际高铁20min/¥20到市区'
+  },
+  'xian':{
+    name:'西安',days:4,center:{lng:108.94,lat:34.26},
+    spots:{
+      'bingmayong':{name:'兵马俑',lng:109.28,lat:34.38,cat:'hist',desc:'世界第八大奇迹·¥120。8:30第一波进！1→3→2号坑→铜车马。官方讲解在1号坑入口。VIP通道¥180省2h排队。地铁14号线直达。'},
+      'shanlibo':{name:'陕西历史博物馆',lng:108.95,lat:34.22,cat:'hist',desc:'免费·最难抢票！提前5-7天17:00公众号抢。买¥30珍宝馆联票免排队。镶金兽首玛瑙杯禁止出境。周一闭馆。'},
+      'chengqiang':{name:'西安城墙',lng:108.95,lat:34.26,cat:'mixed',desc:'¥54+45骑行。永宁门上→安定门精华段6km。租车¥45/3h。傍晚骑车最舒服。'},
+      'dayanta':{name:'大雁塔·大唐不夜城',lng:108.96,lat:34.22,cat:'mixed',desc:'广场免费。19:00灯光秀+不倒翁小姐姐(20:30)。大悦城4楼观景台拍大雁塔。'},
+      'huiminjie':{name:'回民街·洒金桥',lng:108.94,lat:34.27,cat:'food',desc:'洒金桥>回民街主街！老米家泡馍·贾三灌汤包·定家小酥肉·花奶奶酸梅汤。避开主街深入小巷。'},
+      'huashan':{name:'华山',lng:110.09,lat:34.49,cat:'nature',desc:'五岳之险·¥160+索道。西上北下经典。距西安120km。1天,提前查天气！'}
+    },
+    dayRoutes:{d1:['bingmayong'],d2:['shanlibo','dayanta'],d3:['chengqiang','huiminjie'],d4:['huashan']},
+    food:'<b>洒金桥(本地人食堂)>回民街主街</b>：马洪小炒泡馍(¥28·本地人强推)·马宾小炒·哈桑烤肉(¥3/串·坊上最地道)·定家小酥肉(¥20)·花奶奶酸梅汤(¥8)·刘纪孝腊牛羊肉(¥80/斤·排队王伴手礼) <b>早餐/小吃</b>：胖子甑糕(早7点前卖完)·杨天玉腊牛肉夹馍(¥15)·子午路张记肉夹馍(¥12)·马二酸汤水饺(¥18/斤) <b>避雷</b>：回民街主街大店铺全游客价·现切水果必坑·贾三灌汤包品控下降',
+    dayFood:{d1:'兵马俑(临潼)：子午路张记肉夹馍¥12(翠华路总店)·魏家凉皮',d2:'陕历博/大雁塔：子午路张记(翠华路店)·马洪小炒泡馍¥28·biangbiang面¥15',d3:'城墙→洒金桥：马宾小炒·哈桑烤肉¥3/串·定家小酥肉¥20·花奶奶酸梅汤¥8·刘纪孝腊牛羊肉¥80/斤',d4:'华山：山下凉皮+肉夹馍·自备高能量零食上山'},
+    tips:'兵马俑别信野导·陕历博提前5-7天抢·回民街现切水果必坑·洒金桥才是本地人食堂·地铁14号线直达兵马俑·华山查天气勿夜爬'
+  },
+  'xinzhou':{
+    name:'忻州',days:2,center:{lng:112.73,lat:38.42},
+    altitude:'五台山3058m',altitudeTips:'白天游览五台山台顶，当晚下山住忻州市区（~800m）不过夜。海拔虽高但停留时间短，一般不会高反。山上气温比市区低10°C+带外套。',
+    spots:{
+      'wutaishan':{name:'五台山',lng:113.59,lat:39.04,cat:'mixed',desc:'中国四大佛教名山之首·¥135。自驾进山提前5天预约(每日限2000辆)。黛螺顶+五爷庙+塔院寺。1-2天。'},
+      'yanmenguan':{name:'雁门关',lng:112.86,lat:39.19,cat:'hist',desc:'天下九塞之首·¥90。杨家将镇守地+长城关口。3-4h。'},
+      'gucheng':{name:'忻州古城',lng:112.73,lat:38.42,cat:'mixed',desc:'免费·美食街+城墙夜景。秀容书院俯瞰古城。2h。'}
+    },
+    dayRoutes:{d1:['wutaishan'],d2:['yanmenguan','gucheng']},
+    food:'五台山素斋·忻州刀削面·代县熬鱼·定襄蒸肉·神池月饼',
+    dayFood:{d1:'五台山：五台山素斋·台蘑炖鸡·台蘑酱',d2:'雁门关/忻州古城：代县熬鱼·忻州刀削面·定襄蒸肉·神池月饼'},
+    tips:'五台山海拔3000m+注意高反·自驾名额紧张建议提前规划·五台山气温低于市区10°C+'
+  },
+  'shuozhou':{
+    name:'朔州',days:1,center:{lng:112.43,lat:39.33},
+    spots:{
+      'yingxianmuta':{name:'应县木塔',lng:113.19,lat:39.56,cat:'hist',desc:'世界最古木塔(1056年)·全木榫卯千年斜而不倒。¥50，仅开一楼。绕塔找24种斗拱。1.5h。'},
+      'chongfusi':{name:'崇福寺',lng:112.43,lat:39.33,cat:'hist',desc:'金代建筑博物馆·免费。黑神话悟空取景地。弥陀殿金代壁画+隔扇门。2-3h。'}
+    },
+    dayRoutes:{d1:['yingxianmuta','chongfusi']},
+    food:'应县凉粉(¥8)·右玉盐煎羊肉·朔州面皮·山阴卷卷',
+    dayFood:{d1:'应县木塔：应县凉粉¥8·滴溜·右玉盐煎羊肉·朔州面皮·山阴卷卷(均在应县/朔州市区可吃到)'},
+    tips:'应县木塔位于朔州应县(非大同市区)·崇福寺金代建筑保存完好·一天足够'
+  },
+  'bayannaoer':{
+    name:'巴彦淖尔',days:2,center:{lng:107.39,lat:40.74},
+    spots:{
+      'wuliangsuhai':{name:'乌梁素海',lng:108.89,lat:40.94,cat:'nature',desc:'中国最大同纬度湿地·候鸟天堂。¥40。4-5月/9-10月候鸟季。船游¥60。半天。'},
+      'nalinhu':{name:'纳林湖',lng:107.02,lat:40.65,cat:'nature',desc:'沙漠蓝宝石·¥30。沙漠+湖泊+芦苇。距磴口40km。'},
+      'sanshenggong':{name:'三盛公水利风景区',lng:106.96,lat:40.44,cat:'mixed',desc:'黄河第一闸·¥30。水利工程+黄河文化。1-2h。'}
+    },
+    dayRoutes:{d1:['wuliangsuhai'],d2:['nalinhu','sanshenggong']},
+    food:'河套硬四盘·巴盟酿皮·猪肉勾鸡·铁锅焖面·河套王酒',
+    dayFood:{d1:'乌梁素海方向：铁锅焖面·巴盟酿皮',d2:'磴口(纳林湖/三盛公)：猪肉勾鸡·河套硬四盘·河套王酒'},
+    tips:'河套平原7-8月向日葵田壮观·乌梁素海距市区较远(140km)·地广人稀车程较长'
+  },
+  'yumen':{
+    name:'玉门',days:'中转',center:{lng:97.04,lat:39.83},
+    spots:{
+      'moshan':{name:'玉门魔山地质公园',lng:97.20,lat:39.91,cat:'nature',desc:'丹霞+火山遗迹·比张掖人少。2-3h。免费或低价。路况一般Golf 7谨慎。'},
+      'tieren':{name:'铁人王进喜纪念馆',lng:97.04,lat:39.83,cat:'hist',desc:'免费·油田红色旅游。了解中国石油工业史。1-2h。'}
+    },
+    dayRoutes:{},
+    food:'玉门羊肉泡馍·油田大饼·河西走廊面食',
+    tips:'注意：玉门关遗址在敦煌西北90km，非玉门市。玉门为中转站，景点有限。魔山地质公园路况一般。'
+  },
+  'guazhou':{
+    name:'瓜州',days:1,center:{lng:95.78,lat:40.53},
+    spots:{
+      'dadiZhizi':{name:'大地之子+戈壁雕塑群',lng:95.60,lat:40.38,cat:'mixed',desc:'巨型婴儿雕塑+无界(白色海市蜃楼)+汉武雄风(汉武帝头像)。全免费！网红打卡点。1h。'},
+      'yulinku':{name:'榆林窟',lng:95.94,lat:40.07,cat:'hist',desc:'莫高窟姐妹窟·¥40。特窟¥150-200需提前3天预约。壁画保存比莫高窟更好。2-3h。'},
+      'suoyangcheng':{name:'锁阳城遗址',lng:96.21,lat:40.25,cat:'hist',desc:'唐代军事要塞·¥50+20观光车。玄奘曾在此讲经。1-2h。'}
+    },
+    dayRoutes:{d1:['suoyangcheng','yulinku','dadiZhizi']},
+    food:'锁阳炖羊肉(¥68)·瓜州蜜瓜(7-8月)·河西拉条子',
+    dayFood:{d1:'锁阳城/榆林窟/雕塑群：锁阳炖羊肉¥68·瓜州蜜瓜(7-8月路边摊)·河西拉条子'},
+    tips:'戈壁雕塑群下午光线最佳·榆林窟比莫高窟人少体验好·瓜州蜜瓜极甜必尝'
+  },
+  'kuerle':{
+    name:'库尔勒',days:'中转',center:{lng:86.15,lat:41.73},
+    spots:{
+      'bositeng':{name:'博斯腾湖',lng:86.75,lat:41.95,cat:'nature',desc:'中国最大内陆淡水湖·¥45。金沙滩+莲花湖。距市区60km。半天。'},
+      'tiemenguan':{name:'铁门关',lng:86.20,lat:41.80,cat:'hist',desc:'古丝绸之路咽喉·¥20。1h。'}
+    },
+    dayRoutes:{},
+    food:'库尔勒香梨(9月)·烤羊肉串·大盘鸡·手抓饭·博斯腾湖鱼',
+    tips:'返程重要中转站·加油补给·库尔勒香梨9月最甜·G0711乌若高速直达若羌'
+  },
+  'ruoqiang':{
+    name:'若羌',days:'中转',center:{lng:88.17,lat:39.02},
+    spots:{
+      'loulanbo':{name:'楼兰博物馆',lng:88.17,lat:39.02,cat:'hist',desc:'免费·楼兰古城文物+干尸。了解楼兰文明。1-2h。注意：楼兰古城遗址不对外开放。'},
+      'milanyizhi':{name:'米兰遗址',lng:88.03,lat:39.10,cat:'hist',desc:'汉代屯田遗址·¥50。距县城75km。1h。'}
+    },
+    dayRoutes:{},
+    food:'若羌红枣·新疆拌面·羊肉抓饭',
+    tips:'沙漠边缘·加油务必加满(下一站茫崖316km)·气候干燥多备饮用水·楼兰古城遗址不对普通游客开放'
+  },
+  'mangya':{
+    name:'茫崖',days:'中转',center:{lng:90.19,lat:38.25},
+    altitude:'3000m',altitudeTips:'返程高原第一站！动作放慢多喝水，第一天不洗澡不喝酒。Apple Watch测血氧>90%正常。氧气瓶格尔木药店买。',
+    spots:{
+      'feicuihu':{name:'茫崖翡翠湖',lng:90.19,lat:38.25,cat:'nature',desc:'免费·盐湖翠绿如翡翠。比大柴旦更大更少人。航拍绝美！1h。距市区25km。'},
+      'aikenquan':{name:'艾肯泉(恶魔之眼)',lng:89.86,lat:38.12,cat:'nature',desc:'免费·硫磺热喷泉。航拍如大地之眼。路况差轿车谨慎。距市区40km，1h。'}
+    },
+    dayRoutes:{},
+    food:'青海面片·羊肉汤·青稞饼',
+    tips:'🏔️海拔3000m高原起点！动作放慢多喝水·第一天不洗澡不喝酒·Apple Watch测血氧>90%正常·G315关键补给站·茫崖→格尔木450km无人区务必加满油+备食物水·翡翠湖免费停车'
+  },
+  'geermu':{
+    name:'格尔木',days:'中转',center:{lng:94.90,lat:36.41},
+    altitude:'2800m',altitudeTips:'高原过夜第二站，海拔比茫崖略低体感更舒服。血氧<90%吸氧。昆仑山口4768m为可选支线，高反严重者慎去。格尔木药店可补充氧气瓶。',
+    spots:{
+      'chaerhan':{name:'察尔汗盐湖',lng:95.01,lat:36.37,cat:'nature',desc:'中国最大盐湖·¥60。万丈盐桥(32km公路建在盐湖上)。比茶卡人少。2-3h。距市区60km。'},
+      'kunlun':{name:'昆仑山口',lng:94.05,lat:35.63,cat:'nature',desc:'海拔4768m·免费。可可西里入口。玉珠峰观景。距市区160km。半天。高反严重慎去。'},
+      'kekexili':{name:'可可西里',lng:93.50,lat:35.40,cat:'nature',desc:'世界自然遗产·免费。藏羚羊+藏野驴。需办理通行证。仅限青藏公路沿线。半天-1天。'}
+    },
+    dayRoutes:{},
+    food:'手抓羊肉·牦牛酸奶·青海土火锅·烤羊排',
+    tips:'🏔️海拔2800m·昆仑山口4768m高反严重者慎去·血氧<90%吸氧下撤·格尔木药店可买氧气瓶·青藏公路大货车多注意安全·G6京藏油站稀疏出发加满'
+  },
+  'chaka':{
+    name:'茶卡',days:'中转',center:{lng:99.07,lat:36.79},
+    altitude:'3100m',altitudeTips:'海拔高于格尔木，但已适应两天一般无感。盐湖拍照动作放缓，避免蹲起猛跑。早晚温差大注意保暖。',
+    spots:{
+      'chakayanhu':{name:'茶卡盐湖',lng:99.10,lat:36.76,cat:'nature',desc:'天空之镜·¥60+小火车¥50。一早或傍晚去光线最佳。下湖需穿鞋套¥10。红裙拍照经典。2-3h。'}
+    },
+    dayRoutes:{},
+    food:'茶卡羊肉·青海酸奶·手抓',
+    tips:'🏔️海拔3100m·行动放缓多喝水·早/晚光线最佳·避开正午顶光·鞋套必备·旺季人超多建议早8点前到·避免跑跳拍照'
+  },
+  'qinghaihu':{
+    name:'青海湖',days:'中转',center:{lng:100.22,lat:36.89},
+    altitude:'3200m',altitudeTips:'全程最高过夜点。经过茫崖→格尔木→茶卡逐步适应，到此一般不会严重高反。仍要慢走多喝水，骑车环湖量力而行。',
+    spots:{
+      'erlangjian':{name:'二郎剑景区',lng:100.49,lat:36.59,cat:'nature',desc:'青海湖核心景区·¥90。游船+油菜花田(7-8月)。2-3h。'},
+      'huandonglu':{name:'环湖东路',lng:100.65,lat:36.75,cat:'nature',desc:'铺装良好·免费。沙漠+湖水同框。骑行或自驾。2h。'}
+    },
+    dayRoutes:{},
+    food:'青海土火锅·牦牛酸奶·青稞酒',
+    tips:'🏔️海拔3200m·全程最高过夜点·前两天已逐步适应一般没问题·仍要慢走多喝水·7-8月油菜花季最美·湟鱼为国家保护动物严禁食用·环湖东路沙漠段Golf 7可通行'
+  }
+};
+
+// ---- 城市面板渲染 ----
+let cityMarkers={};
+let activeCity=null;
+
+function switchCity(cityId){
+  // Update weather bar
+  const weatherBar=document.getElementById('weatherBar');
+  const weatherCityName=document.getElementById('weatherCityName');
+  const cityPanel=document.getElementById('cityPanel');
+  const roadTrip=document.getElementById('roadTripPanel');
+  const guide=cityGuides[cityId];
+  if(!guide)return;
+
+  if(weatherBar)weatherBar.style.display='block';
+  if(weatherCityName)weatherCityName.textContent=guide.name+'·3日天气';
+
+  // Hide road trip, show city panel
+  roadTrip.classList.remove('show');
+  cityPanel.classList.add('show');
+  // Auto-expand sidebar if collapsed, show expand button on mobile
+  const sb=document.getElementById('sidebar');
+  if(sb.classList.contains('collapsed')){
+    sb.classList.remove('collapsed');
+  }
+  sb.classList.remove('expanded');
+  if(window.innerWidth<=768){
+    document.getElementById('btnToggleSidebar').textContent='▼ 展开攻略';
+    showExpandBtn(true);
+    updateExpandBtn();
+  }
+
+  // Update tab highlight
+  document.querySelectorAll('.city-tab').forEach(t=>t.classList.remove('active'));
+  const tab=document.getElementById('ctab-'+cityId);if(tab)tab.classList.add('active');
+
+  // Clear old markers
+  clearCityMarkers();
+  activeCity=cityId;
+
+  // Update header
+  const daysText=typeof guide.days==='number'?guide.days+'天深度游':guide.days;
+  document.querySelector('header h1').textContent=guide.name+'攻略';
+  document.querySelector('header p').textContent=daysText+' | 点击景点地图联动 | 点击"绘制路线"规划出行';
+
+  // Render city content
+  renderCityPanel(guide,cityId);
+
+  // Place markers on map (safe - won't crash if map not ready)
+  try{placeCityMarkers(guide,cityId);}catch(e){}
+
+  // Fly map to city (guard against map not yet initialized)
+  if(typeof map!=='undefined'&&map){
+    try{map.setZoomAndCenter(12,[guide.center.lng,guide.center.lat]);}catch(e){}
+  }
+
+  // Fetch weather for this city (use lon,lat format)
+  fetchWeather(guide.center.lng.toFixed(2)+','+guide.center.lat.toFixed(2));
+
+  // Scroll sidebar to top
+  document.getElementById('sidebar').scrollTop=0;
+}
+
+function switchToRoadPlan(){
+  const wb=document.getElementById('weatherBar');
+  if(wb)wb.style.display='none';
+  document.getElementById('roadTripPanel').classList.add('show');
+  document.getElementById('cityPanel').classList.remove('show');
+  clearCityMarkers();
+  activeCity=null;
+  document.querySelectorAll('.city-tab').forEach(t=>t.classList.remove('active'));
+  const roadTab=document.getElementById('ctab-road');
+  if(roadTab)roadTab.classList.add('active');
+  document.querySelector('header h1').textContent='自驾穿越 · 城市攻略';
+  document.querySelector('header p').textContent='烟台→伊犁→青甘南线 | VW Golf 7 | 35-45天 | 点击路段查看路线';
+  // Reset expand state + hide expand button
+  const sb=document.getElementById('sidebar');
+  sb.classList.remove('expanded');
+  showExpandBtn(false);
+}
+
+function placeCityMarkers(guide,cityId){
+  if(typeof map==='undefined'||!map||typeof AMap==='undefined')return;
+  const colorMap={hist:'#c9a96e',nature:'#4a9e6e',mixed:'#e07b39',food:'#e05555',hotel:'#5588cc'};
+  const emojiMap={hist:'🏛',nature:'🏔',mixed:'📍',food:'🍜',hotel:'🏨'};
+  Object.entries(guide.spots).forEach(([id,s])=>{
+    const color=colorMap[s.cat]||'#888';
+    const emoji=emojiMap[s.cat]||'📍';
+    // Marker dot
+    const marker=new AMap.Marker({
+      position:[s.lng,s.lat],
+      content:'<div style="width:26px;height:26px;border-radius:50%;background:'+color+';border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:14px">'+emoji+'</div>',
+      offset:new AMap.Pixel(-13,-13),zIndex:100
+    });
+    // Label
+    const label=new AMap.Marker({
+      position:[s.lng,s.lat],
+      content:'<div style="font-size:10px;color:#fff;text-shadow:0 1px 3px #000;white-space:nowrap;font-weight:bold;transform:translate(-50%,-30px)">'+s.name+'</div>',
+      offset:new AMap.Pixel(0,0),zIndex:99
+    });
+    marker.on('click',()=>selectCitySpot(cityId,id));
+    label.on('click',()=>selectCitySpot(cityId,id));
+    map.add([marker,label]);
+    cityMarkers[cityId+'-'+id]=marker;
+    cityMarkers[cityId+'-'+id+'-label']=label;
+  });
+}
+
+function clearCityMarkers(){
+  if(typeof map==='undefined'||!map){cityMarkers={};return;}
+  Object.values(cityMarkers).forEach(m=>{try{map.remove(m)}catch(e){}});
+  cityMarkers={};
+}
+
+function selectCitySpot(cityId,spotId){
+  const guide=cityGuides[cityId];
+  const s=guide.spots[spotId];
+  if(!s)return;
+  map.setZoomAndCenter(15,[s.lng,s.lat]);
+  // 高亮侧边栏 spot item
+  document.querySelectorAll('#cityPanel .spot-item').forEach(el=>el.classList.remove('active'));
+  const spotEl=document.getElementById('cspot-'+spotId);
+  if(spotEl)spotEl.classList.add('active');
+  // 显示infoWindow
+  const infoWin=new AMap.InfoWindow({content:'<div class="amap-info-content"><b>'+s.name+'</b><br>'+s.desc+'</div>',offset:[0,-40]});
+  infoWin.open(map,[s.lng,s.lat]);
+  setTimeout(()=>infoWin.close(),5000);
+}
+
+function renderCityPanel(guide,cityId){
+  const panel=document.getElementById('cityPanel');
+  const daysLabel=typeof guide.days==='number'?guide.days+'天深度游':(guide.days||'');
+  let html='<div style="padding:12px 14px"><h3 style="color:var(--gold);margin-bottom:4px">'+guide.name+' <span style="font-size:11px;color:var(--sub)">'+daysLabel+'</span></h3>';
+
+  // Altitude warning
+  if(guide.altitude){
+    html+='<div style="margin:8px 0;padding:10px 12px;background:rgba(224,123,57,0.12);border:1px solid var(--orange);border-radius:8px;font-size:11px;line-height:1.6"><b style="color:var(--orange)">&#x1F3D4; 高原提醒 &#xB7; '+guide.altitude+'</b><br>'+guide.altitudeTips+'</div>';
+  }
+
+  // Days + spots
+  const dayNames={d1:'Day 1',d2:'Day 2',d3:'Day 3',d4:'Day 4',d5:'Day 5',d6:'Day 6',d7:'Day 7'};
+  const dayColors={d1:'#e07b39',d2:'#c9a96e',d3:'#4a9e6e',d4:'#5588cc',d5:'#e05555',d6:'#9b59b6',d7:'#1abc9c'};
+
+  if(guide.dayRoutes&&Object.keys(guide.dayRoutes).length>0){
+    Object.entries(guide.dayRoutes).forEach(([day,spotIds])=>{
+      if(!spotIds||spotIds.length===0||!dayNames[day])return;
+      html+='<div class="day-block" style="margin-top:8px"><div class="day-header"><span class="day-badge" style="background:'+dayColors[day]+'">'+dayNames[day]+'</span></div>';
+      // Day description
+      if(guide.dayDesc&&guide.dayDesc[day]){
+        html+='<div style="font-size:10px;color:var(--sub);margin:3px 0 6px 0;line-height:1.5;padding-left:4px;border-left:2px solid '+dayColors[day]+'">'+guide.dayDesc[day]+'</div>';
+      }
+      // Camping info for this day
+      if(guide.camping&&guide.camping[day]){
+        html+='<div style="font-size:10px;margin:3px 0 6px 0;line-height:1.5;padding:4px 8px;background:rgba(201,169,110,0.08);border-radius:6px;border-left:3px solid var(--gold)"><span style="color:var(--gold)">⛺ '+day+'住宿：</span>'+guide.camping[day]+'</div>';
+      }
+      // Food for this day
+      if(guide.dayFood&&guide.dayFood[day]){
+        html+='<div style="font-size:10px;margin:3px 0 6px 0;line-height:1.5;padding:4px 8px;background:rgba(224,123,57,0.06);border-radius:6px;border-left:3px solid var(--orange)"><span style="color:var(--orange)">🍴 今日美食：</span>'+guide.dayFood[day]+'</div>';
+      }
+      spotIds.forEach((spotId,i)=>{
+        const s=guide.spots[spotId];
+        if(!s)return;
+        const badgeColors={hist:'cs-h',nature:'cs-n',mixed:'cs-m',food:'cs-food'};
+        const badgeColor=badgeColors[s.cat]||'cs-h';
+        html+='<div class="spot-item" id="cspot-'+spotId+'" onclick="selectCitySpot(\''+cityId+'\',\''+spotId+'\')"><div class="spot-num '+badgeColor+'">'+(i+1)+'</div><div class="spot-body"><h4>'+s.name+(i===spotIds.length-1?' <span style="font-size:9px;color:var(--gold);font-weight:normal">[终点]</span>':'')+'</h4><div class="desc">'+s.desc+'</div></div><button class="btn-nav-spot" onclick="event.stopPropagation();openCityNavi(\''+cityId+'\',\''+spotId+'\')" title="导航到'+s.name+'">'+ICON_NAV+'</button></div>';
+      });
+      html+='</div>';
+    });
+  } else if(guide.spots){
+    // Cities without day routes: just list all spots
+    html+='<div class="day-block" style="margin-top:8px"><div class="day-header">值得一去的景点</div>';
+    const spotEntries=Object.entries(guide.spots);
+    spotEntries.forEach(([spotId,s],i)=>{
+      const badgeColors={hist:'cs-h',nature:'cs-n',mixed:'cs-m',food:'cs-food'};
+      const badgeColor=badgeColors[s.cat]||'cs-h';
+      html+='<div class="spot-item" id="cspot-'+spotId+'" onclick="selectCitySpot(\''+cityId+'\',\''+spotId+'\')"><div class="spot-num '+badgeColor+'">'+(i+1)+'</div><div class="spot-body"><h4>'+s.name+'</h4><div class="desc">'+s.desc+'</div></div><button class="btn-nav-spot" onclick="event.stopPropagation();openCityNavi(\''+cityId+'\',\''+spotId+'\')" title="导航到'+s.name+'">'+ICON_NAV+'</button></div>';
+    });
+    html+='</div>';
+  }
+  // Food strategy (if exists)
+  if(guide.foodStrategy){
+    html+='<div class="note-box" style="margin-top:10px;border-left-color:var(--gold);background:rgba(201,169,110,0.06)"><b style="color:var(--gold)">吃饭攻略</b><br>'+guide.foodStrategy+'</div>';
+  }
+  // Food
+  html+='<div class="note-box" style="margin-top:10px"><b>美食</b><br>'+guide.food+'</div>';
+  // Toilet tips (if exists)
+  if(guide.toiletTips){
+    html+='<div class="note-box" style="margin-top:6px;border-left-color:#5588cc"><b style="color:#5588cc">如厕指南</b><br>'+guide.toiletTips+'</div>';
+  }
+  // Tips
+  html+='<div class="note-box" style="border-left-color:var(--gold)"><b style="color:var(--gold)">贴士</b><br>'+guide.tips+'</div>';
+
+  html+='</div>';
+  panel.innerHTML=html;
+}
+
+function openCityNavi(cityId,spotId){
+  const guide=cityGuides[cityId];
+  const s=guide.spots[spotId];
+  if(s)window.open(generateNaviUri(s.lng,s.lat,s.name),'_blank');
+}
+
+// ---- 模式切换 ----
+function switchMode(mode){
+  // Legacy: always show road trip + city tabs since we removed mode toggle
+  const roadTrip=document.getElementById('roadTripPanel');
+  const cityTabs=document.getElementById('cityTabs');
+  const cityPanel=document.getElementById('cityPanel');
+  roadTrip.classList.add('show');
+  cityTabs.classList.add('show');
+  if(cityPanel)cityPanel.classList.remove('show');
+  switchToRoadPlan();
+  document.getElementById('mondayWarn')&&(document.getElementById('mondayWarn').style.display='none');
+}
+function toggleRoadSection(el){
+  const body=el.nextElementSibling;
+  const isOpen=el.classList.contains('open');
+  if(isOpen){el.classList.remove('open');body.classList.remove('show');el.querySelector('.arrow').textContent='▶';}
+  else{el.classList.add('open');body.classList.add('show');el.querySelector('.arrow').textContent='▼';}
+}
+
 window.initMap=initMap;
+document.addEventListener('DOMContentLoaded',function(){
+  // Show city tabs and default to road plan
+  switchMode('roadtrip');
+  setDefaultDate();
+
+  // Mouse wheel → horizontal scroll on city tabs
+  const tabsEl=document.getElementById('cityTabs');
+  if(tabsEl){
+    tabsEl.addEventListener('wheel',function(e){
+      if(e.deltaY!==0){
+        e.preventDefault();
+        tabsEl.scrollLeft+=e.deltaY;
+      }
+    },{passive:false});
+  }
+});
+
 </script>
 <script src="https://webapi.amap.com/maps?v=2.0&key=b5903b78f8f2d6738e929cb8be80e7d3&plugin=AMap.AutoComplete,AMap.Geolocation&callback=initMap"></script>
+
+<!-- 聊天面板 -->
+<div id="chat-backdrop" onclick="closeChat()"></div>
+<div id="chat-panel">
+  <div class="chat-panel-header">
+    <span style="font-size:14px;color:#c9a96e;font-weight:600">记账助手</span>
+    <button onclick="closeChat()" style="width:28px;height:28px;border-radius:50%;border:1px solid #444;background:transparent;color:#aaa;cursor:pointer;font-size:14px">✕</button>
+  </div>
+  <div class="chat-quick-btns" id="chatQuickBtns">
+    <button class="chat-quick-btn" data-text="汇总">汇总</button>
+    <button class="chat-quick-btn" data-text="本月">本月</button>
+    <button class="chat-quick-btn" data-text="帮助">帮助</button>
+    <button class="chat-quick-btn" data-text="天气">天气</button>
+  </div>
+  <div id="chat-messages"></div>
+  <div id="chat-input-area">
+    <input id="chat-input" type="text" placeholder="羊肉面：18元，打车：25元" autocomplete="off" enterkeyhint="send">
+    <button id="chat-send-btn">➤</button>
+  </div>
+</div>
+
 </body>
 </html>

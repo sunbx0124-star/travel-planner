@@ -1,6 +1,6 @@
-const CACHE_NAME = 'ty-guide-v1';
+const CACHE_NAME = 'travel-planner-v35';
 const ASSETS = [
-  './太原攻略地图.html',
+  './index.html',
   './manifest.json'
 ];
 

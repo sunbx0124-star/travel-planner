@@ -1,7 +1,7 @@
 {
-  "name": "太原深度游攻略",
-  "short_name": "太原攻略",
-  "description": "太原3-4天深度游 · 互动地图 · 路线规划 · 美食住宿推荐",
+  "name": "自驾穿越 · 城市攻略 · 记账助手",
+  "short_name": "自驾攻略",
+  "description": "烟台→伊犁→青甘南线 · 28城详细攻略 · 互动地图 · 路线规划 · 记账助手 · 天气",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
