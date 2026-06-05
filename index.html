@@ -329,6 +329,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <button class="city-tab" id="ctab-qinghaihu" onclick="switchCity('qinghaihu')">青海湖</button>
   <button class="city-tab" id="ctab-xining" onclick="switchCity('xining')">西宁</button>
   <button class="city-tab" id="ctab-lanzhou" onclick="switchCity('lanzhou')">兰州</button>
+  <button class="city-tab" id="ctab-tianshui" onclick="switchCity('tianshui')">天水</button>
   <button class="city-tab" id="ctab-xian" onclick="switchCity('xian')">西安</button>
 </div>
 
@@ -336,7 +337,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 <div class="road-trip" id="roadTripPanel">
 <div class="road-summary">
   <h3>烟台 → 伊犁 → 青甘南线 自驾穿越</h3>
-  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 巴彦淖尔 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 西安 → 烟台</div>
+  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 巴彦淖尔 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 天水 → 西安 → 烟台</div>
   <div class="road-stats">
     <span class="road-stat">总里程 <b>~10500km</b></span>
     <span class="road-stat">天数 <b>35-45天</b></span>
@@ -410,7 +411,9 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     <div class="road-segment clickable" id="road-ret-7" onclick="drawRoadSegment('ret-7')"><div class="seg-header">格尔木→茶卡 <span class="stars">★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G6京藏高速 · ~470km · 5h</div><div class="seg-info"><b style="color:var(--orange)">&#x1F3D4; 格尔木2800m&#x2192;茶卡3100m。</b> 格尔木加满油！沿途服务区多未启用，仅都兰可靠。持续高原驾驶，注意补水防疲劳。</div><div class="road-route-detail" id="detail-road-ret-7" style="display:none"></div><div class="seg-actions" id="actions-ret-7" style="display:none"></div></div>
     <div class="road-segment clickable" id="road-ret-8" onclick="drawRoadSegment('ret-8')"><div class="seg-header">茶卡→西宁 (经青海湖) <span class="stars">★★★★★</span><span class="seg-status seg-ok">经典</span></div><div class="seg-route">G109+高速 · ~270km · 4-5h</div><div class="seg-info">橡皮山垭口3817m！茶卡盐湖一早或傍晚去。环湖东路铺装良好。</div><div class="road-route-detail" id="detail-road-ret-8" style="display:none"></div><div class="seg-actions" id="actions-ret-8" style="display:none"></div></div>
     <div class="road-segment clickable" id="road-ret-9" onclick="drawRoadSegment('ret-9')"><div class="seg-header">西宁→兰州 <span class="stars">★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G6京藏高速 · ~220km · 3h</div><div class="seg-info">全程高速，轻松到达。</div><div class="road-route-detail" id="detail-road-ret-9" style="display:none"></div><div class="seg-actions" id="actions-ret-9" style="display:none"></div></div>
-    <div class="road-segment clickable" id="road-ret-10" onclick="drawRoadSegment('ret-10')"><div class="seg-header">兰州→西安 <span class="stars">★★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G30+G22 · ~650km · 7h</div><div class="seg-info">途经天水麦积山石窟，值得停留半天。</div><div class="road-route-detail" id="detail-road-ret-10" style="display:none"></div><div class="seg-actions" id="actions-ret-10" style="display:none"></div></div>
+    <div class="road-segment clickable" id="road-ret-9b" onclick="drawRoadSegment('ret-9b')"><div class="seg-header">兰州→天水 <span class="stars">★★★★★</span><span class="seg-status seg-ok">石窟之路</span></div><div class="seg-route">G30连霍高速 · ~300km · 3h</div><div class="seg-info">兰州南下直达天水。途经定西。天水麦积山石窟(中国四大石窟之一)+伏羲庙+仙人崖。麻辣烫+呱呱必吃！</div><div class="road-route-detail" id="detail-road-ret-9b" style="display:none"></div><div class="seg-actions" id="actions-ret-9b" style="display:none"></div></div>
+
+<div class="road-segment clickable" id="road-ret-10" onclick="drawRoadSegment('ret-10')"><div class="seg-header">天水→西安 <span class="stars">★★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G30连霍高速 · ~350km · 4h</div><div class="seg-info">天水东行经宝鸡到西安。G30路况好。宝鸡可短暂停靠看法门寺(绕行30km)。</div><div class="road-route-detail" id="detail-road-ret-10" style="display:none"></div><div class="seg-actions" id="actions-ret-10" style="display:none"></div></div>
     <div style="margin-top:6px;font-size:10px;color:var(--sub);line-height:1.6">
       <b>G315精华</b>：茫崖翡翠湖(免费)→西台双色湖(公路穿湖)→水上雅丹(全球唯一)→东台(蒂芙尼蓝)→U型公路→察尔汗盐湖<br>
       <b style="color:var(--orange)">⚠</b> 小柴旦湖→老茫崖施工(限速20km/h)，青海12328确认路况<br>
@@ -712,9 +715,14 @@ function isMuseumSpot(s){
 
 // 城市在整体行程中的到达日（从出发日算起，Day 1 = 出发日）
 const CITY_TRIP_DAY={
-  'taiyuan':3,'datong':8,'yinchuan':13,'wuwei':18,'menyuan':19,'zhangye':21,
-  'jiuquan':24,'dunhuang':29,'wulumuqi':34,'lanzhou':57,'xian':59,
-  'zhongwei':16,'guiyang':100,'xining':55
+  'taiyuan':3,'xinzhou':7,'shuozhou':9,'datong':10,
+  'bayannaoer':14,'yinchuan':16,'zhongwei':19,'wuwei':21,
+  'menyuan':23,'zhangye':25,'jiuquan':28,'jiayuguan':30,
+  'yumen':31,'guazhou':32,'dunhuang':33,'hammi':36,
+  'tulufan':38,'wulumuqi':40,'s101':43,'yili':44,
+  'kuerle':51,'ruoqiang':52,'mangya':53,'geermu':54,
+  'chaka':55,'qinghaihu':56,'xining':57,'lanzhou':59,'tianshui':61,'xian':63,
+  'guiyang':100
 };
 
 function getCityMuseumDays(guide){
@@ -772,13 +780,14 @@ function onDateChange(){
   const weekdays=['周日','周一','周二','周三','周四','周五','周六'];
 
   // 确定显示哪几天的日期——根据当前活跃城市的到达日
-  let baseDay=0, dayCount=4; // 默认：出发日开始的4天
+  let baseDay=0, dayCount=4;
   if(activeCity){
     const guide=cityGuides[activeCity];
-    const tripDay=CITY_TRIP_DAY[activeCity];
-    if(tripDay&&guide){
-      baseDay=tripDay-1; // tripDay从1开始，baseDay从0开始
-      dayCount=typeof guide.days==='number'?guide.days:Object.keys(guide.dayRoutes||{}).filter(k=>k!=='hotels').length||4;
+    if(guide){
+      // 始终从guide取实际天数,而非硬编码4天
+      dayCount=typeof guide.days==='number'?guide.days:(Object.keys(guide.dayRoutes||{}).filter(k=>k!=='hotels').length||1);
+      const tripDay=CITY_TRIP_DAY[activeCity];
+      if(tripDay)baseDay=tripDay-1;
     }
   }
 
@@ -1367,7 +1376,7 @@ const cityCoords={
   '茫崖':{lng:90.85,lat:38.25},'格尔木':{lng:94.90,lat:36.41},
   '茶卡':{lng:99.08,lat:36.79},'青海湖':{lng:100.40,lat:36.85},
   '西宁':{lng:101.78,lat:36.62},'门源':{lng:101.62,lat:37.38},'兰州':{lng:103.83,lat:36.06},
-  '西安':{lng:108.94,lat:34.26}
+  '天水':{lng:105.72,lat:34.58},'西安':{lng:108.94,lat:34.26}
 };
 
 const roadSegments={
@@ -1401,7 +1410,8 @@ const roadSegments={
   'ret-7':{from:'格尔木',to:'茶卡'},
   'ret-8':{from:'茶卡',to:'西宁'},
   'ret-9':{from:'西宁',to:'兰州'},
-  'ret-10':{from:'兰州',to:'西安'}
+  'ret-9b':{from:'兰州',to:'天水'},
+  'ret-10':{from:'天水',to:'西安'}
 };
 
 let roadRoutePoly=null,activeRoadSeg=null;
@@ -1518,8 +1528,8 @@ const cityGuides={
       'food2':{name:'老军营小吃街',lng:112.5550,lat:37.8400,cat:'food',desc:'太原最接地气的小吃街，本地人>游客。沾串串¥1/3串、打卤面、麻辣拌（酸甜微辣）、上帝炸鸡。¥30吃到撑。晚餐时段最佳，地道太原味。1.5h。'},
       'shuangta':{name:'双塔寺（永祚寺）',lng:112.5900,lat:37.8460,cat:'hist',desc:'凌霄双塔400年太原天际线。全国唯一砖仿木无梁建筑寺院。可登塔俯瞰太原全景。明代牡丹"紫霞仙"4-5月绽放。¥30，1.5h。'},
       'donghu':{name:'东湖醋园',lng:112.5780,lat:37.8790,cat:'mixed',desc:'非遗老陈醋文化。免费参观+品醋。看传统工艺：蒸→酵→熏→淋→陈。闻蒸房酸爽提神。醋冰淇淋¥15必试！免费，1h。'},
-      'beiqibihua':{name:'北齐壁画博物馆',lng:112.5800,lat:37.8100,cat:'hist',desc:'2023年新馆，徐显秀墓原址保护。北齐壁画规模宏大、色彩艳丽。¥35需提前1-15天预约，不售当日票。1.5h。'},
-      'taiyuanbowuguan':{name:'太原博物馆+青铜博物馆',lng:112.5350,lat:37.8050,cat:'hist',desc:'同址双馆一次逛！镇馆之宝：赵卿墓车马坑（春秋真车马殉葬）。青铜馆"吉光华"获全国陈列精品奖。免费，16:00停止入馆。紧邻汾河公园。2h。'},
+      'beiqibihua':{name:'北齐壁画博物馆',lng:112.5800,lat:37.8100,cat:'hist',desc:'2023年新馆，徐显秀墓原址保护。¥35需提前1-15天预约不售当日票。周一闭馆。1.5h。'},
+      'taiyuanbowuguan':{name:'太原博物馆+青铜博物馆',lng:112.5350,lat:37.8050,cat:'hist',desc:'同址双馆一次逛！赵卿墓车马坑+吉光华青铜精品。免费周一闭馆16:00停入。紧邻汾河公园。2h。'},
       'fenhe':{name:'汾河公园',lng:112.5400,lat:37.8550,cat:'nature',desc:'太原母亲河，骑行+游船+日落。山西大剧院倒影很出片。太原博物馆出来步行5分钟即到。免费，1.5h。适合放松收官。'},
       'juewei':{name:'崛围山',lng:112.4800,lat:37.9200,cat:'nature',desc:'太原红叶之王（10月）。免费，3-5h。登山难度大，可替代Day2全部景点。秋季首选。'},
       'yiyuan':{name:'怡园酒庄',lng:112.5500,lat:37.8100,cat:'mixed',desc:'黄土高原微醺体验。¥80/人，半天。品酒+葡萄园。太原周边小众之选。'},
@@ -1794,6 +1804,20 @@ const cityGuides={
     dayFood:{d1:'省博→中山桥→白塔山：磨沟沿牛肉面¥12(省博旁)·阿西娅手抓¥68/人·放哈甜醅子奶茶¥15',d2:'正宁路夜市：老马爷醪糟(只认68号白胡子大爷)·再回首酿皮¥10·灰豆子¥8·烤羊肉串¥3/串'},
     tips:'甘肃省博提前3天约·牛肉面7:00-9:00头汤最鲜·叫"牛肉面"不叫"拉面"·机场城际高铁20min/¥20到市区'
   },
+  'tianshui':{
+    name:'天水',days:2,center:{lng:105.72,lat:34.58},
+    spots:{
+      'maijishan':{name:'麦积山石窟',lng:106.00,lat:34.35,cat:'hist',desc:'中国四大石窟之一·¥80(含观光车)。1600年历史·194窟·7000余尊泥塑。特窟¥180需提前48h小程序约。栈道高80m恐高慎入。4h。'},
+      'fuximiao':{name:'伏羲庙',lng:105.72,lat:34.58,cat:'hist',desc:'¥20·明代建筑群+古柏+八卦坛。紧邻天水博物馆(免费·周一闭馆)一次逛。6月21左右伏羲文化旅游节。1.5h。'},
+      'xianrenya':{name:'仙人崖',lng:106.05,lat:34.38,cat:'nature',desc:'¥40·丹霞+寺院+湖泊。距麦积山15km。北魏-明清石窟。2-3h。'},
+      'gucheng':{name:'天水古城',lng:105.71,lat:34.58,cat:'mixed',desc:'免费·明清民居+文创店+相声茶馆。胡氏民居(南宅子)必看。天水麻辣烫+呱呱汇集。2h。'}
+    },
+    dayRoutes:{d1:['maijishan','xianrenya'],d2:['fuximiao','gucheng']},
+    dayDesc:{d1:'麦积山石窟上午场(8:00)→仙人崖下午',d2:'伏羲庙+天水博物馆→天水古城→返程赴西安'},
+    food:'天水麻辣烫(¥30-50·宽粉是灵魂)·天水呱呱(¥8·荞面辣拌)·浆水面(¥10)·猪油盒(¥5)·秦州八大碗(¥60)·凉粉酿皮(¥8)',
+    dayFood:{d1:'麦积山/仙人崖方向：景区附近农家乐·浆水面¥10+凉粉¥8',d2:'伏羲庙/古城：天水麻辣烫¥30-50(宽粉必点)·天水呱呱¥8·猪油盒¥5·秦州八大碗¥60'},
+    tips:'麦积山特窟提前48h小程序约！栈道恐高慎入穿防滑鞋。伏羲庙8:30前入园人少。天水→西安G30约350km/4h。麻辣烫选排队长的本地店。'
+  },
   'xian':{
     name:'西安',days:4,center:{lng:108.94,lat:34.26},
     spots:{
@@ -1898,7 +1922,7 @@ const cityGuides={
   'ruoqiang':{
     name:'若羌',days:'中转',center:{lng:88.17,lat:39.02},
     spots:{
-      'loulanbo':{name:'楼兰博物馆',lng:88.17,lat:39.02,cat:'hist',desc:'免费·楼兰古城文物+干尸。了解楼兰文明。1-2h。注意：楼兰古城遗址不对外开放。'},
+      'loulanbo':{name:'楼兰博物馆',lng:88.17,lat:39.02,cat:'hist',desc:'免费·周一闭馆。楼兰古城文物+干尸。1-2h。楼兰古城遗址不对外开放。'},
       'milanyizhi':{name:'米兰遗址',lng:88.03,lat:39.10,cat:'hist',desc:'汉代屯田遗址·¥50。距县城75km。1h。'}
     },
     dayRoutes:{},
