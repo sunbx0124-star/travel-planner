@@ -777,7 +777,7 @@ function updateMondayWarnings(){
 
 function onDateChange(){
   let val=document.getElementById('startDate').value;
-  if(!val){tripStartDate='';return;}
+  if(!val){tripStartDate='';syncDateInput();return;}
   // 如果正在查看某个城市,用户输入的是该城市的到达日 → 反推烟台出发日
   if(activeCity){
     const tripDay=CITY_TRIP_DAY[activeCity];
@@ -830,22 +830,28 @@ function syncDateInput(){
   const input=document.getElementById('startDate');
   const labelText=document.getElementById('dateLabelText');
   if(!input||!labelText)return;
-  if(!tripStartDate){labelText.textContent='烟台出发日';return;}
+
   if(activeCity){
-    const tripDay=CITY_TRIP_DAY[activeCity];
-    if(tripDay){
-      const d=new Date(tripStartDate+'T00:00:00');
-      d.setDate(d.getDate()+(tripDay-1));
-      const mm=String(d.getMonth()+1).padStart(2,'0');
-      const dd=String(d.getDate()).padStart(2,'0');
-      const val=d.getFullYear()+'-'+mm+'-'+dd;
-      input.value=val;
-      const guide=cityGuides[activeCity];
-      labelText.textContent=(guide?guide.name:activeCity)+'到达日';
-      return;
+    const guide=cityGuides[activeCity];
+    const cityName=guide?guide.name:activeCity;
+    if(tripStartDate){
+      const tripDay=CITY_TRIP_DAY[activeCity];
+      if(tripDay){
+        const d=new Date(tripStartDate+'T00:00:00');
+        d.setDate(d.getDate()+(tripDay-1));
+        const mm=String(d.getMonth()+1).padStart(2,'0');
+        const dd=String(d.getDate()).padStart(2,'0');
+        const val=d.getFullYear()+'-'+mm+'-'+dd;
+        input.value=val;
+        labelText.textContent=cityName+'到达日';
+        return;
+      }
     }
+    labelText.textContent=cityName+'到达日';
+    return;
   }
-  input.value=tripStartDate;
+
+  if(tripStartDate)input.value=tripStartDate;
   labelText.textContent='烟台出发日';
 }
 
