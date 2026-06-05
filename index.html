@@ -437,11 +437,10 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 
 <!-- 闭馆 & 费用 -->
 <div class="road-section">
-  <div class="road-section-title" onclick="toggleRoadSection(this)">博物馆周一闭馆 & 费用估算 <span class="arrow">▶</span></div>
+  <div class="road-section-title" onclick="toggleRoadSection(this)">费用估算 <span class="arrow">▶</span></div>
   <div class="road-section-body">
     <div style="font-size:10px;color:var(--sub);margin-bottom:8px;line-height:1.8">
-      <b style="color:#e05555">周一闭馆汇总</b>：山西博物院 | 晋商博物院 | 北齐壁画博 | 大同博 | 宁夏博 | 新疆博 | 甘肃省博 | 陕历博<br>
-      <b>选择出发日期后，在城市攻略Tab中会动态高亮周一冲突的日程</b>
+      <b>选择出发日期后，城市攻略中会自动检测周一与博物馆的冲突并高亮提醒</b>
     </div>
     <table class="road-table">
       <tr><th>项目</th><th>费用(两人)</th></tr>
@@ -756,7 +755,7 @@ function updateMondayWarnings(){
       const warn=document.createElement('div');
       warn.className='monday-warn';
       warn.innerHTML='<b>&#9888; 周一闭馆提醒</b>：'+museumNames.join('、')+' 周一闭馆！建议调整日程或出发日期';
-      blk.querySelector('.day-block').appendChild(warn);
+      blk.appendChild(warn);
     }
   });
 }
@@ -2000,6 +1999,7 @@ function switchToRoadPlan(){
   document.getElementById('cityPanel').classList.remove('show');
   clearCityMarkers();
   activeCity=null;
+  document.getElementById('mondayWarn')&&(document.getElementById('mondayWarn').style.display='none');
   document.querySelectorAll('.city-tab').forEach(t=>t.classList.remove('active'));
   const roadTab=document.getElementById('ctab-road');
   if(roadTab)roadTab.classList.add('active');
@@ -2083,7 +2083,7 @@ function renderCityPanel(guide,cityId){
   if(guide.dayRoutes&&Object.keys(guide.dayRoutes).length>0){
     Object.entries(guide.dayRoutes).forEach(([day,spotIds])=>{
       if(!spotIds||spotIds.length===0||!dayNames[day])return;
-      html+='<div class="day-block" style="margin-top:8px"><div class="day-header"><span class="day-badge" style="background:'+dayColors[day]+'">'+dayNames[day]+'</span></div>';
+      html+='<div class="day-block" id="'+day+'" style="margin-top:8px"><div class="day-header"><span class="day-badge" style="background:'+dayColors[day]+'">'+dayNames[day]+'</span></div>';
       // Day description
       if(guide.dayDesc&&guide.dayDesc[day]){
         html+='<div style="font-size:10px;color:var(--sub);margin:3px 0 6px 0;line-height:1.5;padding-left:4px;border-left:2px solid '+dayColors[day]+'">'+guide.dayDesc[day]+'</div>';
