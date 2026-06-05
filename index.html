@@ -701,6 +701,8 @@ function updateTodayDisplay(d){
 function isMuseumSpot(s){
   if(!s)return false;
   const n=s.name||'',d=s.desc||'';
+  // "建筑博物馆" 是建筑风格描述，不是真正的周一闭馆博物馆
+  if(d.includes('建筑博物馆'))return false;
   return n.includes('博物')||n.includes('博院')||d.includes('周一闭馆');
 }
 
@@ -741,7 +743,8 @@ function updateMondayWarnings(){
   const dayIdxMap={d1:0,d2:1,d3:2,d4:3,d5:4,d6:5,d7:6};
 
   museumDays.forEach(day=>{
-    const blk=document.getElementById(day);
+    const panel=document.getElementById('cityPanel');
+    const blk=panel&&panel.querySelector('#'+day);
     if(!blk)return;
     const existing=blk.querySelector('.monday-warn');
     if(existing)existing.remove();
@@ -776,7 +779,7 @@ function onDateChange(){
   }
 
   // 更新日期天数条
-  let daysHtml='',hasMonday=false;
+  let daysHtml='';
   for(let i=0;i<dayCount;i++){
     const d=new Date(start);d.setDate(d.getDate()+baseDay+i);
     const mm=String(d.getMonth()+1).padStart(2,'0');
@@ -784,13 +787,15 @@ function onDateChange(){
     const wd=weekdays[d.getDay()];
     const isMon=wd==='周一';
     daysHtml+='<span style="flex-shrink:0;padding:2px 8px;border-radius:10px;'+(isMon?'background:#3a1515;color:#e05555;font-weight:bold':'background:#1e1e3a;color:#aaa')+'">Day'+(i+1)+' '+mm+'/'+dd+' '+wd+'</span>';
-    if(isMon)hasMonday=true;
+
   }
   document.getElementById('dateDays').innerHTML=daysHtml;
-  document.getElementById('mondayWarn').style.display=hasMonday?'inline':'none';
 
   // 为当前活跃城市更新周一闭馆提醒
   updateMondayWarnings();
+  // #mondayWarn 只在确实有博物馆周一冲突时才显示(非任何周一)
+  const hasMuseumConflict=document.querySelector('#cityPanel .monday-warn');
+  document.getElementById('mondayWarn').style.display=hasMuseumConflict?'inline':'none';
 }
 
 // ---- 天气 (高德API + 和风天气兜底) ----
@@ -2047,6 +2052,9 @@ function selectCitySpot(cityId,spotId){
   if(selectCitySpot._infoWin){selectCitySpot._infoWin.close();selectCitySpot._infoWin=null;}
   map.setZoom(16);
   map.setCenter([s.lng,s.lat]);
+  // 桌面端补偿侧边栏偏移，让景点在屏幕居中而非地图容器居中
+  const sidebarW=document.getElementById('sidebar').offsetWidth;
+  if(sidebarW>0&&window.innerWidth>768){map.panBy(sidebarW/2,0);}
   // 高亮侧边栏 spot item
   document.querySelectorAll('#cityPanel .spot-item').forEach(el=>el.classList.remove('active'));
   const spotEl=document.getElementById('cspot-'+spotId);
