@@ -286,7 +286,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 <!-- 日期 & 天气 -->
 <div id="dateBar" style="padding:6px 12px;background:#1a1a35;border-bottom:1px solid #2a2a4a;font-size:11px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
   <span style="color:var(--gold);font-weight:bold" id="todayDisplay"></span>
-  <label style="color:var(--sub);font-size:10px">烟台出发日 <input type="date" id="startDate" onchange="onDateChange()" style="padding:2px 6px;border-radius:4px;border:1px solid #555;background:#1e1e3a;color:var(--text);font-size:10px;width:120px"></label>
+  <label style="color:var(--sub);font-size:10px" id="dateLabel">烟台出发日 <input type="date" id="startDate" onchange="onDateChange()" style="padding:2px 6px;border-radius:4px;border:1px solid #555;background:#1e1e3a;color:var(--text);font-size:10px;width:120px"></label>
   <span id="mondayWarn" style="display:none;color:#e05555;font-size:10px">&#9888; 周一闭馆</span>
 </div>
 <div style="display:flex;gap:6px;padding:4px 12px;background:#15152a;border-bottom:1px solid #2a2a4a;font-size:10px;overflow-x:auto" id="dateDays"></div>
@@ -774,9 +774,23 @@ function updateMondayWarnings(){
 }
 
 function onDateChange(){
-  const val=document.getElementById('startDate').value;
-  if(!val)return;
-  const start=new Date(val+'T00:00:00');
+  let val=document.getElementById('startDate').value;
+  if(!val){tripStartDate='';return;}
+  // 如果正在查看某个城市,用户输入的是该城市的到达日 → 反推烟台出发日
+  if(activeCity){
+    const tripDay=CITY_TRIP_DAY[activeCity];
+    if(tripDay){
+      const d=new Date(val+'T00:00:00');
+      d.setDate(d.getDate()-(tripDay-1));
+      const mm=String(d.getMonth()+1).padStart(2,'0');
+      const dd=String(d.getDate()).padStart(2,'0');
+      val=d.getFullYear()+'-'+mm+'-'+dd;
+      tripStartDate=val;
+      syncDateInput(); // 刷新输入框显示为城市到达日
+    }else{tripStartDate=val;}
+  }else{tripStartDate=val;}
+
+  const start=new Date(tripStartDate+'T00:00:00');
   const weekdays=['周日','周一','周二','周三','周四','周五','周六'];
 
   // 确定显示哪几天的日期——根据当前活跃城市的到达日
@@ -800,7 +814,6 @@ function onDateChange(){
     const wd=weekdays[d.getDay()];
     const isMon=wd==='周一';
     daysHtml+='<span style="flex-shrink:0;padding:2px 8px;border-radius:10px;'+(isMon?'background:#3a1515;color:#e05555;font-weight:bold':'background:#1e1e3a;color:#aaa')+'">Day'+(i+1)+' '+mm+'/'+dd+' '+wd+'</span>';
-
   }
   document.getElementById('dateDays').innerHTML=daysHtml;
 
@@ -809,6 +822,29 @@ function onDateChange(){
   // #mondayWarn 只在确实有博物馆周一冲突时才显示(非任何周一)
   const hasMuseumConflict=document.querySelector('#cityPanel .monday-warn');
   document.getElementById('mondayWarn').style.display=hasMuseumConflict?'inline':'none';
+}
+
+function syncDateInput(){
+  const input=document.getElementById('startDate');
+  const label=document.getElementById('dateLabel');
+  if(!input||!label)return;
+  if(!tripStartDate){label.textContent='烟台出发日 ';return;}
+  if(activeCity){
+    const tripDay=CITY_TRIP_DAY[activeCity];
+    if(tripDay){
+      const d=new Date(tripStartDate+'T00:00:00');
+      d.setDate(d.getDate()+(tripDay-1));
+      const mm=String(d.getMonth()+1).padStart(2,'0');
+      const dd=String(d.getDate()).padStart(2,'0');
+      const val=d.getFullYear()+'-'+mm+'-'+dd;
+      input.value=val;
+      const guide=cityGuides[activeCity];
+      label.textContent=(guide?guide.name:activeCity)+'到达日 ';
+      return;
+    }
+  }
+  input.value=tripStartDate;
+  label.textContent='烟台出发日 ';
 }
 
 // ---- 天气 (高德API + 和风天气兜底) ----
@@ -1978,6 +2014,7 @@ const cityGuides={
 // ---- 城市面板渲染 ----
 let cityMarkers={};
 let activeCity=null;
+let tripStartDate='';
 
 function switchCity(cityId){
   // Update weather bar
@@ -2027,6 +2064,7 @@ function switchCity(cityId){
 
   // Update Monday warnings for this city + refresh date bar
   updateMondayWarnings();
+  syncDateInput();
   if(document.getElementById('startDate').value)onDateChange();
 
   // Fly map to city (guard against map not yet initialized)
@@ -2058,6 +2096,8 @@ function switchToRoadPlan(){
   const sb=document.getElementById('sidebar');
   sb.classList.remove('expanded');
   showExpandBtn(false);
+  syncDateInput();
+  if(document.getElementById('startDate').value)onDateChange();
 }
 
 function placeCityMarkers(guide,cityId){
