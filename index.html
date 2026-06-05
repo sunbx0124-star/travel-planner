@@ -286,7 +286,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 <!-- 日期 & 天气 -->
 <div id="dateBar" style="padding:6px 12px;background:#1a1a35;border-bottom:1px solid #2a2a4a;font-size:11px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
   <span style="color:var(--gold);font-weight:bold" id="todayDisplay"></span>
-  <label style="color:var(--sub);font-size:10px" id="dateLabel">烟台出发日 <input type="date" id="startDate" onchange="onDateChange()" style="padding:2px 6px;border-radius:4px;border:1px solid #555;background:#1e1e3a;color:var(--text);font-size:10px;width:120px"></label>
+  <label style="color:var(--sub);font-size:10px" id="dateLabel"><span id="dateLabelText">烟台出发日</span> <input type="date" id="startDate" onchange="onDateChange()" style="padding:2px 6px;border-radius:4px;border:1px solid #555;background:#1e1e3a;color:var(--text);font-size:10px;width:120px"></label>
   <span id="mondayWarn" style="display:none;color:#e05555;font-size:10px">&#9888; 周一闭馆</span>
 </div>
 <div style="display:flex;gap:6px;padding:4px 12px;background:#15152a;border-bottom:1px solid #2a2a4a;font-size:10px;overflow-x:auto" id="dateDays"></div>
@@ -329,7 +329,9 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <button class="city-tab" id="ctab-qinghaihu" onclick="switchCity('qinghaihu')">青海湖</button>
   <button class="city-tab" id="ctab-xining" onclick="switchCity('xining')">西宁</button>
   <button class="city-tab" id="ctab-lanzhou" onclick="switchCity('lanzhou')">兰州</button>
+  <button class="city-tab" id="ctab-dingxi" onclick="switchCity('dingxi')">定西</button>
   <button class="city-tab" id="ctab-tianshui" onclick="switchCity('tianshui')">天水</button>
+  <button class="city-tab" id="ctab-baoji" onclick="switchCity('baoji')">宝鸡</button>
   <button class="city-tab" id="ctab-xian" onclick="switchCity('xian')">西安</button>
 </div>
 
@@ -337,7 +339,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 <div class="road-trip" id="roadTripPanel">
 <div class="road-summary">
   <h3>烟台 → 伊犁 → 青甘南线 自驾穿越</h3>
-  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 巴彦淖尔 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 天水 → 西安 → 烟台</div>
+  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 巴彦淖尔 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 定西 → 天水 → 宝鸡 → 西安 → 烟台</div>
   <div class="road-stats">
     <span class="road-stat">总里程 <b>~10500km</b></span>
     <span class="road-stat">天数 <b>35-45天</b></span>
@@ -721,7 +723,7 @@ const CITY_TRIP_DAY={
   'yumen':31,'guazhou':32,'dunhuang':33,'hammi':36,
   'tulufan':38,'wulumuqi':40,'s101':43,'yili':44,
   'kuerle':51,'ruoqiang':52,'mangya':53,'geermu':54,
-  'chaka':55,'qinghaihu':56,'xining':57,'lanzhou':59,'tianshui':61,'xian':63,
+  'chaka':55,'qinghaihu':56,'xining':57,'lanzhou':59,'dingxi':61,'tianshui':62,'baoji':64,'xian':66,
   'guiyang':100
 };
 
@@ -826,9 +828,9 @@ function onDateChange(){
 
 function syncDateInput(){
   const input=document.getElementById('startDate');
-  const label=document.getElementById('dateLabel');
-  if(!input||!label)return;
-  if(!tripStartDate){label.textContent='烟台出发日 ';return;}
+  const labelText=document.getElementById('dateLabelText');
+  if(!input||!labelText)return;
+  if(!tripStartDate){labelText.textContent='烟台出发日';return;}
   if(activeCity){
     const tripDay=CITY_TRIP_DAY[activeCity];
     if(tripDay){
@@ -839,12 +841,12 @@ function syncDateInput(){
       const val=d.getFullYear()+'-'+mm+'-'+dd;
       input.value=val;
       const guide=cityGuides[activeCity];
-      label.textContent=(guide?guide.name:activeCity)+'到达日 ';
+      labelText.textContent=(guide?guide.name:activeCity)+'到达日';
       return;
     }
   }
   input.value=tripStartDate;
-  label.textContent='烟台出发日 ';
+  labelText.textContent='烟台出发日';
 }
 
 // ---- 天气 (高德API + 和风天气兜底) ----
@@ -1412,7 +1414,7 @@ const cityCoords={
   '茫崖':{lng:90.85,lat:38.25},'格尔木':{lng:94.90,lat:36.41},
   '茶卡':{lng:99.08,lat:36.79},'青海湖':{lng:100.40,lat:36.85},
   '西宁':{lng:101.78,lat:36.62},'门源':{lng:101.62,lat:37.38},'兰州':{lng:103.83,lat:36.06},
-  '天水':{lng:105.72,lat:34.58},'西安':{lng:108.94,lat:34.26}
+  '定西':{lng:104.62,lat:35.58},'天水':{lng:105.72,lat:34.58},'宝鸡':{lng:107.24,lat:34.36},'西安':{lng:108.94,lat:34.26}
 };
 
 const roadSegments={
@@ -1446,8 +1448,10 @@ const roadSegments={
   'ret-7':{from:'格尔木',to:'茶卡'},
   'ret-8':{from:'茶卡',to:'西宁'},
   'ret-9':{from:'西宁',to:'兰州'},
-  'ret-9b':{from:'兰州',to:'天水'},
-  'ret-10':{from:'天水',to:'西安'}
+  'ret-9b':{from:'兰州',to:'定西'},
+  'ret-9c':{from:'定西',to:'天水'},
+  'ret-9d':{from:'天水',to:'宝鸡'},
+  'ret-10':{from:'宝鸡',to:'西安'}
 };
 
 let roadRoutePoly=null,activeRoadSeg=null;
@@ -1840,19 +1844,45 @@ const cityGuides={
     dayFood:{d1:'省博→中山桥→白塔山：磨沟沿牛肉面¥12(省博旁)·阿西娅手抓¥68/人·放哈甜醅子奶茶¥15',d2:'正宁路夜市：老马爷醪糟(只认68号白胡子大爷)·再回首酿皮¥10·灰豆子¥8·烤羊肉串¥3/串'},
     tips:'甘肃省博提前3天约·牛肉面7:00-9:00头汤最鲜·叫"牛肉面"不叫"拉面"·机场城际高铁20min/¥20到市区'
   },
+  'dingxi':{
+    name:'定西',days:1,center:{lng:104.62,lat:35.58},
+    spots:{
+      'lijia':{name:'李家龙宫',lng:104.65,lat:35.00,cat:'hist',desc:'免费·李氏文化发源地·古建筑雕梁画栋·全年开放。陇西县城内。1h。'},
+      'weiyuanlou':{name:'威远楼',lng:104.64,lat:35.00,cat:'hist',desc:'免费·北宋古建筑·陇西标志性地标。市区中心。0.5h。'}
+    },
+    dayRoutes:{d1:['lijia','weiyuanlou']},
+    dayDesc:{d1:'李家龙宫→威远楼→陇西小吃街→赴天水'},
+    food:'定西宽粉(¥15-20·Q弹爽滑)·洋芋搅团(¥8·糯叽叽)·腊肉炒蕨菜(¥30)·浆水面(¥10)·甜醅子(¥8)·定西暖锅(¥60)',
+    dayFood:{d1:'陇西县城：定西宽粉¥15-20·洋芋搅团¥8·腊肉炒蕨菜¥30·甜醅子¥8'},
+    tips:'兰州→定西约100km/1.5h。定西→天水约180km/2.5h。轻量中转站，半天即可逛完陇西县城后赴天水。贵清山/遮阳山距县城较远(1.5h车程)，时间充裕可绕行。'
+  },
   'tianshui':{
     name:'天水',days:2,center:{lng:105.72,lat:34.58},
     spots:{
       'maijishan':{name:'麦积山石窟',lng:106.00,lat:34.35,cat:'hist',desc:'中国四大石窟之一·¥80(含观光车)。1600年历史·194窟·7000余尊泥塑。特窟¥180需提前48h小程序约。栈道高80m恐高慎入。4h。'},
       'fuximiao':{name:'伏羲庙',lng:105.72,lat:34.58,cat:'hist',desc:'¥20·明代建筑群+古柏+八卦坛。紧邻天水博物馆(免费·周一闭馆)一次逛。6月21左右伏羲文化旅游节。1.5h。'},
       'xianrenya':{name:'仙人崖',lng:106.05,lat:34.38,cat:'nature',desc:'¥40·丹霞+寺院+湖泊。距麦积山15km。北魏-明清石窟。2-3h。'},
-      'gucheng':{name:'天水古城',lng:105.71,lat:34.58,cat:'mixed',desc:'免费·明清民居+文创店+相声茶馆。胡氏民居(南宅子)必看。天水麻辣烫+呱呱汇集。2h。'}
+      'gucheng':{name:'天水古城',lng:105.71,lat:34.58,cat:'mixed',desc:'免费·明清民居+文创店+相声茶馆。胡氏民居(南宅子)必看。四合院麻辣烫一条街步行即达。2h。'}
     },
     dayRoutes:{d1:['maijishan','xianrenya'],d2:['fuximiao','gucheng']},
-    dayDesc:{d1:'麦积山石窟上午场(8:00)→仙人崖下午',d2:'伏羲庙+天水博物馆→天水古城→返程赴西安'},
-    food:'天水麻辣烫(¥30-50·宽粉是灵魂)·天水呱呱(¥8·荞面辣拌)·浆水面(¥10)·猪油盒(¥5)·秦州八大碗(¥60)·凉粉酿皮(¥8)',
-    dayFood:{d1:'麦积山/仙人崖方向：景区附近农家乐·浆水面¥10+凉粉¥8',d2:'伏羲庙/古城：天水麻辣烫¥30-50(宽粉必点)·天水呱呱¥8·猪油盒¥5·秦州八大碗¥60'},
-    tips:'麦积山特窟提前48h小程序约！栈道恐高慎入穿防滑鞋。伏羲庙8:30前入园人少。天水→西安G30约350km/4h。麻辣烫选排队长的本地店。'
+    dayDesc:{d1:'麦积山石窟上午场(8:00)→仙人崖下午',d2:'伏羲庙+天水博物馆→天水古城→四合院麻辣烫→赴宝鸡'},
+    food:'<b>麻辣烫(四合院三巨头)：</b>哈海英麻辣烫(¥15-30·28年老店·手擀粉必点·表情包大叔纳国平)·伊甸园(对面·排队更短)·开元(北院第三家)。<b>本地人推荐：</b>元女麻辣烫(¥15-30·古城旁·花生多)·和平麻辣烫(¥15-30·辣油香)·何琴麻辣烫(¥15-30·洋芋丸子一绝)。天水呱呱(¥8·荞面辣拌)·浆水面(¥10)·猪油盒(¥5)·秦州八大碗(¥60)',
+    dayFood:{d1:'麦积山/仙人崖方向：景区附近农家乐·浆水面¥10+凉粉¥8',d2:'伏羲庙/古城：四合院哈海英麻辣烫(手擀粉+洋芋丸子+宽粉必点)·天水呱呱¥8·猪油盒¥5'},
+    tips:'麦积山特窟提前48h小程序约！栈道恐高慎入穿防滑鞋。伏羲庙8:30前入园人少。麻辣烫四合院在秦州区大众中路，工作日排队约40分钟，周末2h，对面伊甸园口味不输。天水→宝鸡G30约180km/2.5h。',
+  },
+  'baoji':{
+    name:'宝鸡',days:2,center:{lng:107.24,lat:34.36},
+    spots:{
+      'qingtongqi':{name:'青铜器博物院',lng:107.20,lat:34.34,cat:'hist',desc:'免费·中国最大青铜器专题馆。镇馆之宝何尊——"中国"二字最早文字记载出处！需公众号预约。9:30有免费讲解。周一闭馆。2-3h。'},
+      'famen':{name:'法门寺',lng:107.91,lat:34.44,cat:'hist',desc:'5A·¥100-120。世界唯一佛指舍利·唐代地宫珍宝·秘色瓷。初一/十五舍利升起。宝鸡市区出发1h。3h。'},
+      'shigu':{name:'中华石鼓园',lng:107.19,lat:34.34,cat:'mixed',desc:'免费·石鼓阁俯瞰宝鸡全景。紧邻青铜器博物院一起逛。1h。'},
+      'chencang':{name:'陈仓老街',lng:107.16,lat:34.35,cat:'food',desc:'免费·西府美食街区。岐山臊子面+擀面皮+豆花泡馍汇集。夜景佳。1.5h。'}
+    },
+    dayRoutes:{d1:['qingtongqi','shigu','chencang'],d2:['famen']},
+    dayDesc:{d1:'青铜器博物院(上午)→中华石鼓园→陈仓老街晚餐',d2:'法门寺(上午出发)→下午返程赴西安'},
+    food:'岐山臊子面(¥25-30·令氏家外家)·擀面皮(¥8·宝宝面皮)·豆花泡馍(¥7-15·老凤府)·油泼辣子铜火锅(¥60·古家火锅公园路总店)·西府拼盘(¥40)',
+    dayFood:{d1:'石鼓园/陈仓老街：岐山臊子面¥25-30·擀面皮¥8·豆花泡馍¥7-15',d2:'法门寺方向：景区素斋¥30或回市区古家火锅¥60'},
+    tips:'青铜器博物院周一闭馆！何尊在二楼第三展厅。法门寺内勿对佛像直接拍照。宝鸡→西安G30约180km/2h。西府口味偏酸辣，不吃辣提前说明。太白山距市区90km需要一整天，时间充裕可替换法门寺。'
   },
   'xian':{
     name:'西安',days:4,center:{lng:108.94,lat:34.26},
