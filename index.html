@@ -309,11 +309,13 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <button class="city-tab" id="ctab-guiyang" onclick="switchCity('guiyang')">贵阳</button>
   <button class="city-tab" id="ctab-zhongwei" onclick="switchCity('zhongwei')">中卫</button>
   <button class="city-tab" id="ctab-wuwei" onclick="switchCity('wuwei')">武威</button>
+  <button class="city-tab" id="ctab-menyuan" onclick="switchCity('menyuan')">门源</button>
   <button class="city-tab" id="ctab-zhangye" onclick="switchCity('zhangye')">张掖</button>
   <button class="city-tab" id="ctab-jiuquan" onclick="switchCity('jiuquan')">酒泉</button>
   <button class="city-tab" id="ctab-jiayuguan" onclick="switchCity('jiayuguan')">嘉峪关</button>
   <button class="city-tab" id="ctab-yumen" onclick="switchCity('yumen')">玉门</button>
   <button class="city-tab" id="ctab-guazhou" onclick="switchCity('guazhou')">瓜州</button>
+  <button class="city-tab" id="ctab-dunhuang" onclick="switchCity('dunhuang')">敦煌</button>
   <button class="city-tab" id="ctab-hammi" onclick="switchCity('hammi')">哈密</button>
   <button class="city-tab" id="ctab-tulufan" onclick="switchCity('tulufan')">吐鲁番</button>
   <button class="city-tab" id="ctab-wulumuqi" onclick="switchCity('wulumuqi')">乌鲁木齐</button>
@@ -326,7 +328,6 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <button class="city-tab" id="ctab-chaka" onclick="switchCity('chaka')">茶卡</button>
   <button class="city-tab" id="ctab-qinghaihu" onclick="switchCity('qinghaihu')">青海湖</button>
   <button class="city-tab" id="ctab-xining" onclick="switchCity('xining')">西宁</button>
-  <button class="city-tab" id="ctab-menyuan" onclick="switchCity('menyuan')">门源</button>
   <button class="city-tab" id="ctab-lanzhou" onclick="switchCity('lanzhou')">兰州</button>
   <button class="city-tab" id="ctab-xian" onclick="switchCity('xian')">西安</button>
 </div>
@@ -335,7 +336,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 <div class="road-trip" id="roadTripPanel">
 <div class="road-summary">
   <h3>烟台 → 伊犁 → 青甘南线 自驾穿越</h3>
-  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 巴彦淖尔 → 银川 → 中卫 → 武威 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 西安 → 烟台</div>
+  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 巴彦淖尔 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 西安 → 烟台</div>
   <div class="road-stats">
     <span class="road-stat">总里程 <b>~10500km</b></span>
     <span class="road-stat">天数 <b>35-45天</b></span>
@@ -346,7 +347,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 
 <!-- 去程路线 -->
 <div class="road-section">
-  <div class="road-section-title open" onclick="toggleRoadSection(this)">去程路线 (烟台→伊犁 · 19段) <span class="arrow">▼</span></div>
+  <div class="road-section-title open" onclick="toggleRoadSection(this)">去程路线 (烟台→伊犁 · 21段) <span class="arrow">▼</span></div>
   <div class="road-section-body show">
 	    <div class="road-segment clickable" id="road-seg-1" onclick="drawRoadSegment('seg-1')"><div class="seg-header">1. 烟台→邯郸 <span class="stars">★★</span><span class="seg-status seg-ok">全高速</span></div><div class="seg-route">G18→G20→G4 · ~650km · 7h</div><div class="seg-info">平原风景一般，直接高速。</div><div class="road-route-detail" id="detail-road-seg-1" style="display:none"></div><div class="seg-actions" id="actions-seg-1" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-2" onclick="drawRoadSegment('seg-2')"><div class="seg-header">2. 邯郸→太原 <span class="stars">★★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G309→涉县→S45天黎 · ~360km · 5h</div><div class="seg-info">太行山大峡谷风貌，邯郸→涉县段走G309。</div><div class="road-route-detail" id="detail-road-seg-2" style="display:none"></div><div class="seg-actions" id="actions-seg-2" style="display:none"></div></div>
@@ -358,15 +359,19 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 	    <div class="road-segment clickable" id="road-seg-8" onclick="drawRoadSegment('seg-8')"><div class="seg-header">8. 巴彦淖尔→银川 <span class="stars">★★</span><span class="seg-status seg-ok">可通行</span></div><div class="seg-route">G6京藏高速 · ~330km · 3.5h</div><div class="seg-info">G6乌海段可能管制。临河/乌拉山服务区施工。</div><div class="road-route-detail" id="detail-road-seg-8" style="display:none"></div><div class="seg-actions" id="actions-seg-8" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-9" onclick="drawRoadSegment('seg-9')"><div class="seg-header">9. 银川→中卫 <span class="stars">★★★★★</span><span class="seg-status seg-ok">全程最佳</span></div><div class="seg-route">G307 + S218沙漠边缘路 · ~250km · 3h</div><div class="seg-info">双向四车道，路面堪比高速！贺兰山+腾格里沙漠边缘+骆驼群。串联：明长城→金沙海→66号公路→沙坡头。</div><div class="road-route-detail" id="detail-road-seg-9" style="display:none"></div><div class="seg-actions" id="actions-seg-9" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-10" onclick="drawRoadSegment('seg-10')"><div class="seg-header">10. 中卫→武威 <span class="stars">★★</span><span class="seg-status seg-danger">仅高速</span></div><div class="seg-route">G2012定武高速 · ~280km · 2.5h</div><div class="seg-info">严禁走S315腾格里穿沙公路！沙阻严重/无信号/两驱轿车会陷车。</div><div class="road-route-detail" id="detail-road-seg-10" style="display:none"></div><div class="seg-actions" id="actions-seg-10" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-11" onclick="drawRoadSegment('seg-11')"><div class="seg-header">11. 武威→张掖 <span class="stars">★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G30高速为主 · ~240km · 2.5h</div><div class="seg-info">可穿插G312体验祁连山北麓。G312临泽段6月施工半幅通行。</div><div class="road-route-detail" id="detail-road-seg-11" style="display:none"></div><div class="seg-actions" id="actions-seg-11" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-12" onclick="drawRoadSegment('seg-12')"><div class="seg-header">12. 张掖→酒泉 <span class="stars">★★★★★</span><span class="seg-status seg-ok">最美国道</span></div><div class="seg-route">S213(七彩丹霞)+S220(肃南) · ~210km · 4h</div><div class="seg-info">丹霞东门进西门出！S220紧贴祁连山北麓，雪山草原视角极好。</div><div class="road-route-detail" id="detail-road-seg-12" style="display:none"></div><div class="seg-actions" id="actions-seg-12" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-13" onclick="drawRoadSegment('seg-13')"><div class="seg-header">13. 酒泉→嘉峪关 <span class="stars">★★★</span><span class="seg-status seg-ok">短途</span></div><div class="seg-route">G30连霍高速 · ~25km · 20min</div><div class="seg-info">两市紧邻，酒泉卫星发射中心可停留游览。</div><div class="road-route-detail" id="detail-road-seg-13" style="display:none"></div><div class="seg-actions" id="actions-seg-13" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-14" onclick="drawRoadSegment('seg-14')"><div class="seg-header">14. 嘉峪关→玉门 <span class="stars">★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G312/G30 · ~130km · 1.5h</div><div class="seg-info">玉门魔山地质公园(丹霞+火山遗迹)值得绕道一看。</div><div class="road-route-detail" id="detail-road-seg-14" style="display:none"></div><div class="seg-actions" id="actions-seg-14" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-15" onclick="drawRoadSegment('seg-15')"><div class="seg-header">15. 玉门→瓜州 <span class="stars">★★★★★</span><span class="seg-status seg-ok">雕塑长廊</span></div><div class="seg-route">G312+戈壁国际雕塑长廊 · ~150km · 2h</div><div class="seg-info">大地之子(巨型婴儿)/无界(海市蜃楼)/汉武雄风 全免费！</div><div class="road-route-detail" id="detail-road-seg-15" style="display:none"></div><div class="seg-actions" id="actions-seg-15" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-16" onclick="drawRoadSegment('seg-16')"><div class="seg-header">16. 瓜州→哈密 <span class="stars">★★</span><span class="seg-status seg-warn">仅G30</span></div><div class="seg-route">G30连霍高速(唯一选项!) · ~370km · 5-6h</div><div class="seg-info">G312瓜州-星星峡全封至2027！限速80，黑山口半幅限速40。务必瓜州加满油+备水粮！星星峡前后无人区。</div><div class="road-route-detail" id="detail-road-seg-16" style="display:none"></div><div class="seg-actions" id="actions-seg-16" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-17" onclick="drawRoadSegment('seg-17')"><div class="seg-header">17. 哈密→吐鲁番 <span class="stars">★★★</span><span class="seg-status seg-warn">横风区</span></div><div class="seg-route">G30连霍 · ~400km · 4.5-5h</div><div class="seg-info">百里风区横风大，Golf 7轻需减速。库木塔格沙漠可到，魔鬼城不进深处。</div><div class="road-route-detail" id="detail-road-seg-17" style="display:none"></div><div class="seg-actions" id="actions-seg-17" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-18" onclick="drawRoadSegment('seg-18')"><div class="seg-header">18. 吐鲁番→乌鲁木齐 <span class="stars">★★★</span><span class="seg-status seg-warn">横风</span></div><div class="seg-route">G30 · ~190km · 2-3h</div><div class="seg-info">火焰山段可下G312。达坂城横风极大。夏50°C+，查散热胎压。</div><div class="road-route-detail" id="detail-road-seg-18" style="display:none"></div><div class="seg-actions" id="actions-seg-18" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-19" onclick="drawRoadSegment('seg-19')"><div class="seg-header">19. 乌鲁木齐→伊犁 <span class="stars">★★★★★</span><span class="seg-status seg-ok">S101首选</span></div><div class="seg-route">⭐S101国防公路→独山子+G30 · ~600km/10-11h | G30直达 ~680km/7-8h | 独库北段 ~860km</div><div class="seg-info">强烈推荐S101天山地理走廊！百里丹霞→肯斯瓦特水库→鹿角湾→安集海大峡谷→独山子→G30续行。全程柏油Golf7可行，比G30多3h但风景碾压。G30备用(赶路时选)。独库北段仅返程推荐。</div><div class="road-route-detail" id="detail-road-seg-19" style="display:none"></div><div class="seg-actions" id="actions-seg-19" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-11" onclick="drawRoadSegment('seg-11')"><div class="seg-header">11. 武威→门源 <span class="stars">★★★★★</span><span class="seg-status seg-warn">山路</span></div><div class="seg-route">G312→G227(扁都口)→门源 · ~300km · 5h</div><div class="seg-info">穿祁连山！G227中国最美花田公路。达坂山口3940m弯多坡陡,穿厚外套。夏季漫山油菜花+祁连雪山同框。海拔从1500→3000m,注意缓行。</div><div class="road-route-detail" id="detail-road-seg-11" style="display:none"></div><div class="seg-actions" id="actions-seg-11" style="display:none"></div></div>
+
+<div class="road-segment clickable" id="road-seg-11b" onclick="drawRoadSegment('seg-11b')"><div class="seg-header">12. 门源→张掖 <span class="stars">★★★★★</span><span class="seg-status seg-ok">最美国道</span></div><div class="seg-route">G227(扁都口)→张掖 · ~230km · 4h</div><div class="seg-info">G227祁连山精华段！扁都口油菜花海+祁连草原+岗什卡雪峰。海拔从3000→1500m。7月中旬油菜花满开季的视觉巅峰。扁都口停车拍照。</div><div class="road-route-detail" id="detail-road-seg-11b" style="display:none"></div><div class="seg-actions" id="actions-seg-11b" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-12" onclick="drawRoadSegment('seg-12')"><div class="seg-header">13. 张掖→酒泉 <span class="stars">★★★★★</span><span class="seg-status seg-ok">最美国道</span></div><div class="seg-route">S213(七彩丹霞)+S220(肃南) · ~210km · 4h</div><div class="seg-info">丹霞东门进西门出！S220紧贴祁连山北麓，雪山草原视角极好。</div><div class="road-route-detail" id="detail-road-seg-12" style="display:none"></div><div class="seg-actions" id="actions-seg-12" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-13" onclick="drawRoadSegment('seg-13')"><div class="seg-header">14. 酒泉→嘉峪关 <span class="stars">★★★</span><span class="seg-status seg-ok">短途</span></div><div class="seg-route">G30连霍高速 · ~25km · 20min</div><div class="seg-info">两市紧邻，酒泉卫星发射中心可停留游览。</div><div class="road-route-detail" id="detail-road-seg-13" style="display:none"></div><div class="seg-actions" id="actions-seg-13" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-14" onclick="drawRoadSegment('seg-14')"><div class="seg-header">15. 嘉峪关→玉门 <span class="stars">★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G312/G30 · ~130km · 1.5h</div><div class="seg-info">玉门魔山地质公园(丹霞+火山遗迹)值得绕道一看。</div><div class="road-route-detail" id="detail-road-seg-14" style="display:none"></div><div class="seg-actions" id="actions-seg-14" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-15" onclick="drawRoadSegment('seg-15')"><div class="seg-header">16. 玉门→瓜州 <span class="stars">★★★★★</span><span class="seg-status seg-ok">雕塑长廊</span></div><div class="seg-route">G312+戈壁国际雕塑长廊 · ~150km · 2h</div><div class="seg-info">大地之子(巨型婴儿)/无界(海市蜃楼)/汉武雄风 全免费！</div><div class="road-route-detail" id="detail-road-seg-15" style="display:none"></div><div class="seg-actions" id="actions-seg-15" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-16" onclick="drawRoadSegment('seg-16')"><div class="seg-header">17. 瓜州→敦煌 <span class="stars">★★★★★</span><span class="seg-status seg-ok">丝路必去</span></div><div class="seg-route">G3011柳格高速 · ~120km · 1.5h</div><div class="seg-info">全程高速双向四车道。瓜州南下直达敦煌市区。沙漠戈壁风光。抵达后直奔鸣沙山日落。</div><div class="road-route-detail" id="detail-road-seg-16" style="display:none"></div><div class="seg-actions" id="actions-seg-16" style="display:none"></div></div>
+
+<div class="road-segment clickable" id="road-seg-16b" onclick="drawRoadSegment('seg-16b')"><div class="seg-header">18. 敦煌→哈密 <span class="stars">★★</span><span class="seg-status seg-warn">长途</span></div><div class="seg-route">G215→柳园→G30 · ~420km · 5-6h</div><div class="seg-info">敦煌北上G215到柳园转G30。G312星星峡段全封至2027走G30。柳园加满油，星星峡前后200km无人区备水粮！限速80。</div><div class="road-route-detail" id="detail-road-seg-16b" style="display:none"></div><div class="seg-actions" id="actions-seg-16b" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-17" onclick="drawRoadSegment('seg-17')"><div class="seg-header">19. 哈密→吐鲁番 <span class="stars">★★★</span><span class="seg-status seg-warn">横风区</span></div><div class="seg-route">G30连霍 · ~400km · 4.5-5h</div><div class="seg-info">百里风区横风大，Golf 7轻需减速。库木塔格沙漠可到，魔鬼城不进深处。</div><div class="road-route-detail" id="detail-road-seg-17" style="display:none"></div><div class="seg-actions" id="actions-seg-17" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-18" onclick="drawRoadSegment('seg-18')"><div class="seg-header">20. 吐鲁番→乌鲁木齐 <span class="stars">★★★</span><span class="seg-status seg-warn">横风</span></div><div class="seg-route">G30 · ~190km · 2-3h</div><div class="seg-info">火焰山段可下G312。达坂城横风极大。夏50°C+，查散热胎压。</div><div class="road-route-detail" id="detail-road-seg-18" style="display:none"></div><div class="seg-actions" id="actions-seg-18" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-19" onclick="drawRoadSegment('seg-19')"><div class="seg-header">21. 乌鲁木齐→伊犁 <span class="stars">★★★★★</span><span class="seg-status seg-ok">S101首选</span></div><div class="seg-route">⭐S101国防公路→独山子+G30 · ~600km/10-11h | G30直达 ~680km/7-8h | 独库北段 ~860km</div><div class="seg-info">强烈推荐S101天山地理走廊！百里丹霞→肯斯瓦特水库→鹿角湾→安集海大峡谷→独山子→G30续行。全程柏油Golf7可行，比G30多3h但风景碾压。G30备用(赶路时选)。独库北段仅返程推荐。</div><div class="road-route-detail" id="detail-road-seg-19" style="display:none"></div><div class="seg-actions" id="actions-seg-19" style="display:none"></div></div>
 	    </div>
 </div>
 
@@ -376,8 +381,8 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <div class="road-section-body show">
     <table class="road-table">
       <tr><th>方案</th><th>路线</th><th>距离</th><th>重复</th><th>推荐</th></tr>
-      <tr><td>A</td><td>G30回溯伊犁→乌市→敦煌→兰州</td><td>3235km</td><td class="lo">1315km</td><td>⭐⭐⭐ 稳妥</td></tr>
-      <tr><td>B</td><td>独库+冷湖+敦煌→兰州</td><td>3705km</td><td class="hi">0</td><td>⭐⭐⭐⭐ 敦煌必去</td></tr>
+      <tr><td>A</td><td>G30回溯伊犁→乌市→敦煌→兰州</td><td>3235km</td><td class="lo">1315km</td><td>⭐⭐ 重复多</td></tr>
+      <tr><td>B</td><td>独库+冷湖+敦煌→兰州</td><td>3705km</td><td class="hi">0</td><td>⭐⭐⭐ 敦煌已去程</td></tr>
       <tr><td class="lo">C</td><td>乌市转南线→兰州</td><td>3991km</td><td class="lo">689km</td><td>⭐ 不推荐</td></tr>
       <tr><td class="hi">D★</td><td>独库南段+G315→格尔木→兰州</td><td class="hi">3105km</td><td class="hi">0</td><td class="hi">⭐⭐⭐⭐⭐ 最优!</td></tr>
     </table>
@@ -409,7 +414,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     <div style="margin-top:6px;font-size:10px;color:var(--sub);line-height:1.6">
       <b>G315精华</b>：茫崖翡翠湖(免费)→西台双色湖(公路穿湖)→水上雅丹(全球唯一)→东台(蒂芙尼蓝)→U型公路→察尔汗盐湖<br>
       <b style="color:var(--orange)">⚠</b> 小柴旦湖→老茫崖施工(限速20km/h)，青海12328确认路况<br>
-      <b>敦煌备选</b>：方案B茫崖后改S316→冷湖→G215当金山→敦煌(+600km)。当金山47km长下坡！
+      <b>敦煌</b>：已加入去程(瓜州→敦煌→哈密)。返程如想看敦煌也可走方案B从冷湖绕行，当金山47km长下坡注意刹车！
     </div>
   </div>
 
@@ -707,9 +712,9 @@ function isMuseumSpot(s){
 
 // 城市在整体行程中的到达日（从出发日算起，Day 1 = 出发日）
 const CITY_TRIP_DAY={
-  'taiyuan':3,'datong':8,'yinchuan':13,'wuwei':18,'zhangye':20,
-  'wulumuqi':32,'lanzhou':55,'xian':57,'jiuquan':23,'zhongwei':16,
-  'guiyang':100,'xining':53
+  'taiyuan':3,'datong':8,'yinchuan':13,'wuwei':18,'menyuan':19,'zhangye':21,
+  'jiuquan':24,'dunhuang':29,'wulumuqi':34,'lanzhou':57,'xian':59,
+  'zhongwei':16,'guiyang':100,'xining':55
 };
 
 function getCityMuseumDays(guide){
@@ -1355,7 +1360,7 @@ const cityCoords={
   '武威':{lng:102.64,lat:37.93},'张掖':{lng:100.46,lat:38.93},
   '酒泉':{lng:98.52,lat:39.74},'嘉峪关':{lng:98.29,lat:39.77},
   '玉门':{lng:97.05,lat:39.83},'瓜州':{lng:95.78,lat:40.52},
-  '哈密':{lng:93.51,lat:42.83},'吐鲁番':{lng:89.19,lat:42.95},
+  '敦煌':{lng:94.66,lat:40.14},'哈密':{lng:93.51,lat:42.83},'吐鲁番':{lng:89.19,lat:42.95},
   '乌鲁木齐':{lng:87.62,lat:43.82},'S101':{lng:85.80,lat:44.02},'伊犁':{lng:81.32,lat:43.92},
   '那拉提':{lng:84.20,lat:43.39},'库车':{lng:82.96,lat:41.72},
   '库尔勒':{lng:86.15,lat:41.73},'若羌':{lng:88.17,lat:39.02},
@@ -1376,12 +1381,14 @@ const roadSegments={
   'seg-8':{from:'巴彦淖尔',to:'银川'},
   'seg-9':{from:'银川',to:'中卫'},
   'seg-10':{from:'中卫',to:'武威'},
-  'seg-11':{from:'武威',to:'张掖'},
+  'seg-11':{from:'武威',to:'门源'},
+  'seg-11b':{from:'门源',to:'张掖'},
   'seg-12':{from:'张掖',to:'酒泉'},
   'seg-13':{from:'酒泉',to:'嘉峪关'},
   'seg-14':{from:'嘉峪关',to:'玉门'},
   'seg-15':{from:'玉门',to:'瓜州'},
-  'seg-16':{from:'瓜州',to:'哈密'},
+  'seg-16':{from:'瓜州',to:'敦煌'},
+  'seg-16b':{from:'敦煌',to:'哈密'},
   'seg-17':{from:'哈密',to:'吐鲁番'},
   'seg-18':{from:'吐鲁番',to:'乌鲁木齐'},
   'seg-19':{from:'乌鲁木齐',to:'伊犁'},
@@ -1859,6 +1866,24 @@ const cityGuides={
     food:'锁阳炖羊肉(¥68)·瓜州蜜瓜(7-8月)·河西拉条子',
     dayFood:{d1:'锁阳城/榆林窟/雕塑群：锁阳炖羊肉¥68·瓜州蜜瓜(7-8月路边摊)·河西拉条子'},
     tips:'戈壁雕塑群下午光线最佳·榆林窟比莫高窟人少体验好·瓜州蜜瓜极甜必尝'
+  },
+  'dunhuang':{
+    name:'敦煌',days:3,center:{lng:94.66,lat:40.14},
+    spots:{
+      'mogao':{name:'莫高窟',lng:94.80,lat:40.04,cat:'hist',desc:'世界文化遗产·A类¥238(8窟+2电影)需提前30天小程序抢票！B类应急¥100(4窟)。参观3-4h。淡季¥140(10窟)。特窟¥150-200现场加购。旺季限6000张/天。'},
+      'mingsha':{name:'鸣沙山月牙泉',lng:94.67,lat:40.09,cat:'nature',desc:'¥110(3天有效)·骑骆驼¥100/40min·滑沙¥15-30。下午4点后入园黄金法则:避开暴晒+日落绝美。夏季21:00天黑。中门离月牙泉最近。'},
+      'yumenguan':{name:'玉门关',lng:93.85,lat:40.35,cat:'hist',desc:'¥40+¥50观光车·春风不度玉门关。含大方盘城+汉长城。距市区90km,和雅丹同天走西线。2-3h。'},
+      'yadan':{name:'雅丹魔鬼城',lng:93.10,lat:40.53,cat:'nature',desc:'¥50+¥70观光车·敦煌西线终点(距市区180km)。雅丹地貌+戈壁落日。日落班观光车最后一班。往返4-5h车程,包车¥400-600/天。'},
+      'shazhou':{name:'沙洲夜市',lng:94.67,lat:40.14,cat:'food',desc:'敦煌最大夜市。驴肉黄面¥25+杏皮水¥5+胡羊焖饼¥68+红柳烤肉¥15。22:00最热闹。'},
+      'dunhuangbo':{name:'敦煌博物馆',lng:94.66,lat:40.13,cat:'hist',desc:'免费·周一闭馆。莫高窟复制窟+丝绸文物。1-2h。可作西线回来后或第三天上午安排。'},
+      'xiqianfo':{name:'西千佛洞',lng:94.39,lat:40.07,cat:'hist',desc:'莫高窟姐妹窟·¥30。开凿早于莫高窟,北魏-元代。游客极少体验安静。距市区35km党河峡谷旁。1h。'}
+    },
+    dayRoutes:{d1:['mogao','mingsha'],d2:['yumenguan','yadan','shazhou'],d3:['dunhuangbo','xiqianfo']},
+    dayDesc:{d1:'莫高窟上午场→下午鸣沙山日落(16:00后入园)',d2:'西线一日游:玉门关→雅丹魔鬼城→沙洲夜市',d3:'敦煌博物馆+西千佛洞(可压缩为半天)'},
+    food:'达记驴肉黄面(¥25)·胡羊焖饼(¥68)·杏皮水(¥5)·红柳烤肉(¥15/串)·羊肉合汁(¥18)·泡儿油糕·敦煌酿皮',
+    dayFood:{d1:'莫高窟/鸣沙山：达记驴肉黄面¥25+杏皮水¥5',d2:'西线路远自带干粮。晚上：沙洲夜市·胡羊焖饼¥68+红柳大串¥15+杏皮水¥5',d3:'市区：羊肉合汁¥18+泡儿油糕+敦煌酿皮'},
+    tips:'莫高窟A类票旺季提前30天小程序秒抢！鸣沙山16:00后入园最佳·3天有效可重复进。西线180km早8点前出发。极度干燥SPF50+墨镜面巾必备。夏季50°C地表避开12-16点户外。G3011瓜敦高速120km路况好。',
+    camping:{d1:'敦煌市区(沙洲夜市附近¥150-400)',d2:'敦煌市区',d3:'(半天)可早走赶路'}
   },
   'kuerle':{
     name:'库尔勒',days:'中转',center:{lng:86.15,lat:41.73},
