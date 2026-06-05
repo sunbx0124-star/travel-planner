@@ -440,8 +440,8 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <div class="road-section-title" onclick="toggleRoadSection(this)">博物馆周一闭馆 & 费用估算 <span class="arrow">▶</span></div>
   <div class="road-section-body">
     <div style="font-size:10px;color:var(--sub);margin-bottom:8px;line-height:1.8">
-      <b style="color:#e05555">周一闭馆汇总</b>：邯郸市博 | 山西博物院 | 晋商博物院 | 北齐壁画博 | 大同博 | 内蒙古博 | 宁夏博 | 武威市博 | 新疆博 | 甘肃省博 | 陕历博<br>
-      <b>出行前务必核对当日是周几！</b>
+      <b style="color:#e05555">周一闭馆汇总</b>：山西博物院 | 晋商博物院 | 北齐壁画博 | 大同博 | 宁夏博 | 新疆博 | 甘肃省博 | 陕历博<br>
+      <b>选择出发日期后，在城市攻略Tab中会动态高亮周一冲突的日程</b>
     </div>
     <table class="road-table">
       <tr><th>项目</th><th>费用(两人)</th></tr>
@@ -697,44 +697,100 @@ function updateTodayDisplay(d){
   document.getElementById('todayDisplay').textContent='今天 '+mm+'/'+dd+' '+weekdays[d.getDay()];
 }
 
+// ---- 博物馆检测 ----
+function isMuseumSpot(s){
+  if(!s)return false;
+  const n=s.name||'',d=s.desc||'';
+  return n.includes('博物')||n.includes('博院')||d.includes('周一闭馆');
+}
+
+// 城市在整体行程中的到达日（从出发日算起，Day 1 = 出发日）
+const CITY_TRIP_DAY={
+  'taiyuan':3,'datong':8,'yinchuan':13,'wuwei':18,'zhangye':20,
+  'wulumuqi':32,'lanzhou':55,'xian':57,'jiuquan':23,'zhongwei':16,
+  'guiyang':100,'xining':53
+};
+
+function getCityMuseumDays(guide){
+  const days=new Set();
+  if(!guide||!guide.dayRoutes)return days;
+  for(const[day,ids]of Object.entries(guide.dayRoutes)){
+    if(day==='hotels')continue;
+    for(const id of ids){
+      if(guide.spots[id]&&isMuseumSpot(guide.spots[id])){days.add(day);break;}
+    }
+  }
+  return days;
+}
+
+function updateMondayWarnings(){
+  if(!activeCity)return;
+  const guide=cityGuides[activeCity];
+  if(!guide)return;
+  const val=document.getElementById('startDate').value;
+  if(!val)return;
+  const start=new Date(val+'T00:00:00');
+  const tripDay=CITY_TRIP_DAY[activeCity];
+  if(!tripDay)return;
+  const weekdays=['周日','周一','周二','周三','周四','周五','周六'];
+  const museumDays=getCityMuseumDays(guide);
+  if(museumDays.size===0)return;
+
+  // 到达日 = 出发日 + (tripDay - 1)天
+  const arrival=new Date(start);arrival.setDate(arrival.getDate()+tripDay-1);
+  const dayIdxMap={d1:0,d2:1,d3:2,d4:3,d5:4,d6:5,d7:6};
+
+  museumDays.forEach(day=>{
+    const blk=document.getElementById(day);
+    if(!blk)return;
+    const existing=blk.querySelector('.monday-warn');
+    if(existing)existing.remove();
+    const d=new Date(arrival);d.setDate(d.getDate()+(dayIdxMap[day]||0));
+    if(weekdays[d.getDay()]==='周一'){
+      // 列出这天哪些景点是博物馆
+      const spotIds=guide.dayRoutes[day]||[];
+      const museumNames=spotIds.filter(id=>guide.spots[id]&&isMuseumSpot(guide.spots[id])).map(id=>guide.spots[id].name);
+      const warn=document.createElement('div');
+      warn.className='monday-warn';
+      warn.innerHTML='<b>&#9888; 周一闭馆提醒</b>：'+museumNames.join('、')+' 周一闭馆！建议调整日程或出发日期';
+      blk.querySelector('.day-block').appendChild(warn);
+    }
+  });
+}
+
 function onDateChange(){
   const val=document.getElementById('startDate').value;
   if(!val)return;
-  const start=new Date(val);
+  const start=new Date(val+'T00:00:00');
   const weekdays=['周日','周一','周二','周三','周四','周五','周六'];
-  let hasMonday=false;
+
+  // 确定显示哪几天的日期——根据当前活跃城市的到达日
+  let baseDay=0, dayCount=4; // 默认：出发日开始的4天
+  if(activeCity){
+    const guide=cityGuides[activeCity];
+    const tripDay=CITY_TRIP_DAY[activeCity];
+    if(tripDay&&guide){
+      baseDay=tripDay-1; // tripDay从1开始，baseDay从0开始
+      dayCount=typeof guide.days==='number'?guide.days:Object.keys(guide.dayRoutes||{}).filter(k=>k!=='hotels').length||4;
+    }
+  }
 
   // 更新日期天数条
-  let daysHtml='';
-  for(let i=0;i<4;i++){
-    const d=new Date(start);d.setDate(d.getDate()+i);
+  let daysHtml='',hasMonday=false;
+  for(let i=0;i<dayCount;i++){
+    const d=new Date(start);d.setDate(d.getDate()+baseDay+i);
     const mm=String(d.getMonth()+1).padStart(2,'0');
     const dd=String(d.getDate()).padStart(2,'0');
     const wd=weekdays[d.getDay()];
     const isMon=wd==='周一';
     daysHtml+='<span style="flex-shrink:0;padding:2px 8px;border-radius:10px;'+(isMon?'background:#3a1515;color:#e05555;font-weight:bold':'background:#1e1e3a;color:#aaa')+'">Day'+(i+1)+' '+mm+'/'+dd+' '+wd+'</span>';
-    if(isMon&&(i===2||i===3))hasMonday=true;
+    if(isMon)hasMonday=true;
   }
   document.getElementById('dateDays').innerHTML=daysHtml;
   document.getElementById('mondayWarn').style.display=hasMonday?'inline':'none';
 
-  // 太原周一闭馆提醒
-  if(activeCity==='taiyuan'){
-    ['d3','d4'].forEach(id=>{
-      const blk=document.getElementById(id);
-      if(!blk)return;
-      const existing=blk.querySelector('.monday-warn');
-      if(existing)existing.remove();
-      const dayIdx=id==='d3'?2:3;
-      const d=new Date(start);d.setDate(d.getDate()+dayIdx);
-      if(weekdays[d.getDay()]==='周一'){
-        const warn=document.createElement('div');
-        warn.className='monday-warn';
-        warn.innerHTML='<b>&#9888; 周一闭馆提醒</b>：'+(id==='d3'?'山西博物院、晋商博物院周一闭馆，请调整出发日期或调换Day3到其他日！':'北齐壁画博物馆周一闭馆，请调整出发日期！');
-        blk.querySelector('.day-block').appendChild(warn);
-      }
-    });
-  }
+  // 为当前活跃城市更新周一闭馆提醒
+  updateMondayWarnings();
 }
 
 // ---- 天气 (高德API + 和风天气兜底) ----
@@ -1916,6 +1972,10 @@ function switchCity(cityId){
   // Place markers on map (safe - won't crash if map not ready)
   try{placeCityMarkers(guide,cityId);}catch(e){}
 
+  // Update Monday warnings for this city + refresh date bar
+  updateMondayWarnings();
+  if(document.getElementById('startDate').value)onDateChange();
+
   // Fly map to city (guard against map not yet initialized)
   if(typeof map!=='undefined'&&map){
     try{map.setZoomAndCenter(12,[guide.center.lng,guide.center.lat]);}catch(e){}
@@ -1983,7 +2043,10 @@ function selectCitySpot(cityId,spotId){
   const guide=cityGuides[cityId];
   const s=guide.spots[spotId];
   if(!s)return;
-  map.setZoomAndCenter(15,[s.lng,s.lat]);
+  // 先关闭上一次的 InfoWindow，避免残留叠加干扰地图定位
+  if(selectCitySpot._infoWin){selectCitySpot._infoWin.close();selectCitySpot._infoWin=null;}
+  map.setZoom(16);
+  map.setCenter([s.lng,s.lat]);
   // 高亮侧边栏 spot item
   document.querySelectorAll('#cityPanel .spot-item').forEach(el=>el.classList.remove('active'));
   const spotEl=document.getElementById('cspot-'+spotId);
@@ -1991,7 +2054,8 @@ function selectCitySpot(cityId,spotId){
   // 显示infoWindow
   const infoWin=new AMap.InfoWindow({content:'<div class="amap-info-content"><b>'+s.name+'</b><br>'+s.desc+'</div>',offset:[0,-40]});
   infoWin.open(map,[s.lng,s.lat]);
-  setTimeout(()=>infoWin.close(),5000);
+  selectCitySpot._infoWin=infoWin;
+  setTimeout(()=>{if(selectCitySpot._infoWin===infoWin){infoWin.close();selectCitySpot._infoWin=null;}},5000);
 }
 
 function renderCityPanel(guide,cityId){
