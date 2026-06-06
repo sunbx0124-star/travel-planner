@@ -701,13 +701,19 @@ function toggleSidebar(){
     if(sb.classList.contains('collapsed')){
       sb.classList.remove('collapsed','expanded');
       btn.textContent='▼ 展开攻略';
+      // 恢复次要元素
+      ['weatherBar','dateLabel','dateDays'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
     }else if(sb.classList.contains('expanded')){
       sb.classList.remove('expanded');
       sb.classList.add('collapsed');
       btn.textContent='▼ 展开攻略';
+      // 恢复次要元素
+      ['weatherBar','dateLabel','dateDays'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
     }else{
       sb.classList.add('expanded');
       btn.textContent='▲ 收缩攻略';
+      // 折叠次要元素
+      ['weatherBar','dateLabel','dateDays'].forEach(id=>{const el=document.getElementById(id);if(el){el._prevDisplay=el.style.display;el.style.display='none';}});
     }
     updateExpandBtn();
   }else{
@@ -724,6 +730,13 @@ function toggleExpandPanel(){
   const isExpanded=sb.classList.toggle('expanded');
   updateExpandBtn();
   document.getElementById('btnToggleSidebar').textContent=isExpanded?'▲ 收缩攻略':'▼ 展开攻略';
+  // 展开时折叠次要信息（天气/日期/天数），优先显示攻略内容
+  const elems=['weatherBar','dateLabel','dateDays'];
+  if(isExpanded){
+    elems.forEach(id=>{const el=document.getElementById(id);if(el){el._prevDisplay=el.style.display;el.style.display='none';}});
+  }else{
+    elems.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=el._prevDisplay||'';});
+  }
   setTimeout(()=>{if(map)map.setFitView(null,false,[200,100,200,100]);},350);
 }
 
@@ -2127,6 +2140,8 @@ function switchCity(cityId){
     sb.classList.remove('collapsed');
   }
   sb.classList.remove('expanded');
+  // 恢复展开时被折叠的日期元素（天气由上面 weatherBar 行处理）
+  ['dateLabel','dateDays'].forEach(id=>{const el=document.getElementById(id);if(el&&el.style.display==='none')el.style.display='';});
   if(window.innerWidth<=768){
     document.getElementById('btnToggleSidebar').textContent='▼ 展开攻略';
     showExpandBtn(true);
@@ -2182,9 +2197,10 @@ function switchToRoadPlan(){
   if(roadTab)roadTab.classList.add('active');
   document.querySelector('header h1').textContent='自驾穿越 · 城市攻略';
   document.querySelector('header p').textContent='烟台→伊犁→青甘南线 | VW Golf 7 | 35-45天 | 点击路段查看路线';
-  // Reset expand state + hide expand button
+  // Reset expand state + restore hidden elements
   const sb=document.getElementById('sidebar');
   sb.classList.remove('expanded');
+  ['dateLabel','dateDays'].forEach(id=>{const el=document.getElementById(id);if(el&&el.style.display==='none')el.style.display='';});
   showExpandBtn(true);
   syncDateInput();
   if(document.getElementById('startDate').value)onDateChange();
