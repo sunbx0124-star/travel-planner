@@ -203,6 +203,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 .city-tabs{display:flex;gap:4px;padding:6px 12px;background:var(--card);border-bottom:1px solid #2a2a4a;overflow-x:auto;white-space:nowrap;scrollbar-width:none;-ms-overflow-style:none;position:sticky;top:70px;z-index:4}
 .city-tabs::-webkit-scrollbar{display:none}
 .city-tabs.show{display:flex}
+#dateDays::-webkit-scrollbar{display:none}
 .city-tab{flex-shrink:0;padding:6px 12px;border-radius:16px;cursor:pointer;font-size:11px;background:#2a2a4a;color:#aaa;border:none;transition:all .2s;white-space:nowrap}
 .city-tab:hover{background:#3a3a5a;color:#ddd}
 .city-tab.active{background:var(--gold);color:var(--bg);font-weight:bold}
@@ -267,7 +268,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   .city-panel .draw-route-btn{font-size:9px}
   .city-panel.show{min-height:30vh;overflow-y:auto}
   .road-trip.show{min-height:30vh}
-  .btn-expand-panel{display:none;position:sticky;bottom:0;z-index:10;width:100%;padding:8px;border:none;background:var(--gold);color:var(--bg);font-size:11px;font-weight:bold;cursor:pointer;text-align:center;border-radius:6px 6px 0 0;margin-top:8px;box-shadow:0 -2px 6px rgba(0,0,0,.3)}
+  .btn-expand-panel{display:none;position:sticky;bottom:0;z-index:10;padding:3px 16px;border:none;background:var(--gold);color:var(--bg);font-size:11px;font-weight:bold;cursor:pointer;text-align:center;border-radius:8px 8px 0 0;margin:8px auto 0;box-shadow:0 -2px 6px rgba(0,0,0,.3);width:auto}
   .btn-expand-panel:active{opacity:.8}
   #dateBar{font-size:10px!important;gap:6px!important}
   #dateBar input{width:105px!important;font-size:9px!important}
@@ -340,7 +341,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <label style="color:var(--sub);font-size:10px" id="dateLabel"><span id="dateLabelText">烟台出发日</span> <input type="date" id="startDate" onchange="onDateChange()" style="padding:2px 6px;border-radius:4px;border:1px solid #555;background:#1e1e3a;color:var(--text);font-size:10px;width:120px"></label>
   <span id="mondayWarn" style="display:none;color:#e05555;font-size:10px">&#9888; 周一闭馆</span>
 </div>
-<div style="display:flex;gap:6px;padding:4px 12px;background:#15152a;border-bottom:1px solid #2a2a4a;font-size:10px;overflow-x:auto" id="dateDays"></div>
+<div style="display:flex;gap:6px;padding:4px 12px;background:#15152a;border-bottom:1px solid #2a2a4a;font-size:10px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none" id="dateDays"></div>
 <div id="weatherBar" style="display:none;padding:8px 12px;background:#1a1a35;border-bottom:1px solid #2a2a4a">
   <div class="weather-header"><span style="font-size:10px;color:var(--sub)" id="weatherCityName">天气</span><button class="btn-weather-refresh" id="btnWeatherRefresh" onclick="refreshWeather()" title="刷新">↻</button></div>
   <div id="weatherCards" style="display:flex;gap:8px;overflow-x:auto"></div>
@@ -2184,7 +2185,7 @@ function switchToRoadPlan(){
   // Reset expand state + hide expand button
   const sb=document.getElementById('sidebar');
   sb.classList.remove('expanded');
-  showExpandBtn(false);
+  showExpandBtn(true);
   syncDateInput();
   if(document.getElementById('startDate').value)onDateChange();
 }
