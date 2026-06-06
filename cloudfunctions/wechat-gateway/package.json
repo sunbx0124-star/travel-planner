@@ -1,0 +1,9 @@
+{
+  "name": "wechat-gateway",
+  "version": "1.0.0",
+  "description": "微信公众号消息网关 — 记账 + 攻略查询",
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.5.0"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "envId": "travel-d6gc9rtii6d0f6a87",
+  "version": "2.0",
+  "functions": [
+    {
+      "name": "wechat-gateway",
+      "timeout": 10,
+      "runtime": "Nodejs18.15",
+      "envVariables": {
+        "WECHAT_TOKEN": "travel_planner_2026"
+      }
+    }
+  ]
+}

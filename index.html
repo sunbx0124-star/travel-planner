@@ -715,7 +715,7 @@ function toggleSidebar(){
     const isCollapsed=sb.classList.toggle('collapsed');
     btn.textContent=isCollapsed?'▼ 展开攻略':'▲ 隐藏攻略';
   }
-  setTimeout(()=>{if(map)map.setFitView(null,false,[50,50,50,50]);},350);
+  setTimeout(()=>{if(map)map.setFitView(null,false,[200,100,200,100]);},350);
 }
 
 function toggleExpandPanel(){
@@ -724,7 +724,7 @@ function toggleExpandPanel(){
   const isExpanded=sb.classList.toggle('expanded');
   updateExpandBtn();
   document.getElementById('btnToggleSidebar').textContent=isExpanded?'▲ 收缩攻略':'▼ 展开攻略';
-  setTimeout(()=>{if(map)map.setFitView(null,false,[50,50,50,50]);},350);
+  setTimeout(()=>{if(map)map.setFitView(null,false,[200,100,200,100]);},350);
 }
 
 function updateExpandBtn(){
@@ -2159,7 +2159,7 @@ function switchCity(cityId){
 
   // Fly map to city (guard against map not yet initialized)
   if(typeof map!=='undefined'&&map){
-    try{map.setZoomAndCenter(12,[guide.center.lng,guide.center.lat]);}catch(e){}
+    try{map.setZoomAndCenter(10,[guide.center.lng,guide.center.lat]);}catch(e){}
   }
 
   // Fetch weather for this city (use lon,lat format)
@@ -2229,7 +2229,7 @@ function selectCitySpot(cityId,spotId){
   if(!s)return;
   // 先关闭上一次的 InfoWindow，避免残留叠加干扰地图定位
   if(selectCitySpot._infoWin){selectCitySpot._infoWin.close();selectCitySpot._infoWin=null;}
-  map.setZoom(16);
+  map.setZoom(14);
   map.setCenter([s.lng,s.lat]);
   // 桌面端补偿侧边栏偏移，让景点在屏幕居中而非地图容器居中
   const sidebarW=document.getElementById('sidebar').offsetWidth;

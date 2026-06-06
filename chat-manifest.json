@@ -1,0 +1,15 @@
+{
+  "name": "记账助手",
+  "short_name": "记账",
+  "description": "记账 · 查攻略 · 查账单",
+  "start_url": "./chat.html",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#c9a96e",
+  "orientation": "any",
+  "icons": [{
+    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%231a1a2e'/><text x='96' y='120' text-anchor='middle' font-size='80' fill='%23c9a96e'>￥</text></svg>",
+    "sizes": "192x192",
+    "type": "image/svg+xml"
+  }]
+}

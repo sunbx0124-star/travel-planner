@@ -1,0 +1,9 @@
+.git/
+.gitignore
+.claude/
+CLAUDE.md
+memory/
+node_modules/
+*.jsonl
+*.mp4
+.tcbignore
