@@ -261,7 +261,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   .road-table{font-size:9px}
   .road-route-detail{font-size:9px;max-height:120px}
   .seg-actions .btn-nav,.seg-actions .btn-retry{width:24px;height:24px;font-size:12px}
-  .city-tabs{padding:4px 8px;gap:3px;top:0}
+  .city-tabs{padding:4px 8px;gap:3px;top:0;-webkit-overflow-scrolling:touch}
   .city-tab{padding:4px 10px;font-size:10px}
   .city-panel .city-header h3{font-size:13px}
   .city-panel .draw-route-btn{font-size:9px}
@@ -272,7 +272,58 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   #dateBar{font-size:10px!important;gap:6px!important}
   #dateBar input{width:105px!important;font-size:9px!important}
   #dateDays{font-size:9px!important}
+
 }
+  /* 平板 (769-1024px) */
+  @media(min-width:769px) and (max-width:1024px){
+    #sidebar{width:360px;min-width:360px;font-size:11px}
+    #sidebar header h1{font-size:17px}
+    #sidebar header p{font-size:10px}
+    .day-block{padding:10px 12px}
+    .spot-item{padding:8px;gap:8px}
+    .spot-body h4{font-size:12px}
+    .spot-body .desc{font-size:10px}
+    .city-tabs{gap:3px;padding:4px 8px}
+    .city-tab{padding:5px 10px;font-size:10px}
+    .tabs{padding:6px 8px;gap:3px}
+    .tab{font-size:10px;padding:6px 2px}
+    .map-search-wrap input{width:200px;font-size:12px}
+    .road-summary{padding:10px;margin:8px 10px}
+    #dateBar input{width:100px!important;font-size:9px!important}
+    #dateDays{font-size:9px!important}
+  }
+
+  /* 手机横屏 */
+  @media(max-width:900px) and (orientation:landscape){
+    body{flex-direction:column}
+    #sidebar{width:100%;min-width:100%;max-height:40vh;overflow-y:auto}
+    #sidebar.expanded{max-height:65vh!important}
+    #sidebar.expanded~#map-container{height:35vh}
+    #map-container{height:60vh}
+    #sidebar header{padding:8px 12px 4px;position:static}
+    #sidebar header h1{font-size:15px}
+    header p{display:none}
+    .city-tabs{top:0}
+    .tabs{top:0}
+    .map-search-wrap input{width:160px;font-size:11px}
+    .map-search-wrap{top:4px;left:4px}
+    #fab-chat{bottom:55px;right:8px;width:38px;height:38px;font-size:16px}
+  }
+
+  /* 小屏手机 (<380px) */
+  @media(max-width:380px){
+    #sidebar header h1{font-size:14px}
+    #sidebar header p{font-size:9px}
+    .city-tab{padding:4px 8px;font-size:9px}
+    .tab{font-size:9px;padding:4px 1px}
+    .day-header{font-size:12px}
+    .spot-body h4{font-size:10px}
+    .spot-body .desc{font-size:9px}
+    .map-search-wrap input{width:140px;padding:4px 8px;font-size:11px}
+    #dateBar input{width:90px!important;font-size:8px!important}
+    #dateBar{gap:4px!important;font-size:9px!important}
+    .legend{font-size:8px;gap:4px;padding:4px 6px;bottom:6px}
+  }
 </style>
 </head>
 <body>
@@ -413,9 +464,11 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     <div class="road-segment clickable" id="road-ret-7" onclick="drawRoadSegment('ret-7')"><div class="seg-header">格尔木→茶卡 <span class="stars">★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G6京藏高速 · ~470km · 5h</div><div class="seg-info"><b style="color:var(--orange)">&#x1F3D4; 格尔木2800m&#x2192;茶卡3100m。</b> 格尔木加满油！沿途服务区多未启用，仅都兰可靠。持续高原驾驶，注意补水防疲劳。</div><div class="road-route-detail" id="detail-road-ret-7" style="display:none"></div><div class="seg-actions" id="actions-ret-7" style="display:none"></div></div>
     <div class="road-segment clickable" id="road-ret-8" onclick="drawRoadSegment('ret-8')"><div class="seg-header">茶卡→西宁 (经青海湖) <span class="stars">★★★★★</span><span class="seg-status seg-ok">经典</span></div><div class="seg-route">G109+高速 · ~270km · 4-5h</div><div class="seg-info">橡皮山垭口3817m！茶卡盐湖一早或傍晚去。环湖东路铺装良好。</div><div class="road-route-detail" id="detail-road-ret-8" style="display:none"></div><div class="seg-actions" id="actions-ret-8" style="display:none"></div></div>
     <div class="road-segment clickable" id="road-ret-9" onclick="drawRoadSegment('ret-9')"><div class="seg-header">西宁→兰州 <span class="stars">★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G6京藏高速 · ~220km · 3h</div><div class="seg-info">全程高速，轻松到达。</div><div class="road-route-detail" id="detail-road-ret-9" style="display:none"></div><div class="seg-actions" id="actions-ret-9" style="display:none"></div></div>
-    <div class="road-segment clickable" id="road-ret-9b" onclick="drawRoadSegment('ret-9b')"><div class="seg-header">兰州→天水 <span class="stars">★★★★★</span><span class="seg-status seg-ok">石窟之路</span></div><div class="seg-route">G30连霍高速 · ~300km · 3h</div><div class="seg-info">兰州南下直达天水。途经定西。天水麦积山石窟(中国四大石窟之一)+伏羲庙+仙人崖。麻辣烫+呱呱必吃！</div><div class="road-route-detail" id="detail-road-ret-9b" style="display:none"></div><div class="seg-actions" id="actions-ret-9b" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-ret-9b" onclick="drawRoadSegment('ret-9b')"><div class="seg-header">兰州→定西 <span class="stars">★★★</span><span class="seg-status seg-ok">短途</span></div><div class="seg-route">G30连霍高速 · ~100km · 1.5h</div><div class="seg-info">兰州南下第一站。定西陇西县城：李家龙宫(免费·李氏文化发源地)+威远楼。宽粉·洋芋搅团必吃。</div><div class="road-route-detail" id="detail-road-ret-9b" style="display:none"></div><div class="seg-actions" id="actions-ret-9b" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-ret-9c" onclick="drawRoadSegment('ret-9c')"><div class="seg-header">定西→天水 <span class="stars">★★★★</span><span class="seg-status seg-ok">石窟之路</span></div><div class="seg-route">G30连霍高速 · ~180km · 2.5h</div><div class="seg-info">定西东行直达天水。麦积山石窟(中国四大石窟之一)+伏羲庙+仙人崖。四合院哈海英麻辣烫必打卡！</div><div class="road-route-detail" id="detail-road-ret-9c" style="display:none"></div><div class="seg-actions" id="actions-ret-9c" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-ret-9d" onclick="drawRoadSegment('ret-9d')"><div class="seg-header">天水→宝鸡 <span class="stars">★★★★</span><span class="seg-status seg-ok">青铜之路</span></div><div class="seg-route">G30连霍高速 · ~180km · 2.5h</div><div class="seg-info">天水东行至宝鸡。青铜器博物院(何尊“中国”出处·免费)+法门寺(佛指舍利·5A)。岐山臊子面·擀面皮必吃。</div><div class="road-route-detail" id="detail-road-ret-9d" style="display:none"></div><div class="seg-actions" id="actions-ret-9d" style="display:none"></div></div>
 
-<div class="road-segment clickable" id="road-ret-10" onclick="drawRoadSegment('ret-10')"><div class="seg-header">天水→西安 <span class="stars">★★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G30连霍高速 · ~350km · 4h</div><div class="seg-info">天水东行经宝鸡到西安。G30路况好。宝鸡可短暂停靠看法门寺(绕行30km)。</div><div class="road-route-detail" id="detail-road-ret-10" style="display:none"></div><div class="seg-actions" id="actions-ret-10" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-ret-10" onclick="drawRoadSegment('ret-10')"><div class="seg-header">宝鸡→西安 <span class="stars">★★★★</span><span class="seg-status seg-ok">高速</span></div><div class="seg-route">G30连霍高速 · ~180km · 2h</div><div class="seg-info">宝鸡东行至西安。兵马俑+陕历博+城墙+回民街。西安是返程最后一站，休整2-3天后回烟台。</div><div class="road-route-detail" id="detail-road-ret-10" style="display:none"></div><div class="seg-actions" id="actions-ret-10" style="display:none"></div></div>
     <div style="margin-top:6px;font-size:10px;color:var(--sub);line-height:1.6">
       <b>G315精华</b>：茫崖翡翠湖(免费)→西台双色湖(公路穿湖)→水上雅丹(全球唯一)→东台(蒂芙尼蓝)→U型公路→察尔汗盐湖<br>
       <b style="color:var(--orange)">⚠</b> 小柴旦湖→老茫崖施工(限速20km/h)，青海12328确认路况<br>
