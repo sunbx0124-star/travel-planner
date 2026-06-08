@@ -247,6 +247,10 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   .w-card{flex:0 0 65px;font-size:9px}
   .w-card .w-icon{font-size:16px}
   #fab-chat{bottom:65px;right:10px;width:42px;height:42px;font-size:18px}
+
+	  #fab-todo{bottom:120px;right:10px;width:42px;height:42px;font-size:18px}
+	  #todo-slide-panel{width:100%;height:60vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0}
+	  #todo-slide-panel.open{transform:translateY(0)}
   #chat-panel{width:100%;height:60vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0}
   #chat-panel.open{transform:translateY(0)}
   #chat-backdrop{display:none}
@@ -325,6 +329,40 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     #dateBar{gap:4px!important;font-size:9px!important}
     .legend{font-size:8px;gap:4px;padding:4px 6px;bottom:6px}
   }
+  /* 待办清单 */
+
+  /* 待办FAB */
+  #fab-todo{display:flex;position:absolute;bottom:138px;right:16px;z-index:250;width:48px;height:48px;border-radius:50%;background:#1e1e3a;color:var(--gold);border:2px solid var(--gold);cursor:pointer;font-size:20px;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.4);transition:transform .2s,box-shadow .2s}
+  #fab-todo:active{transform:scale(.92)}
+  #fab-todo .badge{position:absolute;top:-3px;right:-3px;width:20px;height:20px;border-radius:50%;background:#e05555;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+  /* 待办滑出面板 */
+  #todo-slide-panel{position:fixed;top:0;right:0;width:380px;height:100vh;z-index:500;background:#111;color:#e0e0e0;display:flex;flex-direction:column;box-shadow:-2px 0 20px rgba(0,0,0,.5);transform:translateX(100%);transition:transform .3s ease}
+  #todo-slide-panel.open{transform:translateX(0)}
+  .todo-slide-header{padding:12px 16px;background:#1a1a1a;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+  .todo-slide-header h3{font-size:15px;color:var(--gold);margin:0}
+  .todo-slide-body{flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch}
+  .todo-slide-body .todo-input-row{margin-bottom:10px}
+.todo-item{display:flex;align-items:center;gap:8px;padding:10px 12px;margin:4px 0;background:#1e1e3a;border-radius:6px;border-left:3px solid var(--gold);transition:all .2s}
+.todo-item.done{border-left-color:var(--green);opacity:.5}
+.todo-item.done .todo-label{text-decoration:line-through;color:var(--sub)}
+.todo-check{width:22px;height:22px;border-radius:50%;border:2px solid #666;background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .15s;padding:0}
+.todo-item.done .todo-check{border-color:var(--green);background:var(--green);color:#fff}
+.todo-label{flex:1;font-size:12px;color:var(--text);min-width:0;word-break:break-word}
+.todo-del{width:26px;height:26px;border-radius:50%;border:none;background:transparent;color:#666;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.todo-del:hover{color:#e05555;background:#2a1a1a}
+.todo-edit-btn{width:26px;height:26px;border-radius:50%;border:none;background:transparent;color:#666;cursor:pointer;font-size:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.todo-edit-btn:hover{color:var(--gold);background:#2a2a1a}
+.todo-edit-input{flex:1;padding:4px 8px;border-radius:4px;border:2px solid var(--gold);background:#1e1e3a;color:var(--text);font-size:12px;outline:none;min-width:0}
+.todo-edit-input:focus{border-color:var(--orange)}
+.todo-summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:10px;color:var(--sub)}
+.todo-summary b{color:var(--gold)}
+.todo-clear-all{font-size:10px;color:#888;cursor:pointer;background:none;border:none;padding:2px 6px}
+.todo-clear-all:hover{color:#e05555}
+.todo-input-row{display:flex;gap:6px;margin-bottom:12px}
+.todo-input-row input{flex:1;padding:8px 12px;border-radius:6px;border:2px solid var(--gold);background:#1e1e3a;color:var(--text);font-size:13px;outline:none}
+.todo-input-row input:focus{border-color:var(--orange)}
+.todo-input-row button{padding:8px 14px;border-radius:6px;border:none;background:var(--gold);color:var(--bg);font-weight:bold;cursor:pointer;font-size:12px;white-space:nowrap}
+.todo-input-row button:active{opacity:.8}
 </style>
 </head>
 <body>
@@ -356,6 +394,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <button class="city-tab" id="ctab-xinzhou" onclick="switchCity('xinzhou')">忻州</button>
   <button class="city-tab" id="ctab-shuozhou" onclick="switchCity('shuozhou')">朔州</button>
   <button class="city-tab" id="ctab-datong" onclick="switchCity('datong')">大同</button>
+  <button class="city-tab" id="ctab-huhehaote" onclick="switchCity('huhehaote')">呼和浩特</button>
   <button class="city-tab" id="ctab-bayannaoer" onclick="switchCity('bayannaoer')">巴彦淖尔</button>
   <button class="city-tab" id="ctab-yinchuan" onclick="switchCity('yinchuan')">银川</button>
   <button class="city-tab" id="ctab-guiyang" onclick="switchCity('guiyang')">贵阳</button>
@@ -388,14 +427,14 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 </div>
 
 <!-- 自驾穿越面板 -->
-<div class="road-trip" id="roadTripPanel">
+<div class="road-trip show" id="roadTripPanel">
 <div class="road-summary">
   <h3>烟台 → 伊犁 → 青甘南线 自驾穿越</h3>
   <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 巴彦淖尔 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 定西 → 天水 → 宝鸡 → 西安 → 烟台</div>
   <div class="road-stats">
     <span class="road-stat">总里程 <b>~10500km</b></span>
     <span class="road-stat">天数 <b>35-45天</b></span>
-    <span class="road-stat">车辆 <b>Golf 7</b></span>
+    <span class="road-stat">车辆 <b>RAV4 荣放</b></span>
     <span class="road-stat">预算 <b>2.1-3.8万</b></span>
   </div>
 </div>
@@ -410,7 +449,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 	    <div class="road-segment clickable" id="road-seg-4" onclick="drawRoadSegment('seg-4')"><div class="seg-header">4. 忻州→朔州 <span class="stars">★★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G55二广高速经雁门关/代县 · ~140km · 2h</div><div class="seg-info">途经雁门关长城、代县古城。</div><div class="road-route-detail" id="detail-road-seg-4" style="display:none"></div><div class="seg-actions" id="actions-seg-4" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-5" onclick="drawRoadSegment('seg-5')"><div class="seg-header">5. 朔州→大同 <span class="stars">★★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G55二广高速 · ~150km · 2h</div><div class="seg-info">途经应县木塔、恒山悬空寺。</div><div class="road-route-detail" id="detail-road-seg-5" style="display:none"></div><div class="seg-actions" id="actions-seg-5" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-6" onclick="drawRoadSegment('seg-6')"><div class="seg-header">6. 大同→呼和浩特 <span class="stars">★★★★★</span><span class="seg-status seg-ok">强烈推荐</span></div><div class="seg-route">长城一号旅游公路→杀虎口→G55 · ~260km · 4-5h</div><div class="seg-info">250km沿明长城蜿蜒，全程柏油！先西行至杀虎口再折北。</div><div class="road-route-detail" id="detail-road-seg-6" style="display:none"></div><div class="seg-actions" id="actions-seg-6" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-7" onclick="drawRoadSegment('seg-7')"><div class="seg-header">7. 呼和浩特→巴彦淖尔 <span class="stars">★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G6京藏高速为主 · ~430km · 4.5h</div><div class="seg-info">可穿插G110体验阴山+河套平原向日葵(7-8月)。</div><div class="road-route-detail" id="detail-road-seg-7" style="display:none"></div><div class="seg-actions" id="actions-seg-7" style="display:none"></div></div>
+		    <div class="road-segment clickable" id="road-seg-7" onclick="drawRoadSegment('seg-7')"><div class="seg-header">7. 呼和浩特→甘其毛都(辰华宾馆) <span class="stars">★★★</span><span class="seg-status seg-ok">口岸线</span></div><div class="seg-route">G6→临河转G242北上 · ~380km · 5h</div><div class="seg-info">出呼和浩特走G6京藏高速到临河，转G242甘临一级公路北上至甘其毛都口岸。辰华宾馆在甘其毛都镇阿吉乃路与桑根达来街交汇处。G242段车少路好，沿途戈壁草原风光。</div><div class="road-route-detail" id="detail-road-seg-7" style="display:none"></div><div class="seg-actions" id="actions-seg-7" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-8" onclick="drawRoadSegment('seg-8')"><div class="seg-header">8. 巴彦淖尔→银川 <span class="stars">★★</span><span class="seg-status seg-ok">可通行</span></div><div class="seg-route">G6京藏高速 · ~330km · 3.5h</div><div class="seg-info">G6乌海段可能管制。临河/乌拉山服务区施工。</div><div class="road-route-detail" id="detail-road-seg-8" style="display:none"></div><div class="seg-actions" id="actions-seg-8" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-9" onclick="drawRoadSegment('seg-9')"><div class="seg-header">9. 银川→中卫 <span class="stars">★★★★★</span><span class="seg-status seg-ok">全程最佳</span></div><div class="seg-route">G307 + S218沙漠边缘路 · ~250km · 3h</div><div class="seg-info">双向四车道，路面堪比高速！贺兰山+腾格里沙漠边缘+骆驼群。串联：明长城→金沙海→66号公路→沙坡头。</div><div class="road-route-detail" id="detail-road-seg-9" style="display:none"></div><div class="seg-actions" id="actions-seg-9" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-10" onclick="drawRoadSegment('seg-10')"><div class="seg-header">10. 中卫→武威 <span class="stars">★★</span><span class="seg-status seg-danger">仅高速</span></div><div class="seg-route">G2012定武高速 · ~280km · 2.5h</div><div class="seg-info">严禁走S315腾格里穿沙公路！沙阻严重/无信号/两驱轿车会陷车。</div><div class="road-route-detail" id="detail-road-seg-10" style="display:none"></div><div class="seg-actions" id="actions-seg-10" style="display:none"></div></div>
@@ -480,7 +519,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 
 <!-- Golf 7 注意事项 -->
 <div class="road-section">
-  <div class="road-section-title" onclick="toggleRoadSection(this)">Golf 7 关键风险 & 检查清单 <span class="arrow">▶</span></div>
+  <div class="road-section-title" onclick="toggleRoadSection(this)">RAV4 荣放 关键风险 & 检查清单 <span class="arrow">▶</span></div>
   <div class="road-section-body">
     <table class="road-table">
       <tr><th>路段</th><th>风险</th><th>应对</th></tr>
@@ -509,7 +548,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     <table class="road-table">
       <tr><th>项目</th><th>费用(两人)</th></tr>
       <tr><td>总里程</td><td>~10000-11000km</td></tr>
-      <tr><td>油费</td><td>~4500-5500元 (Golf 7 油耗6L/100km)</td></tr>
+      <tr><td>油费</td><td>~4500-5500元 (RAV4 油耗8L/100km)</td></tr>
       <tr><td>过路费</td><td>~3500-4000元</td></tr>
       <tr><td>住宿</td><td>5250-13500元 (35-45天)</td></tr>
       <tr><td>门票</td><td>两人合计 ~4000-6000元</td></tr>
@@ -527,6 +566,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 
 <!-- 城市攻略面板 -->
 <div class="city-panel" id="cityPanel"></div>
+
   <button class="btn-expand-panel" id="btnExpandPanel" onclick="toggleExpandPanel()">▼ 展开攻略</button>
 </div>
 
@@ -547,6 +587,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     <button class="btn-locate" id="btnLocate" title="定位当前位置" onclick="locateMe()">⌖</button>
   </div>
   <button id="fab-chat" onclick="toggleChat()" title="记账 & 助手">💬</button>
+  <button id="fab-todo" onclick="toggleTodoPanel()" title="待办清单">📋<span id="todoBadge" class="badge" style="display:none">0</span></button>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#c9a96e"></div>历史</div>
     <div class="legend-item"><div class="legend-dot" style="background:#4a9e6e"></div>自然</div>
@@ -784,6 +825,7 @@ function isMuseumSpot(s){
 
 // 城市在整体行程中的到达日（从出发日算起，Day 1 = 出发日）
 const CITY_TRIP_DAY={
+  'huhehaote':12,
   'taiyuan':3,'xinzhou':7,'shuozhou':9,'datong':10,
   'bayannaoer':14,'yinchuan':16,'zhongwei':19,'wuwei':21,
   'menyuan':23,'zhangye':25,'jiuquan':28,'jiayuguan':30,
@@ -1476,6 +1518,7 @@ const cityCoords={
   '太原':{lng:112.55,lat:37.87},'忻州':{lng:112.73,lat:38.42},
   '朔州':{lng:112.43,lat:39.33},'大同':{lng:113.30,lat:40.08},
   '呼和浩特':{lng:111.75,lat:40.84},'巴彦淖尔':{lng:107.39,lat:40.74},
+  '甘其毛都辰华宾馆':{lng:107.60,lat:42.10},
   '银川':{lng:106.23,lat:38.47},'中卫':{lng:105.20,lat:37.51},
   '武威':{lng:102.64,lat:37.93},'张掖':{lng:100.46,lat:38.93},
   '酒泉':{lng:98.52,lat:39.74},'嘉峪关':{lng:98.29,lat:39.77},
@@ -1497,7 +1540,7 @@ const roadSegments={
   'seg-4':{from:'忻州',to:'朔州'},
   'seg-5':{from:'朔州',to:'大同'},
   'seg-6':{from:'大同',to:'呼和浩特'},
-  'seg-7':{from:'呼和浩特',to:'巴彦淖尔'},
+  'seg-7':{from:'呼和浩特',to:'甘其毛都辰华宾馆'},
   'seg-8':{from:'巴彦淖尔',to:'银川'},
   'seg-9':{from:'银川',to:'中卫'},
   'seg-10':{from:'中卫',to:'武威'},
@@ -2002,6 +2045,23 @@ const cityGuides={
     dayFood:{d1:'应县木塔：应县凉粉¥8·滴溜·右玉盐煎羊肉·朔州面皮·山阴卷卷(均在应县/朔州市区可吃到)'},
     tips:'应县木塔位于朔州应县(非大同市区)·崇福寺金代建筑保存完好·一天足够'
   },
+
+  'huhehaote':{
+    name:'呼和浩特',days:2,center:{lng:111.75,lat:40.84},
+    spots:{
+      'dazhaosi':{name:'大召寺',lng:111.65,lat:40.80,cat:'hist',desc:'藏传佛教格鲁派寺院·银佛龙雕壁画"三绝"。¥35。8:00-18:00。2h。南门停车方便。下午三四点斜阳打金顶最美。'},
+      'neimenggubowuguan':{name:'内蒙古博物院',lng:111.73,lat:40.84,cat:'hist',desc:'免费·需公众号预约·周一闭馆！恐龙化石·匈奴金冠·草原丝路展。地铁1号线直达。09:00-17:00(16:00停入)。2-3h。'},
+      'zhaojunbowuyuan':{name:'昭君博物院',lng:111.68,lat:40.72,cat:'hist',desc:'昭君墓(青冢)+匈奴文化博物馆。¥30。9:00-17:00。周一闭馆。距市区30min车程。登望月台俯瞰阴山。1-1.5h。'},
+      'sailaoshangjie':{name:'塞上老街',lng:111.65,lat:40.80,cat:'mixed',desc:'明清古街·紧邻大召寺。古玩·皮画·蒙古刀·奶酪。夜景超美。全天免费。傍晚最出片。1-1.5h。'},
+      'wutasi':{name:'五塔寺',lng:111.66,lat:40.80,cat:'hist',desc:'金刚座舍利宝塔·梵文星图砖雕。¥35。8:30-17:30。寺旁小巷停车。比大召更清幽。40min-1h。'},
+      'xilamuren':{name:'希拉穆仁草原',lng:111.40,lat:41.30,cat:'nature',desc:'距市区90km·约1.5h车程。骑马·射箭·蒙古包住宿·篝火晚会。开发成熟适合首次草原体验。骑马前谈好总价！半天-全天。'},
+    },
+    dayRoutes:{d1:['dazhaosi','sailaoshangjie','wutasi'],d2:['neimenggubowuguan','zhaojunbowuyuan','xilamuren']},
+    dayDesc:{d1:'大召寺+塞上老街+五塔寺·老城文化线',d2:'博物院+昭君墓+希拉穆仁草原·博物草原线'},
+    dayFood:{d1:'大召寺周边：德顺源(大盛魁商业街1号 ¥60)·老绥元烧麦(大召店 ¥30-50·皮薄馅大配砖茶)·格日勒阿妈(新华广场 ¥72-100·蒙古冰糕+甜奶酪馅饼+锅茶)——以上均在玉泉区大召附近可步行到达',d2:'博物院→昭君→草原线：泽成冰煮羊(公务员总店 ¥100·羔羊肉久煮不老+桂花酸奶)·通顺大巷小吃(稀果羹¥5·驼肉馅饼·烤羊肉串)——冰煮羊在赛罕区·博物院往南10min车程'},
+    food:'<b>必吃</b>：德顺源烧麦(¥30-50·大盛魁商业街1号)·泽成冰煮羊(¥100·公务员总店羔羊肉)·格日勒阿妈蒙餐(¥72-100·蒙古冰糕+甜奶酪馅饼)·老绥元烧麦·稀果羹¥5·羊杂碎+焙子 <b>避雷</b>：景区门口"1元/串"羊肉串(鸭肉)·网红烤全羊套餐人少别点·速溶粉冲泡奶茶别买',
+    tips:'<b>周一闭馆</b>：博物院和昭君墓周一闭馆务必避开！<b>温差</b>：早晚温差大·夏天也备冲锋衣。<b>防晒</b>：紫外线极强·SPF50+墨镜帽子必备。<b>骑马</b>：上马前谈好总价和路线·"跑一圈50"最后可能收200。<b>草原信号弱</b>：提前下载离线地图。市区停车：大召寺南门·五塔寺旁小巷。9月初最佳错峰期·草虽微黄人少一半。'
+  },
   'bayannaoer':{
     name:'巴彦淖尔',days:2,center:{lng:107.39,lat:40.74},
     spots:{
@@ -2202,7 +2262,7 @@ function switchToRoadPlan(){
   const roadTab=document.getElementById('ctab-road');
   if(roadTab)roadTab.classList.add('active');
   document.querySelector('header h1').textContent='自驾穿越 · 城市攻略';
-  document.querySelector('header p').textContent='烟台→伊犁→青甘南线 | VW Golf 7 | 35-45天 | 点击路段查看路线';
+  document.querySelector('header p').textContent='烟台→伊犁→青甘南线 | RAV4 荣放 | 35-45天 | 点击路段查看路线';
   // Reset expand state + restore hidden elements
   const sb=document.getElementById('sidebar');
   sb.classList.remove('expanded');
@@ -2211,6 +2271,100 @@ function switchToRoadPlan(){
   syncDateInput();
   if(document.getElementById('startDate').value)onDateChange();
 }
+
+// === 待办清单系统 ===
+const TODO_KEY = 'travel_planner_todos_v1';
+let todos = JSON.parse(localStorage.getItem(TODO_KEY) || '[]');
+function saveTodos(){ localStorage.setItem(TODO_KEY, JSON.stringify(todos)); }
+
+function toggleTodoPanel(){
+  const panel=document.getElementById('todo-slide-panel');
+  const isOpen=panel.classList.contains('open');
+  if(isOpen){ panel.classList.remove('open'); }
+  else{ panel.classList.add('open'); renderTodo(); }
+}
+function updateTodoBadge(){
+  const badge=document.getElementById('todoBadge');
+  if(!badge)return;
+  const remaining=todos.filter(t=>!t.done).length;
+  badge.textContent=remaining;
+  badge.style.display=remaining>0?'flex':'none';
+}
+function addTodo(){
+  const inp = document.getElementById('todoInput');
+  const text = inp.value.trim();
+  if(!text) return;
+  todos.push({ id: Date.now(), text, done: false });
+  inp.value = '';
+  saveTodos();
+  renderTodo();
+}
+function toggleTodo(id){
+  const t = todos.find(t=>t.id===id);
+  if(t){ t.done = !t.done; saveTodos(); renderTodo(); }
+}
+function deleteTodo(id){
+  todos = todos.filter(t=>t.id!==id);
+  saveTodos();
+  renderTodo();
+}
+function startEditTodo(id){
+  const label = document.getElementById('todo-label-'+id);
+  if(!label) return;
+  const t = todos.find(t=>t.id===id);
+  if(!t) return;
+  label.innerHTML = '<input class="todo-edit-input" id="todo-edit-input-'+id+'" value="'+t.text.replace(/"/g,'&quot;')+'" onkeydown="if(event.key===\'Enter\')saveEditTodo('+id+')" onblur="saveEditTodo('+id+')">';
+  const inp = document.getElementById('todo-edit-input-'+id);
+  if(inp){ inp.focus(); inp.select(); }
+}
+function saveEditTodo(id){
+  const inp = document.getElementById('todo-edit-input-'+id);
+  if(!inp) return;
+  const text = inp.value.trim();
+  if(!text){ renderTodo(); return; }
+  const t = todos.find(t=>t.id===id);
+  if(t){ t.text = text; saveTodos(); }
+  renderTodo();
+}
+function clearDoneTodos(){
+  todos = todos.filter(t=>!t.done);
+  saveTodos();
+  renderTodo();
+}
+function renderTodo(){
+  const list = document.getElementById('todoList');
+  const remaining = todos.filter(t=>!t.done).length;
+  document.getElementById('todoCount').textContent = remaining + ' 项待完成';
+  if(todos.length===0){
+    list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--sub);font-size:12px">暂无待办，添加一个吧</div>';
+    updateTodoBadge();
+    return;
+  }
+  list.innerHTML = todos.map(t=>`
+    <div class="todo-item${t.done?' done':''}" id="todo-item-${t.id}">
+      <button class="todo-check" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</button>
+      <span class="todo-label" id="todo-label-${t.id}">${t.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
+      <button class="todo-edit-btn" onclick="startEditTodo(${t.id})" title="编辑">✎</button>
+      <button class="todo-del" onclick="deleteTodo(${t.id})" title="删除">&times;</button>
+    </div>
+  `).join('');
+  updateTodoBadge();
+}
+// 初始化默认待办项
+(function initDefaultTodos(){
+  if(todos.length===0){
+    todos = [
+      { id: Date.now()+1, text: '相机三脚架（适配Action5Pro）', done: false },
+      { id: Date.now()+2, text: 'DJI Action 5 Pro 配件（兔笼/快拆/ND滤镜）', done: false },
+      { id: Date.now()+3, text: '迪卡侬 MH500 徒步鞋', done: false },
+      { id: Date.now()+4, text: '工兵铲（陷车脱困/防身）', done: false },
+      { id: Date.now()+5, text: 'RAV4 遮阳挡（前挡+四窗）', done: false },
+      { id: Date.now()+6, text: '10-18mm广角镜头（风光/星空）', done: false },
+    ];
+    saveTodos();
+  }
+  renderTodo();
+})();
 
 function placeCityMarkers(guide,cityId){
   if(typeof map==='undefined'||!map||typeof AMap==='undefined')return;
@@ -2400,5 +2554,22 @@ document.addEventListener('DOMContentLoaded',function(){
   </div>
 </div>
 
+
+<!-- 待办滑出面板 -->
+<div id="todo-slide-panel">
+  <div class="todo-slide-header">
+    <h3>📋 待办清单</h3>
+    <button onclick="toggleTodoPanel()" style="background:none;border:none;color:#aaa;font-size:20px;cursor:pointer">&times;</button>
+  </div>
+  <div class="todo-slide-body">
+    <div class="todo-summary"><span id="todoCount">0 项待完成</span><button class="todo-clear-all" onclick="clearDoneTodos()">清除已完成</button></div>
+    <div id="todoList"></div>
+    <div class="todo-input-row">
+      <input type="text" id="todoInput" placeholder="添加待办..." onkeydown="if(event.key==='Enter')addTodo()">
+      <button onclick="addTodo()">添加</button>
+    </div>
+  </div>
+</div>
 </body>
+
 </html>
