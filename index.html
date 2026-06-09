@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.json">
 <script>
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js?v=68').catch(()=>{});
+  navigator.serviceWorker.register('./sw.js?v=69').catch(()=>{});
 }
 </script>
 <style>
@@ -271,19 +271,19 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   #fab-chat,#fab-todo{right:10px!important;width:42px!important;height:42px!important;font-size:18px;display:flex!important;align-items:center!important;justify-content:center!important;border-radius:50%!important;border:none!important;position:absolute!important}
   #fab-chat{bottom:65px}
   #fab-todo{bottom:118px}
-		  #todo-slide-panel{width:100%;height:52vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0;padding-bottom:env(safe-area-inset-bottom,12px);z-index:500;visibility:hidden;pointer-events:none;overflow:hidden}
+		  #todo-slide-panel{width:100%;height:52vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0;padding-bottom:24px;padding-bottom:calc(24px + env(safe-area-inset-bottom, 8px));z-index:500;visibility:hidden;pointer-events:none;overflow:hidden}
 		  #todo-slide-panel.open{transform:translateY(0);visibility:visible;pointer-events:auto}
 		  #todo-backdrop{display:none}
 		  #todo-backdrop.show{display:block}
 		  .todo-item{padding:12px;gap:10px}
 		  .todo-label{font-size:14px}
-		  .todo-check{width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;font-size:14px;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;overflow:hidden;-webkit-user-select:none;user-select:none;border-radius:50%!important;border:2px solid #666!important;touch-action:manipulation}
+		  .todo-check{-webkit-tap-highlight-color:transparent}
 		  .todo-del{width:36px;height:36px;font-size:18px;touch-action:manipulation}
 		  .todo-edit-btn{width:36px;height:36px;font-size:14px;touch-action:manipulation}
 		  .todo-input-row input{font-size:14px;padding:10px 12px}
 		  .todo-input-row button{font-size:13px;padding:10px 16px;touch-action:manipulation}
-		  .todo-slide-body{padding:10px 12px}
-		  .todo-slide-footer{padding:6px 10px;padding-bottom:calc(6px + env(safe-area-inset-bottom, 4px))}
+		  .todo-slide-body{padding:8px 12px 50px}
+		  .todo-slide-input-area{padding:8px 10px;border-bottom:1px solid #2a2a2a}
   #chat-panel{width:100%;height:60vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0}
   #chat-panel.open{transform:translateY(0)}
   #chat-backdrop{display:none}
@@ -372,19 +372,19 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   /* 待办FAB */
   #fab-todo{display:flex;position:absolute;bottom:138px;right:16px;z-index:250;width:48px;height:48px;border-radius:50%;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-size:20px;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.4);transition:transform .2s,box-shadow .2s}
   #fab-todo:active{transform:scale(.92)}
-  #fab-todo .badge{position:absolute;top:-3px;right:-3px;width:20px;height:20px;border-radius:50%;background:#e05555;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+  #fab-todo .badge{position:absolute;top:-1px;right:-1px;width:16px;height:16px;min-width:16px;min-height:16px;border-radius:50%;background:#e05555;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:bold;line-height:1}
   /* 待办滑出面板 */
   #todo-slide-panel{position:fixed;top:0;right:0;width:380px;height:100vh;z-index:500;background:#111;color:#e0e0e0;display:flex;flex-direction:column;box-shadow:-2px 0 20px rgba(0,0,0,.5);transform:translateX(100%);transition:transform .3s ease,visibility .3s ease;visibility:hidden;pointer-events:none;overflow:hidden}
   #todo-slide-panel.open{transform:translateX(0);visibility:visible;pointer-events:auto}
   .todo-slide-header{padding:12px 16px;background:#1a1a1a;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
   .todo-slide-header h3{font-size:15px;color:var(--gold);margin:0}
-  .todo-slide-body{flex:1;overflow-y:auto;padding:12px 12px 0;-webkit-overflow-scrolling:touch}
-  .todo-slide-footer{padding:10px 12px;border-top:1px solid #2a2a2a;background:#1a1a1a;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,10px)}
+  .todo-slide-body{flex:1;overflow-y:auto;padding:8px 12px 60px;-webkit-overflow-scrolling:touch}
+  .todo-slide-input-area{padding:10px 12px;border-bottom:1px solid #2a2a2a;background:#1a1a1a;flex-shrink:0}
 .todo-item{display:flex;align-items:center;gap:8px;padding:10px 12px;margin:4px 0;background:#1e1e3a;border-radius:6px;border-left:3px solid var(--gold);transition:all .2s}
 .todo-item.done{border-left-color:var(--green);opacity:.5}
 .todo-item.done .todo-label{text-decoration:line-through;color:var(--sub)}
-.todo-check{width:22px;height:22px;min-width:22px;min-height:22px;border-radius:50%;border:2px solid #666;background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .15s;padding:0;overflow:hidden;-webkit-user-select:none;user-select:none}
-.todo-item.done .todo-check{border-color:var(--green);background:var(--green);color:#fff}
+.todo-check{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+.todo-item.done .todo-check{/* SVG handles styling */}
 .todo-label{flex:1;font-size:12px;color:var(--text);min-width:0;word-break:break-word}
 .todo-del{width:26px;height:26px;border-radius:50%;border:none;background:transparent;color:#666;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .todo-del:hover{color:#e05555;background:#2a1a1a}
@@ -407,7 +407,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 
 <div id="sidebar">
 <header>
-  <h1>自驾穿越 · 城市攻略 <span style="font-size:9px;color:var(--sub);font-weight:normal">v68</span></h1>
+  <h1>自驾穿越 · 城市攻略 <span style="font-size:9px;color:var(--sub);font-weight:normal">v69</span></h1>
   <p>烟台→伊犁→青甘南线 | 点击城市Tab查看攻略 | 路线规划+地图联动</p>
 </header>
 
@@ -2567,7 +2567,7 @@ function renderTodo(){
   }
   list.innerHTML = [...todos].sort((a,b)=>(a.done?1:0)-(b.done?1:0)).map(t=>`
     <div class="todo-item${t.done?' done':''}" id="todo-item-${t.id}">
-      <div class="todo-check" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</div>
+      <div class="todo-check" onclick="toggleTodo(${t.id})" style="display:flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:32px;min-width:32px;min-height:32px;cursor:pointer;touch-action:manipulation;padding:0">${t.done?'<svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="12" r="11" fill="#4a9e6e"/><path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':'<svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="12" r="11" fill="none" stroke="#888" stroke-width="2"/></svg>'}</div>
       <span class="todo-label" id="todo-label-${t.id}">${t.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
       <button class="todo-edit-btn" onclick="startEditTodo(${t.id})" title="编辑">✎</button>
       <button class="todo-del" onclick="deleteTodo(${t.id})" title="删除">&times;</button>
@@ -2788,15 +2788,15 @@ document.addEventListener('DOMContentLoaded',function(){
     <h3>📋 待办清单</h3>
     <button onclick="toggleTodoPanel()" style="background:none;border:none;color:#aaa;font-size:20px;cursor:pointer">&times;</button>
   </div>
-  <div class="todo-slide-body">
-    <div class="todo-summary"><span id="todoCount">0 项待完成</span><button class="todo-clear-all" onclick="clearDoneTodos()">清除已完成</button></div>
-    <div id="todoList"></div>
-  </div>
-  <div class="todo-slide-footer">
+  <div class="todo-slide-input-area">
     <div class="todo-input-row">
       <input type="text" id="todoInput" placeholder="添加待办..." onkeydown="if(event.key==='Enter')addTodo()">
       <button onclick="addTodo()">添加</button>
     </div>
+  </div>
+  <div class="todo-slide-body">
+    <div class="todo-summary"><span id="todoCount">0 项待完成</span><button class="todo-clear-all" onclick="clearDoneTodos()">清除已完成</button></div>
+    <div id="todoList"></div>
   </div>
 </div>
 </body>
