@@ -102,6 +102,9 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 /* 放置标记按钮 */
 .btn-place-marker{width:36px;height:36px;border-radius:50%;background:rgba(224,123,57,.2);border:2px solid var(--orange);color:var(--orange);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;animation:pulse 1.5s infinite}
 .btn-place-marker:hover{background:var(--orange);color:#fff}
+/* 删除标记按钮 */
+.btn-del-marker{width:36px;height:36px;border-radius:50%;background:rgba(224,85,85,.2);border:2px solid #e05555;color:#e05555;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.btn-del-marker:hover{background:#e05555;color:#fff}
 /* 定位按钮 */
 .btn-locate{width:36px;height:36px;border-radius:50%;background:rgba(26,26,46,.94);border:2px solid var(--gold);color:var(--gold);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .btn-locate:hover{background:var(--gold);color:var(--bg)}
@@ -265,22 +268,22 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   .img-modal img{max-height:50vh;max-width:80vw}
   .w-card{flex:0 0 65px;font-size:9px}
   .w-card .w-icon{font-size:16px}
-  #fab-chat{bottom:65px;right:10px;width:42px;height:42px;font-size:18px}
-
-	  #fab-todo{bottom:120px;right:10px;width:42px;height:42px;font-size:18px}
-		  #todo-slide-panel{width:100%;height:60vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0;padding-bottom:env(safe-area-inset-bottom,12px);z-index:500;visibility:hidden;pointer-events:none;overflow:hidden}
+  #fab-chat,#fab-todo{right:10px;width:42px;height:42px;font-size:18px}
+  #fab-chat{bottom:65px}
+  #fab-todo{bottom:118px;border:none}
+		  #todo-slide-panel{width:100%;height:52vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0;padding-bottom:env(safe-area-inset-bottom,12px);z-index:500;visibility:hidden;pointer-events:none;overflow:hidden}
 		  #todo-slide-panel.open{transform:translateY(0);visibility:visible;pointer-events:auto}
 		  #todo-backdrop{display:none}
 		  #todo-backdrop.show{display:block}
 		  .todo-item{padding:12px;gap:10px}
 		  .todo-label{font-size:14px}
-		  .todo-check{width:32px;height:32px;min-width:32px;min-height:32px;font-size:14px;overflow:hidden}
+		  .todo-check{width:32px;height:32px;min-width:32px;min-height:32px;font-size:14px;overflow:hidden;-webkit-appearance:none;appearance:none;outline:none}
 		  .todo-del{width:36px;height:36px;font-size:18px}
 		  .todo-edit-btn{width:36px;height:36px;font-size:14px}
 		  .todo-input-row input{font-size:14px;padding:10px 12px}
 		  .todo-input-row button{font-size:13px;padding:10px 16px}
-		  .todo-slide-body{padding:12px}
-		  .todo-slide-footer{padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom, 4px))}
+		  .todo-slide-body{padding:10px 12px}
+		  .todo-slide-footer{padding:6px 10px;padding-bottom:calc(6px + env(safe-area-inset-bottom, 4px))}
   #chat-panel{width:100%;height:60vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0}
   #chat-panel.open{transform:translateY(0)}
   #chat-backdrop{display:none}
@@ -342,8 +345,9 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     .tabs{top:0}
     .map-search-wrap input{width:160px;font-size:11px}
     .map-search-wrap{top:4px;left:4px}
-    #fab-chat{bottom:55px;right:8px;width:38px;height:38px;font-size:16px}
-	    #fab-todo{bottom:100px;right:8px;width:38px;height:38px;font-size:16px}
+    #fab-chat,#fab-todo{right:8px;width:38px;height:38px;font-size:16px}
+    #fab-chat{bottom:55px}
+    #fab-todo{bottom:98px;border:none}
 	    #todo-slide-panel{height:75vh}
   }
 
@@ -377,7 +381,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 .todo-item{display:flex;align-items:center;gap:8px;padding:10px 12px;margin:4px 0;background:#1e1e3a;border-radius:6px;border-left:3px solid var(--gold);transition:all .2s}
 .todo-item.done{border-left-color:var(--green);opacity:.5}
 .todo-item.done .todo-label{text-decoration:line-through;color:var(--sub)}
-.todo-check{width:22px;height:22px;min-width:22px;min-height:22px;border-radius:50%;border:2px solid #666;background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .15s;padding:0;overflow:hidden}
+.todo-check{width:22px;height:22px;min-width:22px;min-height:22px;border-radius:50%;border:2px solid #666;background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .15s;padding:0;overflow:hidden;-webkit-appearance:none;appearance:none;outline:none}
 .todo-item.done .todo-check{border-color:var(--green);background:var(--green);color:#fff}
 .todo-label{flex:1;font-size:12px;color:var(--text);min-width:0;word-break:break-word}
 .todo-del{width:26px;height:26px;border-radius:50%;border:none;background:transparent;color:#666;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
@@ -619,6 +623,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     <button class="btn-search-go" id="btnSearchGo" title="搜索" onclick="doTextSearch(document.getElementById('mapSearchInput').value.trim())">🔍</button>
     <button class="btn-locate" id="btnLocate" title="定位当前位置" onclick="locateMe()">⌖</button>
     <button class="btn-place-marker" id="btnPlaceMarker" title="在此放置标记" onclick="placeMarkerHere()" style="display:none">📌</button>
+    <button class="btn-del-marker" id="btnDelMarker" title="删除标记" onclick="deleteSearchMarker()" style="display:none">✕</button>
     <div class="search-suggestions" id="searchSuggestions" style="display:none"></div>
   </div>
   <button id="fab-chat" onclick="toggleChat()" title="记账 & 助手">💬</button>
@@ -1470,16 +1475,19 @@ async function doTextSearch(keywords){
         zIndex:140,
         map:map
       });
-      // 弹出信息窗
+      // 显示放置标记按钮，隐藏删除按钮
+      document.getElementById('btnPlaceMarker').style.display='flex';
+      document.getElementById('btnDelMarker').style.display='none';
+      // 等地图飞行动画完成后再弹信息窗
       const photoHtml=best.photos&&best.photos.length>0
         ?'<img src="'+best.photos[0].url+'" style="width:200px;height:auto;border-radius:6px;margin-bottom:6px;display:block" onerror="this.style.display=\'none\'">'
         :'';
-      new AMap.InfoWindow({
-        content:'<div class="amap-info-content">'+photoHtml+'<b>'+best.name+'</b><br>'+best.address+'<br>'+(best.tel?'📞 '+best.tel+'<br>':'')+'<span style="color:var(--orange);font-size:10px">点击📌按钮放置标记</span></div>',
-        offset:new AMap.Pixel(0,-30)
-      }).open(map,[lng,lat]);
-      // 显示放置标记按钮
-      document.getElementById('btnPlaceMarker').style.display='flex';
+      setTimeout(()=>{
+        new AMap.InfoWindow({
+          content:'<div class="amap-info-content">'+photoHtml+'<b>'+best.name+'</b><br>'+best.address+'<br>'+(best.tel?'📞 '+best.tel+'<br>':'')+'<span style="color:var(--orange);font-size:10px">点击📌放置标记</span></div>',
+          offset:new AMap.Pixel(0,-30)
+        }).open(map,[lng,lat]);
+      },350);
       // 标记其他结果（小圆点，不阻挡视线）
       pois.slice(1).forEach((p,i)=>{
         const loc=p.location.split(',');
@@ -1525,12 +1533,19 @@ function placeMarkerHere(){
     new AMap.InfoWindow({content:'<div class="amap-info-content"><b>'+lastSearchName+'</b></div>',offset:new AMap.Pixel(0,-30)}).open(map,[lastSearchLng,lastSearchLat]);
   });
   searchMarker=[m];
-  // 隐藏放置按钮
+  // 切换按钮：隐藏放置，显示删除
   document.getElementById('btnPlaceMarker').style.display='none';
+  document.getElementById('btnDelMarker').style.display='flex';
+}
+
+function deleteSearchMarker(){
+  clearSearchMarker();
+  document.getElementById('btnDelMarker').style.display='none';
 }
 
 function clearSearchMarker(){
   if(searchMarker){searchMarker.forEach(m=>m.setMap(null));searchMarker=null;}
+  document.getElementById('btnDelMarker').style.display='none';
 }
 
 // 定位当前位置
