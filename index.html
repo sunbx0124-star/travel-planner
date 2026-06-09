@@ -1484,12 +1484,12 @@ async function doTextSearch(keywords){
       const photoHtml=best.photos&&best.photos.length>0
         ?'<img src="'+best.photos[0].url+'" style="width:200px;height:auto;border-radius:6px;margin-bottom:6px;display:block" onerror="this.style.display=\'none\'">'
         :'';
-      setTimeout(()=>{
-        new AMap.InfoWindow({
-          content:'<div class="amap-info-content">'+photoHtml+'<b>'+best.name+'</b><br>'+best.address+'<br>'+(best.tel?'📞 '+best.tel+'<br>':'')+'<span style="color:var(--orange);font-size:10px">点击📌放置标记</span></div>',
-          offset:new AMap.Pixel(0,-30)
-        }).open(map,[lng,lat]);
-      },350);
+      const infoContent='<div class="amap-info-content">'+photoHtml+'<b>'+best.name+'</b><br>'+best.address+'<br>'+(best.tel?'📞 '+best.tel+'<br>':'')+'<span style="color:var(--orange);font-size:10px">点击📌放置标记</span></div>';
+      function showInfoWin(){
+        map.off('moveend',showInfoWin);
+        new AMap.InfoWindow({content:infoContent,offset:new AMap.Pixel(0,-30)}).open(map,[lng,lat]);
+      }
+      map.on('moveend',showInfoWin);
       // 标记其他结果（小圆点，不阻挡视线）
       pois.slice(1).forEach((p,i)=>{
         const loc=p.location.split(',');
@@ -2564,7 +2564,7 @@ function renderTodo(){
   }
   list.innerHTML = [...todos].sort((a,b)=>(a.done?1:0)-(b.done?1:0)).map(t=>`
     <div class="todo-item${t.done?' done':''}" id="todo-item-${t.id}">
-      <button class="todo-check" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</button>
+      <span class="todo-check" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</span>
       <span class="todo-label" id="todo-label-${t.id}">${t.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
       <button class="todo-edit-btn" onclick="startEditTodo(${t.id})" title="编辑">✎</button>
       <button class="todo-del" onclick="deleteTodo(${t.id})" title="删除">&times;</button>
