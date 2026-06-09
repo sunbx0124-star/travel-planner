@@ -767,7 +767,7 @@ const dayRoutes={
 let map,markers={},routeLines={},routeStore={};
 
 function initMap(){
-  map=new AMap.Map('map',{center:[112.49,37.80],zoom:11,resizeEnable:true,features:['bg','road','building']});
+  map=new AMap.Map('map',{center:[112.49,37.80],zoom:11,resizeEnable:true});
   initSearch();
   // Don't auto-place markers or fetch weather; starts with road plan view
 }
