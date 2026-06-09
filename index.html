@@ -88,9 +88,14 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 .map-search-wrap input:focus{border-color:var(--orange)}
 .map-search-wrap input::placeholder{color:#666}
 /* 搜索联想下拉 */
-.amap-sug-result{z-index:300!important;background:#1e1e3a!important;border:1px solid var(--gold)!important;border-radius:0 0 6px 6px!important}
-.amap-sug-result .auto-item{color:var(--text)!important;padding:8px 12px!important;border-bottom:1px solid #2a2a4a!important;font-size:12px!important}
-.amap-sug-result .auto-item:hover,.amap-sug-result .auto-item.hover{background:var(--gold)!important;color:var(--bg)!important}
+.search-suggestions{position:absolute;top:100%;left:0;width:260px;max-height:260px;overflow-y:auto;background:#1e1e3a;border:1px solid var(--gold);border-radius:0 0 6px 6px;z-index:350;margin-top:2px;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.search-suggestions .sug-item{padding:10px 12px;cursor:pointer;color:var(--text);font-size:12px;border-bottom:1px solid #2a2a4a;display:flex;align-items:center;gap:8px;transition:background .15s}
+.search-suggestions .sug-item:last-child{border-bottom:none}
+.search-suggestions .sug-item:hover,.search-suggestions .sug-item.active{background:var(--gold);color:var(--bg)}
+.search-suggestions .sug-item .sug-icon{font-size:14px;flex-shrink:0}
+.search-suggestions .sug-item .sug-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.search-suggestions .sug-item .sug-dist{font-size:10px;color:var(--sub);flex-shrink:0}
+.search-suggestions .sug-item:hover .sug-dist{color:var(--bg)}
 /* 搜索按钮 */
 .btn-search-go{width:36px;height:36px;border-radius:50%;background:rgba(26,26,46,.94);border:2px solid var(--gold);color:var(--gold);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .btn-search-go:hover{background:var(--gold);color:var(--bg)}
@@ -610,6 +615,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     <input type="text" id="mapSearchInput" placeholder="输入地点，回车搜索..." autocomplete="off">
     <button class="btn-search-go" id="btnSearchGo" title="搜索" onclick="doTextSearch(document.getElementById('mapSearchInput').value.trim())">🔍</button>
     <button class="btn-locate" id="btnLocate" title="定位当前位置" onclick="locateMe()">⌖</button>
+    <div class="search-suggestions" id="searchSuggestions" style="display:none"></div>
   </div>
   <button id="fab-chat" onclick="toggleChat()" title="记账 & 助手">💬</button>
   <button id="fab-todo" onclick="toggleTodoPanel()" title="待办清单">📋<span id="todoBadge" class="badge" style="display:none">0</span></button>
@@ -1348,42 +1354,100 @@ function showDay(d){
 
 // 地点搜索
 let searchMarker=null;
+let suggestTimer=null;
+let suggestIndex=-1;
+
 function initSearch(){
-  // AutoComplete 联想下拉
-  AMap.plugin('AMap.AutoComplete',function(){
-    const auto=new AMap.AutoComplete({
-      input:'mapSearchInput',
-      citylimit:false
-    });
-    AMap.event.addListener(auto,'select',function(e){
-      if(e.poi&&e.poi.location){
-        flyToSearchResult(e.poi.location.lng,e.poi.location.lat,e.poi.name);
-      }
-    });
+  const input=document.getElementById('mapSearchInput');
+  const sugBox=document.getElementById('searchSuggestions');
+
+  // 输入联想
+  input.addEventListener('input',function(){
+    clearTimeout(suggestTimer);
+    const kw=this.value.trim();
+    if(!kw){hideSuggestions();return;}
+    suggestTimer=setTimeout(()=>fetchSuggestions(kw),200);
   });
-  // 回车键搜索
-  document.getElementById('mapSearchInput').addEventListener('keydown',function(e){
-    if(e.key==='Enter'){
-      const kw=e.target.value.trim();
-      if(!kw)return;
-      doTextSearch(kw);
+
+  // 键盘导航
+  input.addEventListener('keydown',function(e){
+    const items=sugBox.querySelectorAll('.sug-item');
+    if(e.key==='ArrowDown'){
+      e.preventDefault();
+      suggestIndex=Math.min(suggestIndex+1,items.length-1);
+      updateSugActive(items);
+    }else if(e.key==='ArrowUp'){
+      e.preventDefault();
+      suggestIndex=Math.max(suggestIndex-1,-1);
+      updateSugActive(items);
+    }else if(e.key==='Enter'){
+      e.preventDefault();
+      if(suggestIndex>=0&&items[suggestIndex]){
+        items[suggestIndex].click();
+      }else{
+        const kw=input.value.trim();
+        if(kw)doTextSearch(kw);
+      }
+    }else if(e.key==='Escape'){
+      hideSuggestions();
     }
+  });
+
+  // 点击外部关闭
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('.map-search-wrap'))hideSuggestions();
   });
 }
 
+function updateSugActive(items){
+  items.forEach((it,i)=>it.classList.toggle('active',i===suggestIndex));
+}
+
+async function fetchSuggestions(keywords){
+  const url='https://restapi.amap.com/v3/assistant/inputtips?key=cf5447edb69e314bf64209dd2294b84a&keywords='+encodeURIComponent(keywords);
+  try{
+    const res=await fetch(url).then(r=>r.json());
+    if(res.status==='1'&&res.tips&&res.tips.length>0){
+      const sugBox=document.getElementById('searchSuggestions');
+      suggestIndex=-1;
+      sugBox.innerHTML=res.tips.filter(t=>t.location&&t.location!=='0,0').slice(0,8).map((t,i)=>{
+        const dist=t.distance?parseInt(t.distance):0;
+        const distStr=dist>0?(dist>1000?(dist/1000).toFixed(1)+'km':dist+'m'):'';
+        return '<div class="sug-item" data-lng="'+t.location.split(',')[0]+'" data-lat="'+t.location.split(',')[1]+'" data-name="'+t.name.replace(/"/g,'&quot;')+'" onclick="selectSuggestion(this)"><span class="sug-icon">📍</span><span class="sug-text">'+t.name+'</span>'+(distStr?'<span class="sug-dist">'+distStr+'</span>':'')+'</div>';
+      }).join('');
+      sugBox.style.display='block';
+      sugBox.style.width=document.getElementById('mapSearchInput').offsetWidth+'px';
+    }else{
+      hideSuggestions();
+    }
+  }catch(e){/* 静默失败 */}
+}
+
+function hideSuggestions(){
+  document.getElementById('searchSuggestions').style.display='none';
+  suggestIndex=-1;
+}
+
+function selectSuggestion(el){
+  const lng=parseFloat(el.dataset.lng);
+  const lat=parseFloat(el.dataset.lat);
+  const name=el.dataset.name;
+  document.getElementById('mapSearchInput').value=name;
+  hideSuggestions();
+  flyToSearchResult(lng,lat,name);
+}
+
 async function doTextSearch(keywords){
+  hideSuggestions();
   const url='https://restapi.amap.com/v3/place/text?key=cf5447edb69e314bf64209dd2294b84a&keywords='+encodeURIComponent(keywords)+'&offset=5';
   try{
     const res=await fetch(url).then(r=>r.json());
     if(res.status==='1'&&res.pois&&res.pois.length>0){
       const pois=res.pois;
-      // 清除旧标记
       clearSearchMarker();
-      // 飞到第一个结果
       const best=pois[0];
       const lnglat=best.location.split(',');
       map.setZoomAndCenter(14,[parseFloat(lnglat[0]),parseFloat(lnglat[1])]);
-      // 标记所有结果
       pois.forEach((p,i)=>{
         const loc=p.location.split(',');
         const lng=parseFloat(loc[0]),lat=parseFloat(loc[1]);
@@ -2628,7 +2692,7 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 </script>
-<script src="https://webapi.amap.com/maps?v=2.0&key=b5903b78f8f2d6738e929cb8be80e7d3&plugin=AMap.AutoComplete,AMap.Geolocation&callback=initMap"></script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=b5903b78f8f2d6738e929cb8be80e7d3&plugin=AMap.Geolocation&callback=initMap"></script>
 
 <!-- 聊天面板 -->
 <div id="chat-backdrop" onclick="closeChat()"></div>
