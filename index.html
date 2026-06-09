@@ -277,7 +277,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 		  #todo-backdrop.show{display:block}
 		  .todo-item{padding:12px;gap:10px}
 		  .todo-label{font-size:14px}
-		  .todo-check{width:32px;height:32px;min-width:32px;min-height:32px;font-size:14px;overflow:hidden;-webkit-appearance:none;appearance:none;outline:none}
+		  .todo-check{width:32px;height:32px;min-width:32px;min-height:32px;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;-webkit-user-select:none;user-select:none}
 		  .todo-del{width:36px;height:36px;font-size:18px}
 		  .todo-edit-btn{width:36px;height:36px;font-size:14px}
 		  .todo-input-row input{font-size:14px;padding:10px 12px}
@@ -383,7 +383,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 .todo-item{display:flex;align-items:center;gap:8px;padding:10px 12px;margin:4px 0;background:#1e1e3a;border-radius:6px;border-left:3px solid var(--gold);transition:all .2s}
 .todo-item.done{border-left-color:var(--green);opacity:.5}
 .todo-item.done .todo-label{text-decoration:line-through;color:var(--sub)}
-.todo-check{width:22px;height:22px;min-width:22px;min-height:22px;border-radius:50%;border:2px solid #666;background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .15s;padding:0;overflow:hidden;-webkit-appearance:none;appearance:none;outline:none}
+.todo-check{width:22px;height:22px;min-width:22px;min-height:22px;border-radius:50%;border:2px solid #666;background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .15s;padding:0;overflow:hidden;-webkit-user-select:none;user-select:none}
 .todo-item.done .todo-check{border-color:var(--green);background:var(--green);color:#fff}
 .todo-label{flex:1;font-size:12px;color:var(--text);min-width:0;word-break:break-word}
 .todo-del{width:26px;height:26px;border-radius:50%;border:none;background:transparent;color:#666;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
@@ -1485,11 +1485,14 @@ async function doTextSearch(keywords){
         ?'<img src="'+best.photos[0].url+'" style="width:200px;height:auto;border-radius:6px;margin-bottom:6px;display:block" onerror="this.style.display=\'none\'">'
         :'';
       const infoContent='<div class="amap-info-content">'+photoHtml+'<b>'+best.name+'</b><br>'+best.address+'<br>'+(best.tel?'📞 '+best.tel+'<br>':'')+'<span style="color:var(--orange);font-size:10px">点击📌放置标记</span></div>';
+      let infoShown=false;
       function showInfoWin(){
+        if(infoShown)return; infoShown=true;
         map.off('moveend',showInfoWin);
         new AMap.InfoWindow({content:infoContent,offset:new AMap.Pixel(0,-30)}).open(map,[lng,lat]);
       }
       map.on('moveend',showInfoWin);
+      setTimeout(showInfoWin,800); // 回退：800ms后还没触发则强制执行
       // 标记其他结果（小圆点，不阻挡视线）
       pois.slice(1).forEach((p,i)=>{
         const loc=p.location.split(',');
