@@ -758,7 +758,7 @@ const dayRoutes={
 let map,markers={},routeLines={},routeStore={};
 
 function initMap(){
-  map=new AMap.Map('map',{center:[112.49,37.80],zoom:11,resizeEnable:true});
+  map=new AMap.Map('map',{center:[112.49,37.80],zoom:11,resizeEnable:true,features:['bg','road','building']});
   initSearch();
   // Don't auto-place markers or fetch weather; starts with road plan view
 }
@@ -1439,7 +1439,7 @@ function selectSuggestion(el){
 
 async function doTextSearch(keywords){
   hideSuggestions();
-  const url='https://restapi.amap.com/v3/place/text?key=cf5447edb69e314bf64209dd2294b84a&keywords='+encodeURIComponent(keywords)+'&offset=5';
+  const url='https://restapi.amap.com/v3/place/text?key=cf5447edb69e314bf64209dd2294b84a&keywords='+encodeURIComponent(keywords)+'&offset=5&extensions=all';
   try{
     const res=await fetch(url).then(r=>r.json());
     if(res.status==='1'&&res.pois&&res.pois.length>0){
@@ -1451,6 +1451,10 @@ async function doTextSearch(keywords){
       pois.forEach((p,i)=>{
         const loc=p.location.split(',');
         const lng=parseFloat(loc[0]),lat=parseFloat(loc[1]);
+        // 构建信息窗内容
+        const photoHtml=p.photos&&p.photos.length>0
+          ?'<img src="'+p.photos[0].url+'" style="width:200px;height:auto;border-radius:6px;margin-bottom:6px;display:block" onerror="this.style.display=\'none\'">'
+          :'';
         const m=new AMap.Marker({
           position:[lng,lat],
           map:map,
@@ -1460,7 +1464,7 @@ async function doTextSearch(keywords){
         });
         m.on('click',function(){
           new AMap.InfoWindow({
-            content:'<div class="amap-info-content"><b>'+p.name+'</b><br>'+p.address+'<br>'+(p.tel?'📞 '+p.tel+'<br>':'')+(p.type?'🏷 '+p.type:'')+'</div>',
+            content:'<div class="amap-info-content">'+photoHtml+'<b>'+p.name+'</b><br>'+p.address+'<br>'+(p.tel?'📞 '+p.tel+'<br>':'')+(p.type?'🏷 '+p.type:'')+'</div>',
             offset:new AMap.Pixel(0,-30)
           }).open(map,[lng,lat]);
         });
