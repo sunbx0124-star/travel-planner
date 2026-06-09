@@ -118,7 +118,8 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 #chat-backdrop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:499}
 
 /* 待办遮罩 */
-#todo-backdrop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:499}
+#todo-backdrop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:499;opacity:0;transition:opacity .3s ease}
+#todo-backdrop.show{display:block;opacity:1}
 
 /* 聊天面板 */
 #chat-panel{position:fixed;top:0;right:0;width:380px;height:100vh;z-index:500;background:#111;color:#e0e0e0;display:flex;flex-direction:column;box-shadow:-2px 0 20px rgba(0,0,0,.5);transform:translateX(100%);transition:transform .3s ease}
@@ -258,7 +259,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 		  #todo-backdrop.show{display:block}
 		  .todo-item{padding:12px;gap:10px}
 		  .todo-label{font-size:14px}
-		  .todo-check{width:32px;height:32px;min-width:32px;font-size:14px}
+		  .todo-check{width:32px;height:32px;min-width:32px;min-height:32px;font-size:14px;overflow:hidden}
 		  .todo-del{width:36px;height:36px;font-size:18px}
 		  .todo-edit-btn{width:36px;height:36px;font-size:14px}
 		  .todo-input-row input{font-size:14px;padding:10px 12px}
@@ -348,7 +349,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   /* 待办清单 */
 
   /* 待办FAB */
-  #fab-todo{display:flex;position:absolute;bottom:138px;right:16px;z-index:250;width:48px;height:48px;border-radius:50%;background:#1e1e3a;color:var(--gold);border:2px solid var(--gold);cursor:pointer;font-size:20px;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.4);transition:transform .2s,box-shadow .2s}
+  #fab-todo{display:flex;position:absolute;bottom:138px;right:16px;z-index:250;width:48px;height:48px;border-radius:50%;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-size:20px;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.4);transition:transform .2s,box-shadow .2s}
   #fab-todo:active{transform:scale(.92)}
   #fab-todo .badge{position:absolute;top:-3px;right:-3px;width:20px;height:20px;border-radius:50%;background:#e05555;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:bold}
   /* 待办滑出面板 */
@@ -361,7 +362,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 .todo-item{display:flex;align-items:center;gap:8px;padding:10px 12px;margin:4px 0;background:#1e1e3a;border-radius:6px;border-left:3px solid var(--gold);transition:all .2s}
 .todo-item.done{border-left-color:var(--green);opacity:.5}
 .todo-item.done .todo-label{text-decoration:line-through;color:var(--sub)}
-.todo-check{width:22px;height:22px;border-radius:50%;border:2px solid #666;background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .15s;padding:0}
+.todo-check{width:22px;height:22px;min-width:22px;min-height:22px;border-radius:50%;border:2px solid #666;background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .15s;padding:0;overflow:hidden}
 .todo-item.done .todo-check{border-color:var(--green);background:var(--green);color:#fff}
 .todo-label{flex:1;font-size:12px;color:var(--text);min-width:0;word-break:break-word}
 .todo-del{width:26px;height:26px;border-radius:50%;border:none;background:transparent;color:#666;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
@@ -2303,15 +2304,16 @@ function toggleTodoPanel(){
     if(chatOpen&&window.innerWidth<=768)closeChat();
     panel.classList.add('open');
     renderTodo();
-    document.getElementById('todo-backdrop').style.display='block';
-    if(window.innerWidth<=768)document.getElementById('todo-backdrop').classList.add('show');
+    const backdrop=document.getElementById('todo-backdrop');
+    backdrop.style.display='block';
+    backdrop.classList.add('show');
   }
 }
 function closeTodoPanel(){
   const panel=document.getElementById('todo-slide-panel');
   panel.classList.remove('open');
   const backdrop=document.getElementById('todo-backdrop');
-  if(backdrop){ backdrop.style.display='none'; backdrop.classList.remove('show'); }
+  if(backdrop){ backdrop.classList.remove('show'); setTimeout(()=>{if(!backdrop.classList.contains('show'))backdrop.style.display='none';},350); }
 }
 function updateTodoBadge(){
   const badge=document.getElementById('todoBadge');
