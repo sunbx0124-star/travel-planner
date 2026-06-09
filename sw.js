@@ -1,6 +1,6 @@
-const CACHE_NAME = 'travel-planner-v67';
+const CACHE_NAME = 'travel-planner-v68';
 const ASSETS = [
-  './index.html',
+  './index.html?v=68',
   './manifest.json'
 ];
 

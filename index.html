@@ -268,20 +268,20 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   .img-modal img{max-height:50vh;max-width:80vw}
   .w-card{flex:0 0 65px;font-size:9px}
   .w-card .w-icon{font-size:16px}
-  #fab-chat,#fab-todo{right:10px;width:42px;height:42px;font-size:18px}
+  #fab-chat,#fab-todo{right:10px!important;width:42px!important;height:42px!important;font-size:18px;display:flex!important;align-items:center!important;justify-content:center!important;border-radius:50%!important;border:none!important;position:absolute!important}
   #fab-chat{bottom:65px}
-  #fab-todo{bottom:118px;border:none}
+  #fab-todo{bottom:118px}
 		  #todo-slide-panel{width:100%;height:52vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0;padding-bottom:env(safe-area-inset-bottom,12px);z-index:500;visibility:hidden;pointer-events:none;overflow:hidden}
 		  #todo-slide-panel.open{transform:translateY(0);visibility:visible;pointer-events:auto}
 		  #todo-backdrop{display:none}
 		  #todo-backdrop.show{display:block}
 		  .todo-item{padding:12px;gap:10px}
 		  .todo-label{font-size:14px}
-		  .todo-check{width:32px;height:32px;min-width:32px;min-height:32px;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;-webkit-user-select:none;user-select:none}
-		  .todo-del{width:36px;height:36px;font-size:18px}
-		  .todo-edit-btn{width:36px;height:36px;font-size:14px}
+		  .todo-check{width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;font-size:14px;display:flex!important;align-items:center!important;justify-content:center!important;flex-shrink:0!important;overflow:hidden;-webkit-user-select:none;user-select:none;border-radius:50%!important;border:2px solid #666!important;touch-action:manipulation}
+		  .todo-del{width:36px;height:36px;font-size:18px;touch-action:manipulation}
+		  .todo-edit-btn{width:36px;height:36px;font-size:14px;touch-action:manipulation}
 		  .todo-input-row input{font-size:14px;padding:10px 12px}
-		  .todo-input-row button{font-size:13px;padding:10px 16px}
+		  .todo-input-row button{font-size:13px;padding:10px 16px;touch-action:manipulation}
 		  .todo-slide-body{padding:10px 12px}
 		  .todo-slide-footer{padding:6px 10px;padding-bottom:calc(6px + env(safe-area-inset-bottom, 4px))}
   #chat-panel{width:100%;height:60vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0}
@@ -345,9 +345,9 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     .tabs{top:0}
     .map-search-wrap input{width:160px;font-size:11px}
     .map-search-wrap{top:4px;left:4px}
-    #fab-chat,#fab-todo{right:8px;width:38px;height:38px;font-size:16px}
+    #fab-chat,#fab-todo{right:8px!important;width:38px!important;height:38px!important;font-size:16px;display:flex!important;border-radius:50%!important;border:none!important;position:absolute!important}
     #fab-chat{bottom:55px}
-    #fab-todo{bottom:98px;border:none}
+    #fab-todo{bottom:98px}
 	    #todo-slide-panel{height:75vh}
   }
 
@@ -2567,7 +2567,7 @@ function renderTodo(){
   }
   list.innerHTML = [...todos].sort((a,b)=>(a.done?1:0)-(b.done?1:0)).map(t=>`
     <div class="todo-item${t.done?' done':''}" id="todo-item-${t.id}">
-      <span class="todo-check" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</span>
+      <div class="todo-check" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</div>
       <span class="todo-label" id="todo-label-${t.id}">${t.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
       <button class="todo-edit-btn" onclick="startEditTodo(${t.id})" title="编辑">✎</button>
       <button class="todo-del" onclick="deleteTodo(${t.id})" title="删除">&times;</button>
