@@ -407,7 +407,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 
 <div id="sidebar">
 <header>
-  <h1>自驾穿越 · 城市攻略 <span style="font-size:9px;color:var(--sub);font-weight:normal">v75</span></h1>
+  <h1>自驾穿越 · 城市攻略 <span style="font-size:9px;color:var(--sub);font-weight:normal">v76</span></h1>
   <p>烟台→伊犁→青甘南线 | 点击城市Tab查看攻略 | 路线规划+地图联动</p>
 </header>
 
@@ -468,7 +468,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 <div class="road-trip show" id="roadTripPanel">
 <div class="road-summary">
   <h3>烟台 → 伊犁 → 青甘南线 自驾穿越</h3>
-  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 甘其毛都 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 定西 → 天水 → 宝鸡 → 西安 → 烟台</div>
+  <div class="road-path">烟台 → 邯郸 → 太谷古城 → 介休袄神楼 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 甘其毛都 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 定西 → 天水 → 宝鸡 → 西安 → 烟台</div>
   <div class="road-stats">
     <span class="road-stat">总里程 <b>~10500km</b></span>
     <span class="road-stat">天数 <b>35-45天</b></span>
@@ -482,7 +482,9 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <div class="road-section-title open" onclick="toggleRoadSection(this)">去程路线 (烟台→伊犁 · 21段) <span class="arrow">▼</span></div>
   <div class="road-section-body show">
 	    <div class="road-segment clickable" id="road-seg-1" onclick="drawRoadSegment('seg-1')"><div class="seg-header">1. 烟台→邯郸 <span class="stars">★★</span><span class="seg-status seg-ok">全高速</span></div><div class="seg-route">G18→G20→G4 · ~650km · 7h</div><div class="seg-info">平原风景一般，直接高速。</div><div class="road-route-detail" id="detail-road-seg-1" style="display:none"></div><div class="seg-actions" id="actions-seg-1" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-2" onclick="drawRoadSegment('seg-2')"><div class="seg-header">2. 邯郸→太原 <span class="stars">★★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G309→涉县→S45天黎 · ~360km · 5h</div><div class="seg-info">太行山大峡谷风貌，邯郸→涉县段走G309。</div><div class="road-route-detail" id="detail-road-seg-2" style="display:none"></div><div class="seg-actions" id="actions-seg-2" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-2a" onclick="drawRoadSegment('seg-2a')"><div class="seg-header">2a. 邯郸→太谷古城 <span class="stars">★★★★</span><span class="seg-status seg-ok">访古</span></div><div class="seg-route">G22青兰→G55二广 · ~280km · 3.5h</div><div class="seg-info">邯郸出发向西进入山西，经长治北上到太谷。太谷古城免费，无边寺白塔+鼓楼+明清老街。2h逛完南下介休。</div><div class="road-route-detail" id="detail-road-seg-2a" style="display:none"></div><div class="seg-actions" id="actions-seg-2a" style="display:none"></div></div>
+		    <div class="road-segment clickable" id="road-seg-2b" onclick="drawRoadSegment('seg-2b')"><div class="seg-header">2b. 太谷→介休/孝义古建群 <span class="stars">★★★★★</span><span class="seg-status seg-ok">访古精华</span></div><div class="seg-route">G108→介休→孝义 · ~60km密集区 · 全天</div><div class="seg-info">晋中古建精华！8个点：太和岩牌楼→中阳楼(孝义)→西段屯夫子庙→石屯环翠桥→袄神楼→西刘屯阵河楼→恒兴堡→小晋东岳庙。全在30km圈内，每个30min-1h。宿介休或孝义。</div><div class="road-route-detail" id="detail-road-seg-2b" style="display:none"></div><div class="seg-actions" id="actions-seg-2b" style="display:none"></div></div>
+		    <div class="road-segment clickable" id="road-seg-2c" onclick="drawRoadSegment('seg-2c')"><div class="seg-header">2c. 介休→汾阳→文水→太原 <span class="stars">★★★★</span><span class="seg-status seg-ok">访古收官</span></div><div class="seg-route">介休→汾阳(护国灵岩寺)→文水(石永市楼)→太原 · ~130km · 2.5h</div><div class="seg-info">上午北上汾阳杏花村镇：护国灵岩寺+药师七佛多宝塔（梁思成林徽因考察地）。文水石永市楼途经。下午抵太原。</div><div class="road-route-detail" id="detail-road-seg-2c" style="display:none"></div><div class="seg-actions" id="actions-seg-2c" style="display:none"></div></div>
 		    <div class="road-segment clickable" id="road-seg-3" onclick="drawRoadSegment('seg-3')"><div class="seg-header">3. 太原→忻州古城 <span class="stars">★★★</span><span class="seg-status seg-ok">休整</span></div><div class="seg-route">G108 · ~90km · 1.5h</div><div class="seg-info">太原北上第一站。忻州古城免费逛2h，秀容书院俯瞰全城，刀削面·定襄蒸肉。短暂休整后继续北上。</div><div class="road-route-detail" id="detail-road-seg-3" style="display:none"></div><div class="seg-actions" id="actions-seg-3" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-4" onclick="drawRoadSegment('seg-4')"><div class="seg-header">4. 忻州→雁门关→朔州(崇福寺) <span class="stars">★★★★★</span><span class="seg-status seg-ok">强烈推荐</span></div><div class="seg-route">G55→雁门关(停3-4h)→朔州 · ~140km · 2h</div><div class="seg-info">核心段！G55途经雁门关出口下高速游览（天下九塞之首·杨家将·长城关口¥90）。游览后北上朔州，崇福寺免费金代建筑（黑神话悟空取景地）。宿朔州。</div><div class="road-route-detail" id="detail-road-seg-4" style="display:none"></div><div class="seg-actions" id="actions-seg-4" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-5" onclick="drawRoadSegment('seg-5')"><div class="seg-header">5. 朔州→大同(云冈石窟) <span class="stars">★★★★★</span><span class="seg-status seg-ok">强烈推荐</span></div><div class="seg-route">G55→云冈石窟→大同古城 · ~150km · 2h</div><div class="seg-info">朔州出发G55北上直达云冈石窟（北魏皇家石窟¥120需预约）。下午进古城：华严寺·善化寺·九龙壁·古城墙。宿大同。D2悬空寺→应县木塔环线。</div><div class="road-route-detail" id="detail-road-seg-5" style="display:none"></div><div class="seg-actions" id="actions-seg-5" style="display:none"></div></div>
@@ -1779,7 +1781,9 @@ const cityCoords={
 
 const roadSegments={
   'seg-1':{from:'烟台',to:'邯郸'},
-  'seg-2':{from:'邯郸',to:'太原'},
+  'seg-2a':{from:'邯郸',to:'太谷古城'},
+  'seg-2b':{from:'太谷古城',to:'袄神楼'},
+  'seg-2c':{from:'袄神楼',to:'太原'},
   'seg-3':{from:'太原',to:'忻州'},
   'seg-4':{from:'忻州',to:'朔州'},
   'seg-5':{from:'朔州',to:'大同'},
