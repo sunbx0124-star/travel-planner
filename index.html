@@ -99,6 +99,9 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 /* 搜索按钮 */
 .btn-search-go{width:36px;height:36px;border-radius:50%;background:rgba(26,26,46,.94);border:2px solid var(--gold);color:var(--gold);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .btn-search-go:hover{background:var(--gold);color:var(--bg)}
+/* 放置标记按钮 */
+.btn-place-marker{width:36px;height:36px;border-radius:50%;background:rgba(224,123,57,.2);border:2px solid var(--orange);color:var(--orange);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;animation:pulse 1.5s infinite}
+.btn-place-marker:hover{background:var(--orange);color:#fff}
 /* 定位按钮 */
 .btn-locate{width:36px;height:36px;border-radius:50%;background:rgba(26,26,46,.94);border:2px solid var(--gold);color:var(--gold);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .btn-locate:hover{background:var(--gold);color:var(--bg)}
@@ -615,6 +618,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
     <input type="text" id="mapSearchInput" placeholder="输入地点，回车搜索..." autocomplete="off">
     <button class="btn-search-go" id="btnSearchGo" title="搜索" onclick="doTextSearch(document.getElementById('mapSearchInput').value.trim())">🔍</button>
     <button class="btn-locate" id="btnLocate" title="定位当前位置" onclick="locateMe()">⌖</button>
+    <button class="btn-place-marker" id="btnPlaceMarker" title="在此放置标记" onclick="placeMarkerHere()" style="display:none">📌</button>
     <div class="search-suggestions" id="searchSuggestions" style="display:none"></div>
   </div>
   <button id="fab-chat" onclick="toggleChat()" title="记账 & 助手">💬</button>
@@ -1353,7 +1357,9 @@ function showDay(d){
 }
 
 // 地点搜索
-let searchMarker=null;
+let searchMarker=null;       // 用户手动放置的标记
+let tempCircle=null;         // 搜索结果临时圈
+let lastSearchLng=null,lastSearchLat=null,lastSearchName='';
 let suggestTimer=null;
 let suggestIndex=-1;
 
@@ -1413,7 +1419,7 @@ async function fetchSuggestions(keywords){
       sugBox.innerHTML=res.tips.filter(t=>t.location&&t.location!=='0,0').slice(0,8).map((t,i)=>{
         const dist=t.distance?parseInt(t.distance):0;
         const distStr=dist>0?(dist>1000?(dist/1000).toFixed(1)+'km':dist+'m'):'';
-        return '<div class="sug-item" data-lng="'+t.location.split(',')[0]+'" data-lat="'+t.location.split(',')[1]+'" data-name="'+t.name.replace(/"/g,'&quot;')+'" onclick="selectSuggestion(this)"><span class="sug-icon">📍</span><span class="sug-text">'+t.name+'</span>'+(distStr?'<span class="sug-dist">'+distStr+'</span>':'')+'</div>';
+        return '<div class="sug-item" data-name="'+t.name.replace(/"/g,'&quot;')+'" onclick="selectSuggestion(this)"><span class="sug-icon">📍</span><span class="sug-text">'+t.name+'</span>'+(distStr?'<span class="sug-dist">'+distStr+'</span>':'')+'</div>';
       }).join('');
       sugBox.style.display='block';
       sugBox.style.width=document.getElementById('mapSearchInput').offsetWidth+'px';
@@ -1428,48 +1434,66 @@ function hideSuggestions(){
   suggestIndex=-1;
 }
 
+// 点击联想 → 用 place/text 搜精确坐标（不用inputtips的模糊坐标）
 function selectSuggestion(el){
-  const lng=parseFloat(el.dataset.lng);
-  const lat=parseFloat(el.dataset.lat);
   const name=el.dataset.name;
   document.getElementById('mapSearchInput').value=name;
   hideSuggestions();
-  flyToSearchResult(lng,lat,name);
+  doTextSearch(name);
 }
 
+// 回车 / 搜索按钮 → 精确搜索 + 飞到位置（不自动放标记）
 async function doTextSearch(keywords){
   hideSuggestions();
   const url='https://restapi.amap.com/v3/place/text?key=cf5447edb69e314bf64209dd2294b84a&keywords='+encodeURIComponent(keywords)+'&offset=5&extensions=all';
   try{
     const res=await fetch(url).then(r=>r.json());
     if(res.status==='1'&&res.pois&&res.pois.length>0){
-      const pois=res.pois;
-      clearSearchMarker();
-      const best=pois[0];
+      const best=res.pois[0];
       const lnglat=best.location.split(',');
-      map.setZoomAndCenter(14,[parseFloat(lnglat[0]),parseFloat(lnglat[1])]);
-      pois.forEach((p,i)=>{
+      const lng=parseFloat(lnglat[0]),lat=parseFloat(lnglat[1]);
+      // 记下位置，等待用户决定是否放标记
+      lastSearchLng=lng; lastSearchLat=lat; lastSearchName=best.name;
+      // 飞到位置
+      map.setZoomAndCenter(15,[lng,lat]);
+      // 清除旧的临时圈
+      clearTempCircle();
+      // 画临时脉冲圈
+      tempCircle=new AMap.Circle({
+        center:[lng,lat],
+        radius:200,
+        strokeColor:'#c9a96e',
+        strokeWeight:2,
+        strokeOpacity:0.8,
+        fillColor:'#c9a96e',
+        fillOpacity:0.15,
+        zIndex:140,
+        map:map
+      });
+      // 弹出信息窗
+      const photoHtml=best.photos&&best.photos.length>0
+        ?'<img src="'+best.photos[0].url+'" style="width:200px;height:auto;border-radius:6px;margin-bottom:6px;display:block" onerror="this.style.display=\'none\'">'
+        :'';
+      new AMap.InfoWindow({
+        content:'<div class="amap-info-content">'+photoHtml+'<b>'+best.name+'</b><br>'+best.address+'<br>'+(best.tel?'📞 '+best.tel+'<br>':'')+'<span style="color:var(--orange);font-size:10px">点击📌按钮放置标记</span></div>',
+        offset:new AMap.Pixel(0,-30)
+      }).open(map,[lng,lat]);
+      // 显示放置标记按钮
+      document.getElementById('btnPlaceMarker').style.display='flex';
+      // 标记其他结果（小圆点，不阻挡视线）
+      pois.slice(1).forEach((p,i)=>{
         const loc=p.location.split(',');
-        const lng=parseFloat(loc[0]),lat=parseFloat(loc[1]);
-        // 构建信息窗内容
-        const photoHtml=p.photos&&p.photos.length>0
-          ?'<img src="'+p.photos[0].url+'" style="width:200px;height:auto;border-radius:6px;margin-bottom:6px;display:block" onerror="this.style.display=\'none\'">'
-          :'';
-        const m=new AMap.Marker({
-          position:[lng,lat],
-          map:map,
-          title:p.name,
-          zIndex:150+i,
-          label:i===0?{content:'<div style="background:#c9a96e;color:#000;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:bold;white-space:nowrap">'+p.name+'</div>',direction:'top',offset:new AMap.Pixel(0,-10)}:null
+        new AMap.Circle({
+          center:[parseFloat(loc[0]),parseFloat(loc[1])],
+          radius:80,
+          strokeColor:'#e07b39',
+          strokeWeight:1,
+          strokeOpacity:0.5,
+          fillColor:'#e07b39',
+          fillOpacity:0.08,
+          zIndex:139,
+          map:map
         });
-        m.on('click',function(){
-          new AMap.InfoWindow({
-            content:'<div class="amap-info-content">'+photoHtml+'<b>'+p.name+'</b><br>'+p.address+'<br>'+(p.tel?'📞 '+p.tel+'<br>':'')+(p.type?'🏷 '+p.type:'')+'</div>',
-            offset:new AMap.Pixel(0,-30)
-          }).open(map,[lng,lat]);
-        });
-        if(!searchMarker)searchMarker=[];
-        searchMarker.push(m);
       });
     }else{
       alert('未找到"'+keywords+'"，请尝试更具体的地点名称');
@@ -1479,26 +1503,34 @@ async function doTextSearch(keywords){
   }
 }
 
-function clearSearchMarker(){
-  if(searchMarker){searchMarker.forEach(m=>m.setMap(null));searchMarker=null;}
+function clearTempCircle(){
+  if(tempCircle){tempCircle.setMap(null);tempCircle=null;}
 }
 
-function flyToSearchResult(lng,lat,name){
+// 用户手动放置标记
+function placeMarkerHere(){
+  if(lastSearchLng==null)return;
+  // 清除旧标记
   clearSearchMarker();
-  map.setZoomAndCenter(16,[lng,lat]);
+  clearTempCircle();
+  // 放置新标记
   const m=new AMap.Marker({
-    position:[lng,lat],
+    position:[lastSearchLng,lastSearchLat],
     map:map,
-    title:name,
-    zIndex:150,
-    label:{content:'<div style="background:#c9a96e;color:#000;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:bold;white-space:nowrap;box-shadow:0 1px 6px rgba(0,0,0,.3)">'+name+'</div>',direction:'top',offset:new AMap.Pixel(0,-10)}
+    title:lastSearchName,
+    zIndex:160,
+    label:{content:'<div style="background:#c9a96e;color:#000;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:bold;white-space:nowrap;box-shadow:0 1px 6px rgba(0,0,0,.3)">'+lastSearchName+'</div>',direction:'top',offset:new AMap.Pixel(0,-10)}
   });
   m.on('click',function(){
-    new AMap.InfoWindow({content:'<div class="amap-info-content"><b>'+name+'</b></div>',offset:new AMap.Pixel(0,-30)}).open(map,[lng,lat]);
+    new AMap.InfoWindow({content:'<div class="amap-info-content"><b>'+lastSearchName+'</b></div>',offset:new AMap.Pixel(0,-30)}).open(map,[lastSearchLng,lastSearchLat]);
   });
-  // 自动弹出信息窗
-  setTimeout(()=>{new AMap.InfoWindow({content:'<div class="amap-info-content"><b>'+name+'</b></div>',offset:new AMap.Pixel(0,-30)}).open(map,[lng,lat]);},300);
   searchMarker=[m];
+  // 隐藏放置按钮
+  document.getElementById('btnPlaceMarker').style.display='none';
+}
+
+function clearSearchMarker(){
+  if(searchMarker){searchMarker.forEach(m=>m.setMap(null));searchMarker=null;}
 }
 
 // 定位当前位置
