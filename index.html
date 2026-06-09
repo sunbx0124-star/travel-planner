@@ -1343,9 +1343,7 @@ function initSearch(){
   AMap.plugin('AMap.AutoComplete',function(){
     const auto=new AMap.AutoComplete({
       input:'mapSearchInput',
-      city:'太原',
-      citylimit:true,
-      outPutDirAuto:true
+      citylimit:false
     });
     AMap.event.addListener(auto,'select',function(e){
       if(e.poi&&e.poi.location){
