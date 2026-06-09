@@ -252,8 +252,8 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   #fab-chat{bottom:65px;right:10px;width:42px;height:42px;font-size:18px}
 
 	  #fab-todo{bottom:120px;right:10px;width:42px;height:42px;font-size:18px}
-		  #todo-slide-panel{width:100%;height:60vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0;padding-bottom:env(safe-area-inset-bottom,12px);z-index:500}
-	  #todo-slide-panel.open{transform:translateY(0)}
+		  #todo-slide-panel{width:100%;height:60vh;top:auto;bottom:0;border-radius:16px 16px 0 0;transform:translateY(100%);right:auto;left:0;padding-bottom:env(safe-area-inset-bottom,12px);z-index:500;visibility:hidden;pointer-events:none;overflow:hidden}
+		  #todo-slide-panel.open{transform:translateY(0);visibility:visible;pointer-events:auto}
 		  #todo-backdrop{display:none}
 		  #todo-backdrop.show{display:block}
 		  .todo-item{padding:12px;gap:10px}
@@ -352,8 +352,8 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   #fab-todo:active{transform:scale(.92)}
   #fab-todo .badge{position:absolute;top:-3px;right:-3px;width:20px;height:20px;border-radius:50%;background:#e05555;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:bold}
   /* 待办滑出面板 */
-  #todo-slide-panel{position:fixed;top:0;right:0;width:380px;height:100vh;z-index:500;background:#111;color:#e0e0e0;display:flex;flex-direction:column;box-shadow:-2px 0 20px rgba(0,0,0,.5);transform:translateX(100%);transition:transform .3s ease}
-  #todo-slide-panel.open{transform:translateX(0)}
+  #todo-slide-panel{position:fixed;top:0;right:0;width:380px;height:100vh;z-index:500;background:#111;color:#e0e0e0;display:flex;flex-direction:column;box-shadow:-2px 0 20px rgba(0,0,0,.5);transform:translateX(100%);transition:transform .3s ease,visibility .3s ease;visibility:hidden;pointer-events:none;overflow:hidden}
+  #todo-slide-panel.open{transform:translateX(0);visibility:visible;pointer-events:auto}
   .todo-slide-header{padding:12px 16px;background:#1a1a1a;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
   .todo-slide-header h3{font-size:15px;color:var(--gold);margin:0}
   .todo-slide-body{flex:1;overflow-y:auto;padding:12px 12px 0;-webkit-overflow-scrolling:touch}
@@ -446,7 +446,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 <div class="road-trip show" id="roadTripPanel">
 <div class="road-summary">
   <h3>烟台 → 伊犁 → 青甘南线 自驾穿越</h3>
-  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 巴彦淖尔 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 定西 → 天水 → 宝鸡 → 西安 → 烟台</div>
+  <div class="road-path">烟台 → 邯郸 → 太原 → 忻州 → 朔州 → 大同 → 呼和浩特 → 甘其毛都 → 银川 → 中卫 → 武威 → 门源 → 张掖 → 酒泉 → 嘉峪关 → 玉门 → 瓜州 → 敦煌 → 哈密 → 吐鲁番 → 乌鲁木齐 → S101 → 伊犁 → [返]独库南段/G315 → 格尔木 → 茶卡 → 青海湖 → 西宁 → 兰州 → 定西 → 天水 → 宝鸡 → 西安 → 烟台</div>
   <div class="road-stats">
     <span class="road-stat">总里程 <b>~10500km</b></span>
     <span class="road-stat">天数 <b>35-45天</b></span>
@@ -466,7 +466,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 	    <div class="road-segment clickable" id="road-seg-5" onclick="drawRoadSegment('seg-5')"><div class="seg-header">5. 朔州→大同 <span class="stars">★★★★</span><span class="seg-status seg-ok">安全</span></div><div class="seg-route">G55二广高速 · ~150km · 2h</div><div class="seg-info">途经应县木塔、恒山悬空寺。</div><div class="road-route-detail" id="detail-road-seg-5" style="display:none"></div><div class="seg-actions" id="actions-seg-5" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-6" onclick="drawRoadSegment('seg-6')"><div class="seg-header">6. 大同→呼和浩特 <span class="stars">★★★★★</span><span class="seg-status seg-ok">强烈推荐</span></div><div class="seg-route">长城一号旅游公路→杀虎口→G55 · ~260km · 4-5h</div><div class="seg-info">250km沿明长城蜿蜒，全程柏油！先西行至杀虎口再折北。</div><div class="road-route-detail" id="detail-road-seg-6" style="display:none"></div><div class="seg-actions" id="actions-seg-6" style="display:none"></div></div>
 		    <div class="road-segment clickable" id="road-seg-7" onclick="drawRoadSegment('seg-7')"><div class="seg-header">7. 呼和浩特→甘其毛都(辰华宾馆) <span class="stars">★★★</span><span class="seg-status seg-ok">口岸线</span></div><div class="seg-route">G6→临河转G242北上 · ~380km · 5h</div><div class="seg-info">出呼和浩特走G6京藏高速到临河，转G242甘临一级公路北上至甘其毛都口岸。辰华宾馆在甘其毛都镇阿吉乃路与桑根达来街交汇处。G242段车少路好，沿途戈壁草原风光。</div><div class="road-route-detail" id="detail-road-seg-7" style="display:none"></div><div class="seg-actions" id="actions-seg-7" style="display:none"></div></div>
-	    <div class="road-segment clickable" id="road-seg-8" onclick="drawRoadSegment('seg-8')"><div class="seg-header">8. 巴彦淖尔→银川 <span class="stars">★★</span><span class="seg-status seg-ok">可通行</span></div><div class="seg-route">G6京藏高速 · ~330km · 3.5h</div><div class="seg-info">G6乌海段可能管制。临河/乌拉山服务区施工。</div><div class="road-route-detail" id="detail-road-seg-8" style="display:none"></div><div class="seg-actions" id="actions-seg-8" style="display:none"></div></div>
+	    <div class="road-segment clickable" id="road-seg-8" onclick="drawRoadSegment('seg-8')"><div class="seg-header">8. 甘其毛都→银川 <span class="stars">★★★</span><span class="seg-status seg-ok">可通行</span></div><div class="seg-route">G242南下→临河转G6 · ~550km · 6h</div><div class="seg-info">甘其毛都辰华宾馆出发，沿G242南下至临河，转G6京藏高速至银川。G6乌海段可能管制。</div><div class="road-route-detail" id="detail-road-seg-8" style="display:none"></div><div class="seg-actions" id="actions-seg-8" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-9" onclick="drawRoadSegment('seg-9')"><div class="seg-header">9. 银川→中卫 <span class="stars">★★★★★</span><span class="seg-status seg-ok">全程最佳</span></div><div class="seg-route">G307 + S218沙漠边缘路 · ~250km · 3h</div><div class="seg-info">双向四车道，路面堪比高速！贺兰山+腾格里沙漠边缘+骆驼群。串联：明长城→金沙海→66号公路→沙坡头。</div><div class="road-route-detail" id="detail-road-seg-9" style="display:none"></div><div class="seg-actions" id="actions-seg-9" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-10" onclick="drawRoadSegment('seg-10')"><div class="seg-header">10. 中卫→武威 <span class="stars">★★</span><span class="seg-status seg-danger">仅高速</span></div><div class="seg-route">G2012定武高速 · ~280km · 2.5h</div><div class="seg-info">严禁走S315腾格里穿沙公路！沙阻严重/无信号/两驱轿车会陷车。</div><div class="road-route-detail" id="detail-road-seg-10" style="display:none"></div><div class="seg-actions" id="actions-seg-10" style="display:none"></div></div>
 	    <div class="road-segment clickable" id="road-seg-11" onclick="drawRoadSegment('seg-11')"><div class="seg-header">11. 武威→门源 <span class="stars">★★★★★</span><span class="seg-status seg-warn">山路</span></div><div class="seg-route">G312→G227(扁都口)→门源 · ~300km · 5h</div><div class="seg-info">穿祁连山！G227中国最美花田公路。达坂山口3940m弯多坡陡,穿厚外套。夏季漫山油菜花+祁连雪山同框。海拔从1500→3000m,注意缓行。</div><div class="road-route-detail" id="detail-road-seg-11" style="display:none"></div><div class="seg-actions" id="actions-seg-11" style="display:none"></div></div>
@@ -1559,7 +1559,7 @@ const roadSegments={
   'seg-5':{from:'朔州',to:'大同'},
   'seg-6':{from:'大同',to:'呼和浩特'},
   'seg-7':{from:'呼和浩特',to:'甘其毛都辰华宾馆'},
-  'seg-8':{from:'巴彦淖尔',to:'银川'},
+  'seg-8':{from:'甘其毛都辰华宾馆',to:'银川'},
   'seg-9':{from:'银川',to:'中卫'},
   'seg-10':{from:'中卫',to:'武威'},
   'seg-11':{from:'武威',to:'门源'},
