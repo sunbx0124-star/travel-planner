@@ -2372,7 +2372,7 @@ function renderTodo(){
     updateTodoBadge();
     return;
   }
-  list.innerHTML = todos.map(t=>`
+  list.innerHTML = [...todos].sort((a,b)=>(a.done?1:0)-(b.done?1:0)).map(t=>`
     <div class="todo-item${t.done?' done':''}" id="todo-item-${t.id}">
       <button class="todo-check" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</button>
       <span class="todo-label" id="todo-label-${t.id}">${t.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
