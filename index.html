@@ -87,6 +87,13 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 .map-search-wrap input{width:260px;padding:8px 12px;border-radius:6px;border:2px solid var(--gold);background:rgba(26,26,46,.94);color:var(--text);font-size:13px;outline:none;transition:border-color .2s}
 .map-search-wrap input:focus{border-color:var(--orange)}
 .map-search-wrap input::placeholder{color:#666}
+/* 搜索联想下拉 */
+.amap-sug-result{z-index:300!important;background:#1e1e3a!important;border:1px solid var(--gold)!important;border-radius:0 0 6px 6px!important}
+.amap-sug-result .auto-item{color:var(--text)!important;padding:8px 12px!important;border-bottom:1px solid #2a2a4a!important;font-size:12px!important}
+.amap-sug-result .auto-item:hover,.amap-sug-result .auto-item.hover{background:var(--gold)!important;color:var(--bg)!important}
+/* 搜索按钮 */
+.btn-search-go{width:36px;height:36px;border-radius:50%;background:rgba(26,26,46,.94);border:2px solid var(--gold);color:var(--gold);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.btn-search-go:hover{background:var(--gold);color:var(--bg)}
 /* 定位按钮 */
 .btn-locate{width:36px;height:36px;border-radius:50%;background:rgba(26,26,46,.94);border:2px solid var(--gold);color:var(--gold);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .btn-locate:hover{background:var(--gold);color:var(--bg)}
@@ -600,7 +607,8 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
   <div id="map"></div>
   <button class="btn-toggle-sidebar" id="btnToggleSidebar" onclick="toggleSidebar()" title="折叠/展开信息栏">▲ 隐藏攻略</button>
   <div class="map-search-wrap">
-    <input type="text" id="mapSearchInput" placeholder="搜索地点..." autocomplete="off">
+    <input type="text" id="mapSearchInput" placeholder="输入地点，回车搜索..." autocomplete="off">
+    <button class="btn-search-go" id="btnSearchGo" title="搜索" onclick="doTextSearch(document.getElementById('mapSearchInput').value.trim())">🔍</button>
     <button class="btn-locate" id="btnLocate" title="定位当前位置" onclick="locateMe()">⌖</button>
   </div>
   <button id="fab-chat" onclick="toggleChat()" title="记账 & 助手">💬</button>
@@ -1338,8 +1346,10 @@ function showDay(d){
   if(map[d]!==undefined)tabs[map[d]].classList.add('active');
 }
 
-// 地点搜索（AMap.AutoComplete 插件）
+// 地点搜索
+let searchMarker=null;
 function initSearch(){
+  // AutoComplete 联想下拉
   AMap.plugin('AMap.AutoComplete',function(){
     const auto=new AMap.AutoComplete({
       input:'mapSearchInput',
@@ -1347,16 +1357,72 @@ function initSearch(){
     });
     AMap.event.addListener(auto,'select',function(e){
       if(e.poi&&e.poi.location){
-        map.setZoomAndCenter(16,[e.poi.location.lng,e.poi.location.lat]);
-        new AMap.Marker({
-          position:[e.poi.location.lng,e.poi.location.lat],
-          map:map,
-          title:e.poi.name,
-          zIndex:150
-        });
+        flyToSearchResult(e.poi.location.lng,e.poi.location.lat,e.poi.name);
       }
     });
   });
+  // 回车键搜索
+  document.getElementById('mapSearchInput').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){
+      const kw=e.target.value.trim();
+      if(!kw)return;
+      doTextSearch(kw);
+    }
+  });
+}
+
+async function doTextSearch(keywords){
+  const url='https://restapi.amap.com/v3/place/text?key=cf5447edb69e314bf64209dd2294b84a&keywords='+encodeURIComponent(keywords)+'&offset=5';
+  try{
+    const res=await fetch(url).then(r=>r.json());
+    if(res.status==='1'&&res.pois&&res.pois.length>0){
+      const pois=res.pois;
+      // 清除旧标记
+      clearSearchMarker();
+      // 飞到第一个结果
+      const best=pois[0];
+      const lnglat=best.location.split(',');
+      map.setZoomAndCenter(14,[parseFloat(lnglat[0]),parseFloat(lnglat[1])]);
+      // 标记所有结果
+      pois.forEach((p,i)=>{
+        const loc=p.location.split(',');
+        const lng=parseFloat(loc[0]),lat=parseFloat(loc[1]);
+        const m=new AMap.Marker({
+          position:[lng,lat],
+          map:map,
+          title:p.name,
+          zIndex:150+i,
+          label:i===0?{content:'<div style="background:#c9a96e;color:#000;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:bold;white-space:nowrap">'+p.name+'</div>',direction:'top',offset:new AMap.Pixel(0,-10)}:null
+        });
+        m.on('click',function(){
+          new AMap.InfoWindow({
+            content:'<div class="amap-info-content"><b>'+p.name+'</b><br>'+p.address+'<br>'+(p.tel?'📞 '+p.tel+'<br>':'')+(p.type?'🏷 '+p.type:'')+'</div>',
+            offset:new AMap.Pixel(0,-30)
+          }).open(map,[lng,lat]);
+        });
+        if(!searchMarker)searchMarker=[];
+        searchMarker.push(m);
+      });
+    }else{
+      alert('未找到"'+keywords+'"，请尝试更具体的地点名称');
+    }
+  }catch(e){
+    console.error('搜索失败',e);
+  }
+}
+
+function clearSearchMarker(){
+  if(searchMarker){searchMarker.forEach(m=>m.setMap(null));searchMarker=null;}
+}
+
+function flyToSearchResult(lng,lat,name){
+  clearSearchMarker();
+  map.setZoomAndCenter(15,[lng,lat]);
+  const m=new AMap.Marker({position:[lng,lat],map:map,title:name,zIndex:150});
+  m.on('click',function(){
+    new AMap.InfoWindow({content:'<div class="amap-info-content"><b>'+name+'</b></div>',offset:new AMap.Pixel(0,-30)}).open(map,[lng,lat]);
+  });
+  searchMarker=[m];
 }
 
 // 定位当前位置
