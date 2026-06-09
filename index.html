@@ -1485,11 +1485,19 @@ function clearSearchMarker(){
 
 function flyToSearchResult(lng,lat,name){
   clearSearchMarker();
-  map.setZoomAndCenter(15,[lng,lat]);
-  const m=new AMap.Marker({position:[lng,lat],map:map,title:name,zIndex:150});
+  map.setZoomAndCenter(16,[lng,lat]);
+  const m=new AMap.Marker({
+    position:[lng,lat],
+    map:map,
+    title:name,
+    zIndex:150,
+    label:{content:'<div style="background:#c9a96e;color:#000;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:bold;white-space:nowrap;box-shadow:0 1px 6px rgba(0,0,0,.3)">'+name+'</div>',direction:'top',offset:new AMap.Pixel(0,-10)}
+  });
   m.on('click',function(){
     new AMap.InfoWindow({content:'<div class="amap-info-content"><b>'+name+'</b></div>',offset:new AMap.Pixel(0,-30)}).open(map,[lng,lat]);
   });
+  // 自动弹出信息窗
+  setTimeout(()=>{new AMap.InfoWindow({content:'<div class="amap-info-content"><b>'+name+'</b></div>',offset:new AMap.Pixel(0,-30)}).open(map,[lng,lat]);},300);
   searchMarker=[m];
 }
 
