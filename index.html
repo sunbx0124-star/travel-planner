@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.json">
 <script>
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js?v=70').catch(()=>{});
+  navigator.serviceWorker.register('./sw.js?v=71').catch(()=>{});
 }
 </script>
 <style>
@@ -407,7 +407,7 @@ body{font-family:-apple-system,"Microsoft YaHei",sans-serif;height:100vh;display
 
 <div id="sidebar">
 <header>
-  <h1>自驾穿越 · 城市攻略 <span style="font-size:9px;color:var(--sub);font-weight:normal">v70</span></h1>
+  <h1>自驾穿越 · 城市攻略 <span style="font-size:9px;color:var(--sub);font-weight:normal">v71</span></h1>
   <p>烟台→伊犁→青甘南线 | 点击城市Tab查看攻略 | 路线规划+地图联动</p>
 </header>
 
@@ -771,7 +771,23 @@ let map,markers={},routeLines={},routeStore={};
 function initMap(){
   map=new AMap.Map('map',{center:[112.49,37.80],zoom:11,resizeEnable:true});
   initSearch();
-  // Don't auto-place markers or fetch weather; starts with road plan view
+  // 晋中访古标记（紫色标签，默认显示）
+  const ancientSites=[
+    {name:'盂县烈女祠',lng:113.412,lat:38.086},
+    {name:'太谷古城',lng:112.558,lat:37.427},
+    {name:'介休袄神楼',lng:111.916,lat:37.028},
+    {name:'恒兴堡',lng:111.822,lat:37.041},
+    {name:'护国灵岩寺',lng:111.884,lat:37.333}
+  ];
+  ancientSites.forEach(s=>{
+    new AMap.Marker({
+      position:[s.lng,s.lat],
+      map:map,
+      title:s.name,
+      zIndex:90,
+      label:{content:'<div style="background:#9b59b6;color:#fff;padding:2px 6px;border-radius:10px;font-size:10px;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.3)">'+s.name+'</div>',direction:'top',offset:new AMap.Pixel(0,-12)}
+    });
+  });
 }
 
 function toggleSidebar(){
@@ -1742,7 +1758,11 @@ const cityCoords={
   '茫崖':{lng:90.85,lat:38.25},'格尔木':{lng:94.90,lat:36.41},
   '茶卡':{lng:99.08,lat:36.79},'青海湖':{lng:100.40,lat:36.85},
   '西宁':{lng:101.78,lat:36.62},'门源':{lng:101.62,lat:37.38},'兰州':{lng:103.83,lat:36.06},
-  '定西':{lng:104.62,lat:35.58},'天水':{lng:105.72,lat:34.58},'宝鸡':{lng:107.24,lat:34.36},'西安':{lng:108.94,lat:34.26}
+  '定西':{lng:104.62,lat:35.58},'天水':{lng:105.72,lat:34.58},'宝鸡':{lng:107.24,lat:34.36},'西安':{lng:108.94,lat:34.26},
+  // 晋中访古
+  '烈女祠':{lng:113.412,lat:38.086},'太谷古城':{lng:112.558,lat:37.427},
+  '袄神楼':{lng:111.916,lat:37.028},'恒兴堡':{lng:111.822,lat:37.041},
+  '护国灵岩寺':{lng:111.884,lat:37.333}
 };
 
 const roadSegments={
